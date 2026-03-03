@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DBHDS Addiction Services Training Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #003057;
+    --teal: #20AEC5;
+    --gold: #4D89C1;
+    --light-teal: #E8F4F7;
+    --light-gold: #E3EDF7;
+    --warm-gray: #F4F6F8;
+    --text: #2D2D2D;
+    --muted: #6B7280;
+    --white: #FFFFFF;
+    --border: #D6D5DA;
+    --green: #164C6D;
+    --blue: #3658AD;
+    --purple: #2188A2;
+    --rose: #63B9D6;
+    --light-green: #E1EEF3;
+    --light-blue: #E3EDF7;
+    --light-purple: #E0F0F4;
+    --light-rose: #E8F4F7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Open Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--warm-gray);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  .header {
+    background: var(--navy);
+    color: var(--white);
+    padding: 48px 60px 40px;
+  }
+  .header-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    max-width: 700px;
+    line-height: 1.3;
+  }
+  .header p {
+    font-size: 14px;
+    opacity: 0.75;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  .nav-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 60px;
+    display: flex;
+    gap: 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  }
+  .nav-tab {
+    padding: 14px 24px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .nav-tab:hover { color: var(--teal); }
+  .nav-tab.active { color: var(--navy); border-bottom-color: var(--teal); }
+
+  .section { display: none; padding: 40px 60px; max-width: 1100px; margin: 0 auto; }
+  .section.active { display: block; }
+
+  .section-heading {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .section-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    max-width: 680px;
+    line-height: 1.6;
+  }
+
+  /* ===================== */
+  /* TAB 1: HOW YEAR 1 BUILDS THIS */
+  /* ===================== */
+
+  .trace-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .trace-layer {
+    position: relative;
+  }
+
+  .trace-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .trace-phase {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--white);
+    padding: 4px 12px;
+    border-radius: 3px;
+  }
+  .trace-phase.tp-y1 { background: var(--muted); }
+  .trace-phase.tp-mid { background: var(--muted); }
+  .trace-phase.tp-y23 { background: var(--navy); }
+  .trace-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .trace-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .trace-card {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    position: relative;
+  }
+  .trace-card.tc-needs { border-top: 3px solid var(--teal); }
+  .trace-card.tc-stakeholder { border-top: 3px solid var(--teal); }
+  .trace-card.tc-audit { border-top: 3px solid var(--navy); }
+
+  .trace-card h4 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--navy);
+  }
+  .trace-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .trace-card ul {
+    list-style: none;
+    margin-top: 8px;
+  }
+  .trace-card ul li {
+    font-size: 12px;
+    color: var(--muted);
+    padding: 3px 0;
+    padding-left: 14px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .trace-card ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 9px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--border);
+  }
+
+  /* Divider between layers */
+  .trace-divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+  }
+  .trace-divider-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .trace-divider-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  /* Deliverable cards (color-filled, heading only) */
+  .deliverable-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+  .deliverable-card {
+    border-radius: 8px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .deliverable-card h4 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .deliverable-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .deliverable-card.dc-teal-zone {
+    background: var(--light-teal);
+    border: none;
+  }
+  .deliverable-card.dc-teal-zone h4 { color: var(--navy); }
+  .deliverable-card.dc-navy-zone {
+    background: #DCE4EE;
+    border: none;
+  }
+  .deliverable-card.dc-navy-zone h4 { color: var(--navy); }
+  .dc-divider {
+    height: 1px;
+    background: rgba(0, 48, 87, 0.1);
+    margin: 10px 0;
+  }
+  .dc-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    margin-right: 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
+  }
+  .dc-teal-zone .dc-num {
+    background: var(--teal);
+    color: var(--white);
+  }
+  .dc-navy-zone .dc-num {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  /* Tab footnote */
+  .tab-footnote {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    max-width: 800px;
+  }
+
+  /* Year 2-3 production section */
+  .production-section {
+    background: var(--white);
+    border: 2px solid var(--navy);
+    border-radius: 10px;
+    padding: 28px;
+    margin-top: 8px;
+  }
+  .production-section h4 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .production-section > p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+  .production-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .production-card {
+    background: var(--white);
+    border-radius: 8px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .production-card h5 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .production-card p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  .production-card.pc-plain { border: 1px solid var(--border); }
+
+  /* Standalone deliverables */
+  .standalone-callout {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-top: 28px;
+  }
+  .standalone-callout h4 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .standalone-callout > p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .deliverable-list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .deliverable-item {
+    background: var(--warm-gray);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .deliverable-item h5 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .deliverable-item p {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  .callout {
+    background: var(--light-teal);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: var(--teal);
+    line-height: 1.6;
+  }
+  .callout strong { display: block; margin-bottom: 2px; font-size: 13px; }
+
+  .transfer-note {
+    background: var(--light-gold);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 20px;
+    font-size: 12px;
+    color: #2C5F8A;
+    line-height: 1.6;
+  }
+  .transfer-note strong { display: block; margin-bottom: 2px; font-size: 13px; }
+
+  /* ===================== */
+  /* TAB 2: LMS MOCKUP */
+  /* ===================== */
+
+  .lms-frame {
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  }
+
+  .lms-topbar {
+    background: var(--navy);
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+  }
+  .lms-logo {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .lms-logo-sub {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+  }
+  .lms-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 400;
+  }
+  .lms-avatar {
+    width: 30px;
+    height: 30px;
+    background: var(--teal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .lms-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 700px;
+  }
+
+  /* Sidebar */
+  .lms-sidebar {
+    border-right: 1px solid var(--border);
+    background: #FAFAF9;
+    padding-top: 8px;
+  }
+  .lms-sidebar-section {
+    padding: 16px 20px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+  }
+  .lms-sidebar-item {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+  .lms-sidebar-item:hover { background: #F0EFED; color: var(--text); }
+  .lms-sidebar-item.active {
+    background: var(--white);
+    color: var(--navy);
+    font-weight: 600;
+    border-left-color: var(--teal);
+  }
+  .lms-sidebar-item .item-count {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+
+  .lms-sidebar-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 20px;
+  }
+
+  .lms-sidebar-filter {
+    padding: 12px 20px;
+  }
+  .lms-sidebar-filter label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .filter-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+    font-size: 12px;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .filter-radio {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .filter-radio.active {
+    border-color: var(--teal);
+  }
+  .filter-radio.active::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+  }
+
+  /* Continuum category boxes in sidebar */
+  .cont-sidebar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .cont-sidebar-btn {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--white);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .cont-sidebar-btn:hover { border-color: var(--teal); color: var(--text); }
+  .cont-sidebar-btn.active {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+
+  /* Checkbox filter in sidebar */
+  .filter-check {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 2px solid var(--border);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .filter-check.checked {
+    border-color: var(--teal);
+    background: var(--teal);
+  }
+  .filter-check.checked::after {
+    content: '';
+    position: absolute;
+    left: 3px;
+    top: 0px;
+    width: 4px;
+    height: 7px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  /* Main content */
+  .lms-main {
+    padding: 28px;
+    overflow-y: auto;
+  }
+
+  .lms-welcome {
+    margin-bottom: 24px;
+  }
+  .lms-welcome h2 {
+    font-family: 'Lora', Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .lms-welcome p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .lms-stats {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .lms-stat {
+    flex: 1;
+    background: var(--warm-gray);
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+  }
+  .lms-stat .stat-num {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .lms-stat .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* Continuum filter bar */
+  .continuum-bar {
+    display: flex;
+    gap: 0;
+    margin-bottom: 24px;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .cont-tab {
+    flex: 1;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--white);
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+  .cont-tab:last-child { border-right: none; }
+  .cont-tab:hover:not(.active) { background: var(--warm-gray); }
+  .cont-tab.active { color: var(--white); }
+  .cont-tab.ct-all.active { background: var(--navy); }
+  .cont-tab.ct-prev.active { background: var(--green); }
+  .cont-tab.ct-treat.active { background: var(--blue); }
+  .cont-tab.ct-recov.active { background: var(--purple); }
+
+  /* Course list */
+  .course-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .course-row {
+    display: flex;
+    align-items: center;
+    padding: 14px 18px;
+    border: 1px solid #EEECEA;
+    border-radius: 8px;
+    gap: 14px;
+    transition: all 0.15s;
+  }
+
+  .course-color {
+    width: 4px;
+    height: 40px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+  .cc-prev { background: var(--green); }
+  .cc-treat { background: var(--blue); }
+  .cc-recov { background: var(--purple); }
+
+  .course-info { flex: 1; }
+  .course-info h5 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--text);
+  }
+  .course-info .course-meta {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .course-tags {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+    align-items: center;
+  }
+  .tag-ceu {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: var(--light-green);
+    color: var(--green);
+  }
+  .tag-open {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    background: #F0F0F0;
+    color: var(--muted);
+  }
+  .content-status {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  .cs-exists { background: var(--light-green); color: var(--green); }
+  .cs-adapt { background: #E3EDF7; color: #3A6FA0; }
+  .cs-develop { background: #F0F0F0; color: var(--muted); }
+
+  .expand-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .course-row.expanded .expand-icon {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+
+  .course-detail {
+    display: none;
+    padding: 0 18px 16px 36px;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .course-row.expanded + .course-detail { display: block; }
+
+  .detail-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .detail-cell {
+    padding: 10px 14px;
+    background: var(--warm-gray);
+    border-radius: 6px;
+  }
+  .detail-cell .dc-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .detail-cell .dc-value {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  .prov-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+  .prov-needs {
+    background: var(--light-teal);
+    color: var(--teal);
+  }
+  .prov-stakeholder {
+    background: var(--light-gold);
+    color: #3A6FA0;
+  }
+  .prov-audit {
+    background: #E8ECF0;
+    color: #404A5A;
+  }
+  .prov-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .prov-needs .prov-dot { background: var(--teal); }
+  .prov-stakeholder .prov-dot { background: #3A6FA0; }
+  .prov-audit .prov-dot { background: #404A5A; }
+
+  .prov-explain {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    line-height: 1.5;
+  }
+  .prov-explain.pe-needs { background: var(--light-teal); color: var(--teal); }
+  .prov-explain.pe-stakeholder { background: var(--light-gold); color: #2C5F8A; }
+  .prov-explain.pe-audit { background: #E8ECF0; color: #404A5A; }
+
+  /* LMS footer inside frame */
+  .lms-footer-note {
+    padding: 16px 28px;
+    background: var(--warm-gray);
+    border-top: 1px solid var(--border);
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  /* Page footer */
+  .footer {
+    text-align: center;
+    padding: 32px 60px;
+    color: var(--muted);
+    font-size: 11px;
+    border-top: 1px solid var(--border);
+    background: var(--white);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .header, .nav-bar, .section { padding-left: 24px; padding-right: 24px; }
+    .trace-cards { grid-template-columns: 1fr; }
+    .production-grid { grid-template-columns: 1fr; }
+    .deliverable-row { grid-template-columns: 1fr; }
+    .lms-body { grid-template-columns: 1fr; }
+    .lms-stats { flex-direction: column; }
+    .continuum-bar { flex-wrap: wrap; }
+    .detail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Concept Document</div>
+  <h1>DBHDS Addiction Services Training Architecture</h1>
+  <p>Designing a statewide training system for Virginia's addiction services workforce across the prevention, treatment, and recovery continuum.</p>
+</div>
+
+<div class="nav-bar">
+  <div class="nav-tab active" onclick="showSection('tracing', this)">Development Plan</div>
+  <div class="nav-tab" onclick="showSection('lms', this)">LMS Prototype</div>
+
+</div>
+
+<!-- ========================================= -->
+<!-- TAB 1: HOW YEAR 1 BUILDS THIS -->
+<!-- ========================================= -->
+<div id="tracing" class="section active">
+  <h2 class="section-heading">Activities and Deliverables</h2>
+  <p class="section-sub">Assessing provider training needs and developing the scope and sequence for a statewide online training curriculum.</p>
+
+  <div class="trace-flow">
+
+    <!-- Year 1 divider -->
+    <div class="trace-divider">
+      <div class="trace-divider-line"></div>
+      <div class="trace-divider-label">Year 1</div>
+      <div class="trace-divider-line"></div>
+    </div>
+
+    <!-- Activity cards (no pill label) -->
+    <div class="trace-layer">
+      <div class="trace-cards">
+        <div class="trace-card tc-needs">
+          <h4>Field Needs Assessment</h4>
+          <p>Surveys and focus groups with the people who will use the training &mdash; CSB staff, licensed providers, faith-based organizations, peer recovery specialists.</p>
+          <ul>
+            <li>When and where do you access training?</li>
+            <li>What formats work &mdash; webinar, on-demand, cohort?</li>
+            <li>What session lengths are realistic?</li>
+            <li>What topics are most urgent for your practice?</li>
+          </ul>
+        </div>
+        <div class="trace-card tc-stakeholder">
+          <h4>Stakeholder Convenings</h4>
+          <p>Facilitated workgroups with DBHDS subject matter experts across prevention, treatment, and recovery.</p>
+          <ul>
+            <li>What does the workforce need to know?</li>
+            <li>What's the right sequence for learning this content?</li>
+            <li>What are the critical competencies for each audience?</li>
+            <li>What depth is appropriate for each topic?</li>
+          </ul>
+        </div>
+        <div class="trace-card tc-audit">
+          <h4>Existing Content Audit</h4>
+          <p>Catalog everything that already exists &mdash; webinars, slide decks, guidance documents, training materials &mdash; and assess each item's readiness for production.</p>
+          <ul>
+            <li>What's already developed and ready to go?</li>
+            <li>What exists but needs reformatting?</li>
+            <li>What's partially developed?</li>
+            <li>What needs to be built from scratch?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Deliverables (label + cards, directly under activities) -->
+    <div class="trace-layer" style="margin-top: 12px;">
+      <div class="deliverable-label">Deliverables</div>
+      <div class="deliverable-row">
+        <div class="deliverable-card dc-teal-zone">
+          <h4><span class="dc-num">1</span>Audience Profiles and Track Structure</h4>
+          <div class="dc-divider"></div>
+          <h4><span class="dc-num">2</span>Scope and Sequence</h4>
+        </div>
+        <div class="deliverable-card dc-navy-zone">
+          <h4><span class="dc-num">3</span>Content Inventory</h4>
+          <div class="dc-divider"></div>
+          <h4><span class="dc-num">4</span>Production Plan</h4>
+        </div>
+      </div>
+    </div>
+
+    <!-- Years 2 and 3 divider -->
+    <div class="trace-divider">
+      <div class="trace-divider-line"></div>
+      <div class="trace-divider-label">Years 2 and 3</div>
+      <div class="trace-divider-line"></div>
+    </div>
+
+    <!-- Year 2-3: Production and Launch -->
+    <div class="trace-layer">
+      <div class="production-grid">
+        <div class="production-card pc-plain">
+          <h5>Module Production</h5>
+          <p>Instructional design, video production with a technical vendor, and subject matter expert contracting &mdash; building the prioritized modules identified in the scope and sequence.</p>
+        </div>
+        <div class="production-card pc-plain">
+          <h5>Learning Management System</h5>
+          <p>Deployment of the training system with audience-specific tracks and progress tracking &mdash; ready for providers statewide.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-footnote">
+    All content would be packaged in industry-standard formats (SCORM, xAPI) compatible with any standards-compliant learning management system, including the DBHDS internal system. The architecture transfers regardless of where the content lives: tracks, scope and sequence, and audience structure are all portable.
+  </div>
+</div>
+
+<!-- ========================================= -->
+<!-- TAB 2: TRAINING PLATFORM PROTOTYPE -->
+<!-- ========================================= -->
+<div id="lms" class="section">
+  <h2 class="section-heading">Learning Management System Prototype</h2>
+  <p class="section-sub">A sample learner profile showing training tracks, available modules, and CEU progress. Course content reflects Year 2 production informed by Year 1 deliverables.</p>
+
+  <div class="lms-frame">
+    <div class="lms-topbar">
+      <div class="lms-logo">
+        DBHDS Provider Training Portal
+        <span class="lms-logo-sub">Addiction Services Workforce Development</span>
+      </div>
+      <div class="lms-user">
+        <div class="lms-avatar">JT</div>
+        <div>
+          Jamie Torres
+          <div style="font-size: 10px; opacity: 0.5; cursor: pointer;">Log out</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lms-body">
+      <!-- Sidebar -->
+      <div class="lms-sidebar">
+        <div class="lms-sidebar-section">Training Tracks</div>
+        <div class="lms-sidebar-item active" onclick="showTrack('all', this)">
+          All Courses <span class="item-count">5</span>
+        </div>
+        <div class="lms-sidebar-item" onclick="showTrack('csb', this)">
+          Community Services Boards
+        </div>
+        <div class="lms-sidebar-item" onclick="showTrack('faith', this)">
+          Faith-Based and Community
+        </div>
+        <div class="lms-sidebar-item" onclick="showTrack('licensed', this)">
+          Licensed Providers
+        </div>
+        <div class="lms-sidebar-item" onclick="showTrack('peer', this)">
+          Peer Recovery Specialists
+        </div>
+
+        <div class="lms-sidebar-divider"></div>
+
+        <div class="lms-sidebar-filter">
+          <label>Continuum</label>
+          <div class="cont-sidebar">
+            <div class="cont-sidebar-btn active">All</div>
+            <div class="cont-sidebar-btn">Prevention</div>
+            <div class="cont-sidebar-btn">Treatment</div>
+            <div class="cont-sidebar-btn">Recovery</div>
+          </div>
+        </div>
+
+        <div class="lms-sidebar-divider"></div>
+
+        <div class="lms-sidebar-filter">
+          <label>Credential Type</label>
+          <div class="filter-option">
+            <div class="filter-check checked"></div>
+            CEU eligible
+          </div>
+          <div class="filter-option">
+            <div class="filter-check checked"></div>
+            Open access
+          </div>
+        </div>
+      </div>
+
+      <!-- Main content area -->
+      <div class="lms-main">
+        <div class="lms-welcome">
+          <h2>Welcome back, Jamie</h2>
+          <p>Community Services Board Track &middot; 2 courses in progress</p>
+        </div>
+
+        <div class="lms-stats">
+          <div class="lms-stat">
+            <div class="stat-num">8</div>
+            <div class="stat-label">Completed</div>
+          </div>
+          <div class="lms-stat">
+            <div class="stat-num">12.5</div>
+            <div class="stat-label">CEU Hours</div>
+          </div>
+          <div class="lms-stat">
+            <div class="stat-num">2</div>
+            <div class="stat-label">In Progress</div>
+          </div>
+        </div>
+
+        <!-- Course listing -->
+        <div class="course-list" id="course-list">
+
+          <!-- Treatment: Contingency Management -->
+          <div class="course-row" data-cont="treat" data-track="csb licensed">
+            <div class="course-color cc-treat"></div>
+            <div class="course-info">
+              <h5>Contingency Management in Practice</h5>
+              <div class="course-meta">Treatment &middot; CSB, Licensed Providers &middot; 1.5 CEU hours</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag-ceu">CEU</span>
+            </div>
+          </div>
+
+          <!-- Prevention: Performance and Outcome Measures -->
+          <div class="course-row" data-cont="prev" data-track="csb faith licensed peer">
+            <div class="course-color cc-prev"></div>
+            <div class="course-info">
+              <h5>Performance and Outcome Measures</h5>
+              <div class="course-meta">Prevention &middot; All Providers &middot; Open access</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag-open">Open</span>
+            </div>
+          </div>
+
+          <!-- Recovery: Recovery Capital -->
+          <div class="course-row" data-cont="recov" data-track="csb licensed peer">
+            <div class="course-color cc-recov"></div>
+            <div class="course-info">
+              <h5>Recovery Capital and Sustained Wellness</h5>
+              <div class="course-meta">Recovery &middot; CSB, Licensed, Peer Recovery &middot; 2.0 CEU hours</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag-ceu">CEU</span>
+            </div>
+          </div>
+
+          <!-- Prevention: Foundations (Faith-Based) -->
+          <div class="course-row" data-cont="prev" data-track="faith">
+            <div class="course-color cc-prev"></div>
+            <div class="course-info">
+              <h5>Foundations of Addiction and Recovery</h5>
+              <div class="course-meta">Prevention &middot; Faith-Based and Community &middot; Open access</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag-open">Open</span>
+            </div>
+          </div>
+
+          <!-- Recovery: Core Competencies (Peer) -->
+          <div class="course-row" data-cont="recov" data-track="peer">
+            <div class="course-color cc-recov"></div>
+            <div class="course-info">
+              <h5>Core Competencies and Scope of Practice</h5>
+              <div class="course-meta">Recovery &middot; Peer Recovery Specialists &middot; 2.0 CEU hours</div>
+            </div>
+            <div class="course-tags">
+              <span class="tag-ceu">CEU</span>
+            </div>
+          </div>
+
+        </div><!-- end course-list -->
+      </div><!-- end lms-main -->
+    </div><!-- end lms-body -->
+
+    <div class="lms-footer-note">
+      Topics shown are illustrative. Year 1 needs assessment, stakeholder convenings, and content audit would define the final course catalog. All content developed in transferable formats (SCORM, xAPI) compatible with any standards-compliant learning management system.
+    </div>
+  </div><!-- end lms-frame -->
+</div>
+
+<div class="footer">
+  <p>Concept document prepared by CIEES Special Projects at Old Dominion University &middot; For discussion purposes &mdash; not a final design or platform recommendation</p>
+</div>
+
+<script>
+function showSection(id, tab) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  tab.classList.add('active');
+}
+
+function showTrack(track, el) {
+  document.querySelectorAll('.lms-sidebar-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('.course-row').forEach(row => {
+    if (track === 'all') {
+      row.style.display = 'flex';
+    } else {
+      const tracks = row.getAttribute('data-track');
+      row.style.display = (tracks && tracks.includes(track)) ? 'flex' : 'none';
+    }
+  });
+}
+</script>
+
+</body>
+</html>

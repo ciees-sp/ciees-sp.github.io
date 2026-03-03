@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Special Projects | CIEES | Old Dominion University</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* CIEES Brand Guide — October 2020 */
+      --monarch-blue:    #003057;  /* Primary / logotype */
+      --high-tide:       #164C6D;  /* Dark teal */
+      --seafoam:         #20AEC5;  /* Bright teal accent */
+      --evening-breeze:  #63B9D6;  /* Light teal */
+      --hampton-blue:    #4D89C1;  /* Medium blue */
+      --carrier-metal:   #404A5A;  /* Dark gray-blue */
+      --aluminum:        #E1EAF0;  /* Light background */
+      --wisconsin-grey:  #D6D5DA;  /* Borders */
+      --coastal-storm:   #ACAAB4;  /* Light warm gray */
+      --white:           #FFFFFF;
+      --font-display: 'Lora', Georgia, serif;
+      --font-body:    'Open Sans', 'Segoe UI', system-ui, sans-serif;
+      --max-width:  960px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--monarch-blue);
+      background: var(--aluminum);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    header {
+      background: var(--monarch-blue);
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    header img {
+      width: 280px;
+      height: auto;
+    }
+
+    /* ── Main Content ── */
+    main {
+      flex: 1;
+      width: 100%;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .intro {
+      margin-bottom: 3rem;
+    }
+
+    .intro h1 {
+      font-family: var(--font-display);
+      font-size: 1.75rem;
+      font-weight: 600;
+      color: var(--monarch-blue);
+      margin-bottom: 0.5rem;
+    }
+
+    .intro p {
+      color: var(--carrier-metal);
+      font-size: 1rem;
+      max-width: 600px;
+    }
+
+    /* ── Project List ── */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--wisconsin-grey);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    .project-item {
+      background: var(--white);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      color: var(--monarch-blue);
+      transition: background 0.15s ease;
+    }
+
+    .project-item:hover {
+      background: var(--aluminum);
+    }
+
+    .project-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .project-name {
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1.05rem;
+    }
+
+    .project-meta {
+      font-size: 0.85rem;
+      color: var(--carrier-metal);
+    }
+
+    .project-badge {
+      display: inline-block;
+      background: var(--seafoam);
+      color: var(--white);
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 3px;
+      white-space: nowrap;
+    }
+
+    .project-arrow {
+      color: var(--seafoam);
+      font-size: 1.25rem;
+      margin-left: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--carrier-metal);
+    }
+
+    .empty-state p {
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-size: 0.8rem;
+      color: var(--carrier-metal);
+      border-top: 1px solid var(--wisconsin-grey);
+      margin-top: auto;
+    }
+
+    footer a {
+      color: var(--high-tide);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      header { padding: 1rem 1.25rem; }
+      header img { width: 200px; }
+      main { padding: 2rem 1.25rem; }
+      .intro h1 { font-size: 1.4rem; }
+      .project-item { padding: 1rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <img src="assets/logo-horizontal-white.png" alt="CIEES Special Projects — Old Dominion University">
+  </header>
+
+  <main>
+    <div class="intro">
+      <h1>Project Materials</h1>
+      <p>Interactive prototypes, proposal attachments, deliverable previews, and other materials prepared by the Special Projects team.</p>
+    </div>
+
+    <!-- To add a new project, copy a project-item block and update href, name, meta, badge -->
+    <div class="project-list">
+
+      <a class="project-item" href="projects/cpst/cpst-color-scheme-client.html">
+        <div class="project-info">
+          <span class="project-name">CPST Course Design</span>
+          <span class="project-meta">DBHDS &middot; March 2026</span>
+        </div>
+        <span class="project-badge">Creative Direction</span>
+        <span class="project-arrow">&rarr;</span>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    Center for the Implementation and Evaluation of Education Systems &middot;
+    Old Dominion University
+  </footer>
+
+</body>
+</html>

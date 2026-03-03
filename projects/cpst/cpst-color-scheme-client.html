@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Course Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, -apple-system, sans-serif; background: #f0f0f0; color: #1a1a1a; padding: 40px; line-height: 1.6; }
+.container { max-width: 1100px; margin: 0 auto; }
+
+h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 36px; font-weight: 800; margin-bottom: 4px; }
+.rev { font-size: 12px; font-weight: 600; color: #999; letter-spacing: 1px; margin-bottom: 8px; }
+h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 24px; font-weight: 700; margin-bottom: 12px; margin-top: 0; }
+h3 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 10px; }
+.subtitle { color: #666; font-size: 14px; margin-bottom: 48px; }
+p { margin-bottom: 12px; font-size: 15px; }
+.note { font-size: 13px; color: #777; font-style: italic; margin-top: 8px; }
+
+/* --- AGENCY INTRO --- */
+.agency-intro { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin: 24px 0 20px; }
+.agency-mini { background: white; border-radius: 10px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.agency-mini h3 { font-size: 14px; margin-bottom: 12px; }
+.mini-swatches { display: flex; gap: 8px; }
+.mini-swatch { width: 32px; height: 32px; border-radius: 6px; border: 1px solid rgba(0,0,0,0.08); }
+
+/* --- DIVIDER --- */
+.section-divider { border: none; border-top: 1px solid #ddd; margin: 56px 0; }
+
+/* --- OPTION BLOCK --- */
+.option-block { margin: 56px 0; }
+.option-label { font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: #999; margin-bottom: 6px; }
+.option-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 28px; font-weight: 800; margin-bottom: 6px; }
+.option-subtitle { color: #555; font-size: 15px; margin-bottom: 20px; }
+
+/* --- PHOTO BANDS (inside card) --- */
+.photo-band { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin: 0; }
+.photo-band img { width: 100%; height: 220px; object-fit: cover; display: block; }
+
+/* --- SWATCH ROW (replaces palette strip) --- */
+.swatch-row { display: flex; gap: 16px; padding: 16px 0; align-items: center; flex-wrap: wrap; }
+.swatch-dot { display: flex; align-items: center; gap: 6px; }
+.swatch-dot span.dot { width: 14px; height: 14px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.1); flex-shrink: 0; }
+.swatch-dot span.hex { font-size: 11px; color: #999; font-weight: 500; }
+
+/* --- MOCKUP CARD --- */
+.mockup-card { background: white; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin: 20px 0 0; }
+.mockup-inner { padding: 0; }
+
+/* Surface panels — real course content */
+.surface-panel { padding: 28px 32px; }
+.surface-panel .s-heading { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 700; line-height: 1.2; margin-bottom: 6px; }
+.surface-panel .s-body { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 400; font-size: 13px; line-height: 1.55; }
+.surface-thirds { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.surface-thirds .surface-panel { border-right: 1px solid rgba(0,0,0,0.06); }
+.surface-thirds .surface-panel:last-child { border-right: none; }
+
+/* Interactive card row */
+.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 36px 0; }
+.i-card { border-radius: 10px; padding: 18px; }
+.i-card .i-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; line-height: 1.3; }
+.i-card .i-body { font-size: 13px; line-height: 1.5; opacity: 0.85; }
+.i-card .i-option { margin-top: 5px; padding: 7px 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 12px; cursor: pointer; }
+/* Process step card */
+.process-card { border-radius: 10px; padding: 0; overflow: hidden; }
+.process-nav { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.process-nav .step-label { font-size: 13px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.process-nav .arrow { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #999; cursor: pointer; }
+.process-nav .arrow.active { border-color: currentColor; color: inherit; }
+.process-body { padding: 14px 18px; }
+.process-body .p-title { font-weight: 700; font-size: 15px; margin-bottom: 5px; line-height: 1.3; }
+.process-body .p-text { font-size: 13px; line-height: 1.5; opacity: 0.85; }
+.process-dots { display: flex; gap: 6px; align-items: center; padding: 0 18px 14px; }
+.process-dots .dot { width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid #ccc; }
+.process-dots .dot.filled { border-color: currentColor; background: currentColor; }
+
+/* Buttons */
+.btn-row { display: flex; gap: 10px; flex-wrap: wrap; padding: 24px 36px 32px; }
+.demo-btn { padding: 9px 22px; border-radius: 100px; font-size: 12px; font-weight: 600; cursor: pointer; border: 2px solid transparent; font-family: 'Plus Jakarta Sans', sans-serif; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.demo-btn:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.12); }
+
+/* --- HOVER EFFECTS (Rise-interactive elements only) --- */
+.i-option { transition: background 0.12s ease; }
+.i-option:hover { background: rgba(0,0,0,0.03); }
+.process-nav .arrow.active { transition: background 0.12s ease; }
+.process-nav .arrow.active:hover { background: rgba(0,0,0,0.04); }
+
+/* --- SETTLED --- */
+.settled-card { background: white; border-radius: 12px; padding: 28px 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin: 20px 0; }
+.settled-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+
+/* --- WCAG CONTRAST AUDIT --- */
+.wcag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+.wcag-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.wcag-card h3 { font-size: 15px; margin-bottom: 14px; }
+.wcag-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; padding: 8px 12px; border-radius: 8px; }
+.wcag-label { font-size: 12px; flex: 1; }
+.wcag-badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; white-space: nowrap; }
+.wcag-pass { background: #e8f5e9; color: #2e7d32; }
+.wcag-large { background: #fff3e0; color: #e65100; }
+.wcag-fail { background: #ffebee; color: #c62828; }
+
+/* --- FOOTER --- */
+.footer { margin-top: 56px; font-size: 11px; color: #bbb; text-align: center; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>CPST Course Design</h1>
+<p class="subtitle">Community-Based Psychiatric Support Treatment &bull; Rise 360 Module Series</p>
+
+<p>The CPST training series sits at the intersection of three Virginia partners — DMAS, DBHDS, and CEP-Va — and the course design needs to represent all three while feeling fresh, timeless, and scalable across the entire module series. The palettes below are drawn from each partner's website and brand identity, combined into a unified system that serves the training without belonging entirely to any single brand.</p>
+
+<div class="agency-intro">
+  <div class="agency-mini">
+    <h3>DMAS (Virginia Medicaid)</h3>
+    <div class="mini-swatches">
+      <div class="mini-swatch" style="background:#16193E;" title="#16193E Header"></div>
+      <div class="mini-swatch" style="background:#0A3F79;" title="#0A3F79 Links"></div>
+      <div class="mini-swatch" style="background:#E7F6FF;" title="#E7F6FF Surface"></div>
+    </div>
+    <p class="note" style="margin-top:10px;">Deep indigo header, blue surface tones.</p>
+  </div>
+  <div class="agency-mini">
+    <h3>DBHDS</h3>
+    <div class="mini-swatches">
+      <div class="mini-swatch" style="background:#00689A;" title="#00689A Primary"></div>
+      <div class="mini-swatch" style="background:#48AEE1;" title="#48AEE1 Accent"></div>
+      <div class="mini-swatch" style="background:#97D162;" title="#97D162 Green"></div>
+      <div class="mini-swatch" style="background:#E8B900;" title="#E8B900 Gold"></div>
+    </div>
+    <p class="note" style="margin-top:10px;">Teal-blue, green gradient, gold accent.</p>
+  </div>
+  <div class="agency-mini">
+    <h3>CEP-Va</h3>
+    <div class="mini-swatches">
+      <div class="mini-swatch" style="background:#2E3192;" title="#2E3192 Navy"></div>
+      <div class="mini-swatch" style="background:#33C6F4;" title="#33C6F4 Sky Blue"></div>
+      <div class="mini-swatch" style="background:#FFCD05;" title="#FFCD05 Gold"></div>
+    </div>
+    <p class="note" style="margin-top:10px;">Deep navy, sky blue, gold.</p>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== OPTION A: MONOCHROMATIC ==================== -->
+<div class="option-block">
+  <div class="option-label">Option A</div>
+  <div class="option-title">Virginia Blue — Monochromatic</div>
+  <p class="option-subtitle">This direction stays within the blue family, drawing entirely from the core colors shared across all three partners. Deep indigo anchors the structure, teal drives interaction, and light blue serves as the accent — every tone native to the DMAS, DBHDS, and CEP-Va palettes. The result is clean, clinical, and modern across the full series.</p>
+
+  <div class="mockup-card">
+    <div class="photo-band">
+      <img src="../cpst-nano-images/03-skill-building/black-man-provider_asian-woman_budgeting_kitchen-subway-tile.jpg" alt="Budgeting session in kitchen">
+      <img src="../cpst-nano-images/01-interaction-home/latina-provider_white-man-20s_young-adult-apartment_dining-chair-fix.jpg" alt="Home visit conversation">
+    </div>
+    <div class="mockup-inner">
+      <div class="swatch-row" style="padding:14px 32px;">
+        <div class="swatch-dot"><span class="dot" style="background:#16193E;"></span><span class="hex">Structure #16193E</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#0B6A8A;"></span><span class="hex">Interactive #0B6A8A</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#48AEE1;"></span><span class="hex">Accent #48AEE1</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#EDF4F7; border-color:#ccc;"></span><span class="hex">Tint #EDF4F7</span></div>
+      </div>
+
+      <!-- Dark structure — lesson opener -->
+      <div class="surface-panel" style="background:#16193E;">
+        <div class="s-heading" style="font-size:22px; color:#48AEE1;">Crisis Intervention and Safety Planning</div>
+        <div class="s-body" style="color:rgba(255,255,255,0.65);">Supporting individuals through safety planning and de-escalation techniques used in community-based settings.</div>
+      </div>
+
+      <!-- Canvas + Tint + Accent in thirds -->
+      <div class="surface-thirds">
+        <div class="surface-panel" style="background:#FFFFFF;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Reflective Responses</div>
+          <div class="s-body">Reflecting back what an individual has said confirms accurate hearing and surfaces insights that weren't visible in the original telling.</div>
+        </div>
+        <div class="surface-panel" style="background:#EDF4F7;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Practice Moment</div>
+          <div class="s-body">Consider a recent interaction where frustration came up. What did you reflect back? What might you have missed?</div>
+        </div>
+        <div class="surface-panel" style="background:#48AEE1;">
+          <div class="s-heading" style="font-size:15px; color:#16193E;">Key Takeaway</div>
+          <div class="s-body" style="color:#16193E;">Active listening requires deliberate attention to both the words and the emotions underneath them.</div>
+        </div>
+      </div>
+
+      <!-- Interactive cards -->
+      <div class="card-row">
+        <div class="i-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="i-title" style="color:#0B6A8A;">What would you do next?</div>
+          <div class="i-body">The individual you're working with has expressed feelings of hopelessness during a home visit.</div>
+          <div class="i-option">Review the safety plan together</div>
+          <div class="i-option">Contact the crisis hotline immediately</div>
+          <div class="i-option">Ask them to describe what they're feeling</div>
+        </div>
+        <div class="process-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="process-nav">
+            <div class="arrow" style="border-color:#ccc; color:#ccc;">‹</div>
+            <div class="step-label" style="color:#0B6A8A;">Step 1 of 4</div>
+            <div class="arrow active" style="color:#0B6A8A;">›</div>
+          </div>
+          <div class="process-body">
+            <div class="p-title" style="color:#1B1B1F;">Observe</div>
+            <div class="p-text">Before responding, pause and take in the full picture. What is the individual saying? What are they not saying? What do you notice about their environment, body language, and energy?</div>
+          </div>
+          <div class="process-dots" style="color:#0B6A8A;">
+            <span class="dot filled"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="demo-btn" style="background:transparent; border-color:#0B6A8A; color:#0B6A8A;">Explore the Case →</button>
+        <button class="demo-btn" style="background:#0B6A8A; color:white; border-color:#0B6A8A;">Check Understanding</button>
+        <button class="demo-btn" style="background:#48AEE1; color:#16193E; border-color:#48AEE1;">Submit Assessment</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== OPTION B: AMBER ==================== -->
+<div class="option-block">
+  <div class="option-label">Option B</div>
+  <div class="option-title">Community-Based Warmth</div>
+  <p class="option-subtitle">This direction borrows the gold accent from the DBHDS color range and CEP-Va's brand to bring warmth to the cooler structural blues drawn from DMAS and CEP-Va. The amber tone introduces an approachable, community-grounded quality that complements the documentary photography and reflects the nature of CPST work happening in homes and neighborhoods.</p>
+
+  <div class="mockup-card">
+    <div class="photo-band">
+      <img src="../cpst-nano-images/02-interaction-community/young-latino-provider_older-black-woman-cane_park-bench_brick-buildings.jpg" alt="Community conversation on park bench">
+      <img src="../cpst-nano-images/06-walking-outdoor/black-woman-provider_white-man_sidewalk_residential-neighborhood.jpg" alt="Walking conversation on sidewalk">
+    </div>
+    <div class="mockup-inner">
+      <div class="swatch-row" style="padding:14px 32px;">
+        <div class="swatch-dot"><span class="dot" style="background:#16193E;"></span><span class="hex">Structure #16193E</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#0B6A8A;"></span><span class="hex">Interactive #0B6A8A</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#D4940A;"></span><span class="hex">Accent #D4940A</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#EDF4F7; border-color:#ccc;"></span><span class="hex">Tint #EDF4F7</span></div>
+      </div>
+
+      <!-- Dark structure — lesson opener -->
+      <div class="surface-panel" style="background:#16193E;">
+        <div class="s-heading" style="font-size:22px; color:#D4940A;">Enhancing Motivation for Recovery</div>
+        <div class="s-body" style="color:rgba(255,255,255,0.65);">Exploring motivational interviewing techniques that support individuals in identifying their own reasons for change.</div>
+      </div>
+
+      <!-- Canvas + Tint + Accent in thirds -->
+      <div class="surface-thirds">
+        <div class="surface-panel" style="background:#FFFFFF;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">The Spirit of MI</div>
+          <div class="s-body">MI is built on partnership, not persuasion. The worker's role is to draw out the individual's own motivation rather than impose external reasons for change.</div>
+        </div>
+        <div class="surface-panel" style="background:#EDF4F7;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Open-Ended Questions</div>
+          <div class="s-body">How might you reframe your questions to invite an individual to explore their own ambivalence about a treatment goal?</div>
+        </div>
+        <div class="surface-panel" style="background:#D4940A;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Key Takeaway</div>
+          <div class="s-body" style="color:#1B1B1F;">Resistance is information. When someone pushes back, they're telling you what matters to them.</div>
+        </div>
+      </div>
+
+      <!-- Interactive cards -->
+      <div class="card-row">
+        <div class="i-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="i-title" style="color:#0B6A8A;">Which response is most aligned with MI?</div>
+          <div class="i-body">An individual says: "I don't see the point of taking my medication anymore."</div>
+          <div class="i-option">"Tell me more about what's been going on."</div>
+          <div class="i-option">"You need to keep taking it — it's in your plan."</div>
+          <div class="i-option">"It sounds like something has changed."</div>
+        </div>
+        <div class="process-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="process-nav">
+            <div class="arrow active" style="color:#0B6A8A;">‹</div>
+            <div class="step-label" style="color:#0B6A8A;">Step 2 of 4</div>
+            <div class="arrow active" style="color:#0B6A8A;">›</div>
+          </div>
+          <div class="process-body">
+            <div class="p-title" style="color:#1B1B1F;">Decide</div>
+            <div class="p-text">Based on what you've observed, choose a response strategy. What approach fits this person, this moment, and this environment? There's no single right answer — the goal is intentional action.</div>
+          </div>
+          <div class="process-dots" style="color:#0B6A8A;">
+            <span class="dot filled"></span>
+            <span class="dot filled"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="demo-btn" style="background:transparent; border-color:#0B6A8A; color:#0B6A8A;">Explore the Case →</button>
+        <button class="demo-btn" style="background:#0B6A8A; color:white; border-color:#0B6A8A;">Check Understanding</button>
+        <button class="demo-btn" style="background:#D4940A; color:#1B1B1F; border-color:#D4940A;">Submit Assessment</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== OPTION C: SAGE ==================== -->
+<div class="option-block">
+  <div class="option-label">Option C</div>
+  <div class="option-title">Therapeutic Ground</div>
+  <p class="option-subtitle">This direction introduces green as the accent color, commonly associated with clinical and healthcare spaces. Used here it is a muted sage that brings a calm, therapeutic quality that differs from the warmth of amber or the restraint of an all-blue system. The green nods to the DBHDS palette while the deep blue structure and cool tints continue to carry the shared DNA across all three partners.</p>
+
+  <div class="mockup-card">
+    <div class="photo-band">
+      <img src="../cpst-nano-images/01-interaction-home/hijab-provider_young-black-woman_eat-in-kitchen_formica-baby-bottle.jpg" alt="Kitchen table conversation">
+      <img src="../cpst-nano-images/05-family-caregiver/biracial-provider_older-black-man_girl-7_living-room_recliner-quilt.jpg" alt="Family living room visit">
+    </div>
+    <div class="mockup-inner">
+      <div class="swatch-row" style="padding:14px 32px;">
+        <div class="swatch-dot"><span class="dot" style="background:#16193E;"></span><span class="hex">Structure #16193E</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#0B6A8A;"></span><span class="hex">Interactive #0B6A8A</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#477A5D;"></span><span class="hex">Accent #477A5D</span></div>
+        <div class="swatch-dot"><span class="dot" style="background:#EDF4F7; border-color:#ccc;"></span><span class="hex">Tint #EDF4F7</span></div>
+      </div>
+
+      <!-- Dark structure — lesson opener -->
+      <div class="surface-panel" style="background:#16193E;">
+        <div class="s-heading" style="font-size:22px; color:white;">Trauma-Informed Assessment in Practice</div>
+        <div class="s-body" style="color:rgba(255,255,255,0.65);">Understanding how trauma histories shape an individual's presentation and how to conduct assessments that prioritize safety and trust.</div>
+      </div>
+
+      <!-- Canvas + Tint + Accent in thirds -->
+      <div class="surface-thirds">
+        <div class="surface-panel" style="background:#FFFFFF;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Trauma Responses</div>
+          <div class="s-body">What looks like disengagement may be a trauma response. Workers learn to distinguish between clinical symptoms and adaptive survival behaviors.</div>
+        </div>
+        <div class="surface-panel" style="background:#EDF4F7;">
+          <div class="s-heading" style="font-size:15px; color:#1B1B1F;">Emotional Safety</div>
+          <div class="s-body">What does safety look like where you provide services? How do you know when someone feels safe enough to engage?</div>
+        </div>
+        <div class="surface-panel" style="background:#477A5D;">
+          <div class="s-heading" style="font-size:15px; color:white;">Key Takeaway</div>
+          <div class="s-body" style="color:rgba(255,255,255,0.9);">Trauma-informed care is a lens, not a technique. Every interaction is an opportunity to reinforce safety.</div>
+        </div>
+      </div>
+
+      <!-- Interactive cards -->
+      <div class="card-row">
+        <div class="i-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="i-title" style="color:#0B6A8A;">What do you notice first?</div>
+          <div class="i-body">During a home visit, an individual avoids eye contact and gives one-word answers. They agreed to the visit but seem withdrawn.</div>
+          <div class="i-option">Slow down — this could be a trauma response</div>
+          <div class="i-option">They're disengaged — try a different activity</div>
+          <div class="i-option">"Is something making this hard today?"</div>
+        </div>
+        <div class="process-card" style="background:white; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+          <div class="process-nav">
+            <div class="arrow active" style="color:#0B6A8A;">‹</div>
+            <div class="step-label" style="color:#0B6A8A;">Step 3 of 4</div>
+            <div class="arrow active" style="color:#0B6A8A;">›</div>
+          </div>
+          <div class="process-body">
+            <div class="p-title" style="color:#1B1B1F;">Adjust</div>
+            <div class="p-text">Pay attention to how the individual responds. If your approach isn't landing, shift. Flexibility is a clinical skill — staying rigid with a plan that isn't working serves the plan, not the person.</div>
+          </div>
+          <div class="process-dots" style="color:#0B6A8A;">
+            <span class="dot filled"></span>
+            <span class="dot filled"></span>
+            <span class="dot filled"></span>
+            <span class="dot"></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="demo-btn" style="background:transparent; border-color:#0B6A8A; color:#0B6A8A;">Explore the Case →</button>
+        <button class="demo-btn" style="background:#0B6A8A; color:white; border-color:#0B6A8A;">Check Understanding</button>
+        <button class="demo-btn" style="background:#477A5D; color:white; border-color:#477A5D;">Submit Assessment</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== WHAT'S CONSISTENT ==================== -->
+<h2>What's Consistent Across All Three</h2>
+<div class="settled-card">
+  <div class="settled-grid">
+    <div>
+      <p><strong>Deep blue structure</strong> — #16193E (from DMAS, echoed in CEP-Va's navy). Lesson openers, closers, section headers.</p>
+      <p><strong>Teal-blue interaction</strong> — #0B6A8A (from DBHDS, echoed in CEP-Va's sky blue). Every link, button, and interactive moment.</p>
+      <p><strong>White canvas</strong> — clean reading surface. Photos carry all the warmth.</p>
+    </div>
+    <div>
+      <p><strong>Cool tint</strong> — #EDF4F7 for gentle emphasis sections.</p>
+      <p><strong>Plus Jakarta Sans</strong> — one font family for the entire series. Bold for headings, regular for body. Humanist warmth, strong readability, dyslexia-friendly letterforms.</p>
+      <p><strong>Documentary photography</strong> — set in the homes, neighborhoods, and everyday spaces where CPST work happens.</p>
+      <p><strong>All WCAG AA accessible</strong> — every text pairing passes accessibility standards.</p>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ==================== WCAG CONTRAST AUDIT ==================== -->
+<h2>WCAG AA Contrast Audit</h2>
+<p style="margin-bottom:24px;">Every color pairing checked against WCAG 2.1 AA requirements. Normal text needs 4.5:1, large text (18px+ or 14px+ bold) needs 3:1.</p>
+
+<div class="wcag-grid">
+  <!-- CORE SYSTEM -->
+  <div class="wcag-card">
+    <h3>Core System Colors</h3>
+    <div class="wcag-row" style="background:#16193E; color:white;">
+      <span class="wcag-label" style="color:white;">White on indigo (#16193E)</span>
+      <span class="wcag-badge wcag-pass">16.9:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:white; color:#0B6A8A; border:1px solid #eee;">
+      <span class="wcag-label" style="color:#0B6A8A;">Teal on white</span>
+      <span class="wcag-badge wcag-pass">6.1:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#0B6A8A; color:white;">
+      <span class="wcag-label" style="color:white;">White on teal (#0B6A8A)</span>
+      <span class="wcag-badge wcag-pass">6.1:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:white; color:#1B1B1F; border:1px solid #eee;">
+      <span class="wcag-label">Text (#1B1B1F) on white</span>
+      <span class="wcag-badge wcag-pass">17.2:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#EDF4F7; color:#1B1B1F;">
+      <span class="wcag-label">Text on tint (#EDF4F7)</span>
+      <span class="wcag-badge wcag-pass">15.4:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#EDF4F7; color:#0B6A8A;">
+      <span class="wcag-label" style="color:#0B6A8A;">Teal on tint</span>
+      <span class="wcag-badge wcag-pass">5.5:1 PASS</span>
+    </div>
+  </div>
+
+  <!-- ACCENT PAIRINGS -->
+  <div class="wcag-card">
+    <h3>Accent Pairings by Option</h3>
+
+    <div style="font-size:11px; font-weight:700; color:#999; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:8px;">Option A — Virginia Blue</div>
+    <div class="wcag-row" style="background:#16193E; color:#48AEE1;">
+      <span class="wcag-label" style="color:#48AEE1;">Light blue text on indigo</span>
+      <span class="wcag-badge wcag-pass">6.8:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#48AEE1; color:#16193E;">
+      <span class="wcag-label" style="color:#16193E;">Indigo text on light blue fill</span>
+      <span class="wcag-badge wcag-pass">6.8:1 PASS</span>
+    </div>
+
+    <div style="font-size:11px; font-weight:700; color:#999; letter-spacing:1.5px; text-transform:uppercase; margin:16px 0 8px;">Option B — Amber / Gold</div>
+    <div class="wcag-row" style="background:#16193E; color:#D4940A;">
+      <span class="wcag-label" style="color:#D4940A;">Amber text on indigo</span>
+      <span class="wcag-badge wcag-pass">6.5:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#D4940A; color:#1B1B1F;">
+      <span class="wcag-label">Dark text on amber fill</span>
+      <span class="wcag-badge wcag-pass">6.6:1 PASS</span>
+    </div>
+
+    <div style="font-size:11px; font-weight:700; color:#999; letter-spacing:1.5px; text-transform:uppercase; margin:16px 0 8px;">Option C — Sage Green</div>
+    <div class="wcag-row" style="background:white; color:#477A5D; border:1px solid #eee;">
+      <span class="wcag-label" style="color:#477A5D;">Sage text on white</span>
+      <span class="wcag-badge wcag-pass">5.0:1 PASS</span>
+    </div>
+    <div class="wcag-row" style="background:#477A5D; color:white;">
+      <span class="wcag-label" style="color:white;">White text on sage fill</span>
+      <span class="wcag-badge wcag-pass">5.0:1 PASS</span>
+    </div>
+  </div>
+</div>
+
+<p class="footer">CPST Course Design &bull; Prepared by CIEES</p>
+
+</div>
+</body>
+</html>

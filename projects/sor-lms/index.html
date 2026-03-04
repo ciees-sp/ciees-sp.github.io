@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DBHDS Addiction Services Training Architecture</title>
+<title>DBHDS State Opioid Response Training Architecture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -222,7 +222,7 @@
   /* Deliverable cards (color-filled, heading only) */
   .deliverable-row {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 16px;
     margin-bottom: 8px;
   }
@@ -257,6 +257,15 @@
     border: none;
   }
   .deliverable-card.dc-navy-zone h4 { color: var(--navy); }
+  .deliverable-card.dc-gold-zone {
+    background: var(--light-gold);
+    border: none;
+  }
+  .deliverable-card.dc-gold-zone h4 { color: var(--navy); }
+  .dc-gold-zone .dc-num {
+    background: var(--gold);
+    color: var(--white);
+  }
   .dc-divider {
     height: 1px;
     background: rgba(0, 48, 87, 0.1);
@@ -878,9 +887,9 @@
 <body>
 
 <div class="header">
-  <div class="header-label">Concept Document</div>
-  <h1>DBHDS Addiction Services Training Architecture</h1>
-  <p>Designing a statewide training system for Virginia's addiction services workforce across the prevention, treatment, and recovery continuum.</p>
+  <div class="header-label">Statement of Work Supplemental Information</div>
+  <h1>DBHDS State Opioid Response Training Architecture</h1>
+  <p>Design of a statewide training system for Virginia's State Opioid Response workforce across the prevention, treatment, and recovery continuum.</p>
 </div>
 
 <div class="nav-bar">
@@ -894,7 +903,7 @@
 <!-- ========================================= -->
 <div id="tracing" class="section active">
   <h2 class="section-heading">Activities and Deliverables</h2>
-  <p class="section-sub">Assessing provider training needs and developing the scope and sequence for a statewide online training curriculum.</p>
+  <p class="section-sub">Assessing provider training needs and facilitating the development of the scope and sequence for a statewide online training curriculum.</p>
 
   <div class="trace-flow">
 
@@ -909,17 +918,16 @@
     <div class="trace-layer">
       <div class="trace-cards">
         <div class="trace-card tc-needs">
-          <h4>Field Needs Assessment</h4>
+          <h4>Assessment of Training Needs (CIEES)</h4>
           <p>Surveys and focus groups with the people who will use the training &mdash; CSB staff, licensed providers, faith-based organizations, peer recovery specialists.</p>
           <ul>
-            <li>When and where do you access training?</li>
-            <li>What formats work &mdash; webinar, on-demand, cohort?</li>
             <li>What session lengths are realistic?</li>
             <li>What topics are most urgent for your practice?</li>
+            <li>What online engagement strategies work best for you and your team? (e.g., workbooks, scenarios, reflections)</li>
           </ul>
         </div>
         <div class="trace-card tc-stakeholder">
-          <h4>Stakeholder Convenings</h4>
+          <h4>DBHDS Subject Matter Expert Workgroup Convenings</h4>
           <p>Facilitated workgroups with DBHDS subject matter experts across prevention, treatment, and recovery.</p>
           <ul>
             <li>What does the workforce need to know?</li>
@@ -929,13 +937,25 @@
           </ul>
         </div>
         <div class="trace-card tc-audit">
-          <h4>Existing Content Audit</h4>
-          <p>Design a content inventory framework for DBHDS to catalog existing training materials &mdash; webinars, slide decks, guidance documents &mdash; and assess each item's readiness for production.</p>
+          <h4>DBHDS Existing Content Audit</h4>
+          <p>Design a content inventory framework for DBHDS to catalog existing training materials &mdash; webinars, slide decks, guidance documents &mdash; and assess each item's capacity to support the topics chosen.</p>
           <ul>
             <li>What's already developed and ready to go?</li>
             <li>What exists but needs reformatting?</li>
             <li>What's partially developed?</li>
-            <li>What needs to be built from scratch?</li>
+            <li>What needs further research or development?</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resource Library activity -->
+    <div class="trace-layer" style="margin-top: 16px;">
+      <div style="max-width: 50%;">
+        <div class="trace-card" style="border-top: 3px solid var(--navy);">
+          <h4>DBHDS SOR Training Resource Library Compilation</h4>
+          <ul>
+            <li>Identification and compilation of evidence-based research for identified topics into an APA style (7th ed.) reference list divided by topic</li>
           </ul>
         </div>
       </div>
@@ -953,13 +973,17 @@
           <h4><span class="dc-num">2</span>Content Inventory</h4>
           <p style="font-size: 12px; color: var(--muted); margin-top: 6px; margin-left: 30px; line-height: 1.5;">A structured framework for cataloging existing materials by format, topic, and production readiness</p>
         </div>
+        <div class="deliverable-card dc-gold-zone">
+          <h4><span class="dc-num">3</span>Resource Library</h4>
+          <p style="font-size: 12px; color: var(--muted); margin-top: 6px; margin-left: 30px; line-height: 1.5;">Evidence-based references organized by topic in APA format (7th ed.)</p>
+        </div>
       </div>
     </div>
 
     <!-- Years 2 and 3 divider -->
     <div class="trace-divider">
       <div class="trace-divider-line"></div>
-      <div class="trace-divider-label">Years 2 and 3</div>
+      <div class="trace-divider-label">Years 2 and 3 Brief Summary (not included in this statement of work)</div>
       <div class="trace-divider-line"></div>
     </div>
 

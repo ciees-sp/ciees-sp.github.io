@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About CIEES — Directory Redesign Mockup v4</title>
+<title>About CIEES — Directory Redesign Mockup v5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ========================================
-     CIEES Directory Redesign — Mockup v2
+     CIEES Directory Redesign — Mockup v5
      March 2026
 
      THREE-TIER LAYOUT:
@@ -81,13 +81,13 @@
     z-index: 200;
   }
 
-  /* ---- Nav (matches CIEES site header) ---- */
+  /* ---- Nav (replicates CIEES site header) ---- */
   .mock-nav {
     background: var(--navy);
-    padding: 15px 40px;
+    padding: 0 40px;
     display: flex;
     align-items: center;
-    gap: 32px;
+    height: 114px;
     font-family: 'Montserrat', sans-serif;
     font-size: 15px;
     font-weight: 400;
@@ -97,85 +97,95 @@
     top: 36px;
     z-index: 100;
   }
-  .mock-nav .logo-group {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+  .mock-nav .logo-ciees {
+    height: 55px;
     flex-shrink: 0;
   }
-  .mock-nav .logo-mark {
-    font-size: 22px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
+  .mock-nav .nav-links {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+    align-items: center;
   }
-  .mock-nav .logo-sub {
-    font-size: 9px;
-    font-weight: 400;
-    line-height: 1.3;
-    text-transform: none;
-    opacity: 0.7;
-    border-left: 1px solid rgba(255,255,255,0.3);
-    padding-left: 10px;
-  }
-  .mock-nav .nav-links { display: flex; gap: 28px; margin-left: auto; align-items: center; }
   .mock-nav .nav-links a {
     color: var(--white);
     text-decoration: none;
+    letter-spacing: 0.5px;
   }
   .mock-nav .nav-links a.active {
     color: var(--accent-blue);
   }
-  .mock-nav .nav-links a.btn-outline {
-    border: 1.5px solid rgba(255,255,255,0.6);
-    border-radius: 4px;
+  .mock-nav .nav-links a.btn-pill {
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 100px;
     padding: 4px 14px;
   }
+  .mock-nav .nav-links .dropdown-arrow {
+    font-size: 10px;
+    margin-left: 4px;
+    opacity: 0.7;
+  }
+  .mock-nav .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    cursor: pointer;
+  }
+  .mock-nav .search-box svg { width: 16px; height: 16px; fill: var(--white); }
+  .mock-nav .logo-odu {
+    height: 70px;
+    margin-left: 24px;
+    flex-shrink: 0;
+  }
 
-  /* ---- Hero Banner (matches CIEES page headers) ---- */
+  /* ---- Hero Banner (matches CIEES page headers — actual stock photo) ---- */
   .hero-banner {
     position: relative;
-    height: 280px;
+    height: 370px;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: url('https://cieesdev.wpenginepowered.com/wp-content/uploads/2023/06/CIEES-headerbg_about-us.jpg') center top / cover no-repeat;
   }
-  .hero-banner .hero-bg {
+  .hero-banner::before {
+    content: '';
     position: absolute;
     inset: 0;
-    /* Simulated stock photo — gradient placeholder */
-    background: linear-gradient(135deg, #2a4a6b 0%, #3a607a 25%, #4a7090 50%, #3a5a78 75%, #2a4862 100%);
-    z-index: 0;
-  }
-  .hero-banner .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(4, 42, 75, 0.55);
+    background: rgba(0, 0, 0, 0.4);
     z-index: 1;
   }
   .hero-banner h1 {
     font-family: 'Montserrat', sans-serif;
-    font-size: 3rem;
-    font-weight: 700;
+    font-size: 60px;
+    font-weight: 500;
     color: var(--white);
     z-index: 2;
     text-align: center;
     letter-spacing: 0.5px;
   }
 
-  /* ---- Breadcrumb ---- */
-  .breadcrumb {
-    padding: 12px 40px;
+  /* ---- Breadcrumb (matches CIEES site) ---- */
+  .breadcrumb-bar {
+    padding: 14px 40px;
     font-size: 14px;
     color: var(--text-muted);
     border-bottom: 1px solid var(--gray-border);
+    font-family: 'Montserrat', sans-serif;
   }
-  .breadcrumb a {
+  .breadcrumb-bar a {
     color: var(--link-blue);
     text-decoration: none;
   }
-  .breadcrumb a:hover { text-decoration: underline; }
-  .breadcrumb .sep { margin: 0 6px; color: var(--text-light); }
+  .breadcrumb-bar a:hover { text-decoration: underline; }
+  .breadcrumb-bar .sep { margin: 0 6px; color: var(--text-light); }
+  .breadcrumb-bar .home-icon { margin-right: 4px; font-size: 13px; }
 
   /* ---- About Intro (condensed, no heading) ---- */
   .about-intro {
@@ -249,10 +259,9 @@
   /* ---- Tier Labels ---- */
   .tier-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.3px;
     color: var(--navy);
     margin-bottom: 20px;
     padding-bottom: 10px;
@@ -575,14 +584,75 @@
     gap: 18px;
   }
 
-  /* ---- Footer ---- */
-  .mock-footer {
-    background: var(--navy);
-    color: rgba(255,255,255,0.4);
-    text-align: center;
-    padding: 32px;
-    font-size: 13px;
+  /* ---- Footer (matches CIEES site) ---- */
+  .site-footer {
+    background: #003057;
+    color: var(--white);
     margin-top: 24px;
+  }
+  .footer-main {
+    display: flex;
+    min-height: 320px;
+  }
+  .footer-photo {
+    flex: 0 0 50%;
+    background: url('https://cieesdev.wpenginepowered.com/wp-content/uploads/2020/12/notes.jpg') center / cover no-repeat;
+  }
+  .footer-contact {
+    flex: 1;
+    padding: 48px 48px 40px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .footer-contact h3 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 24px;
+  }
+  .footer-contact .contact-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .footer-contact .contact-line .icon {
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .footer-contact a {
+    color: var(--white);
+    text-decoration: underline;
+  }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    color: rgba(255,255,255,0.6);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+  }
+  .footer-bottom a:hover { text-decoration: underline; }
+  .footer-bottom .footer-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .footer-bottom .footer-links .dot {
+    color: rgba(255,255,255,0.3);
   }
 
   .sr-only {
@@ -594,32 +664,29 @@
 <body>
 
 <div class="mockup-banner">
-  <strong>MOCKUP v4 — March 2026</strong> &nbsp;|&nbsp; CIEES typography &amp; blue tag palette. Internal review only.
+  <strong>MOCKUP v5 — March 2026</strong> &nbsp;|&nbsp; Matches existing CIEES site chrome (nav, hero, footer). Internal review only.
 </div>
 
 <nav class="mock-nav">
-  <div class="logo-group">
-    <div class="logo-mark">CIEES</div>
-    <div class="logo-sub">Center for<br>Implementation<br>and Evaluation of<br>Education Systems</div>
-  </div>
+  <img class="logo-ciees" src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2021/01/ciees-logo.png" alt="CIEES — Center for Implementation and Evaluation of Education Systems">
   <div class="nav-links">
-    <a href="#">About</a>
     <a href="#" class="active">About</a>
-    <a href="#">Programs</a>
-    <a href="#" class="btn-outline">Module Library</a>
+    <a href="#">Directory</a>
+    <a href="#">Programs <span class="dropdown-arrow">&#9660;</span></a>
+    <a href="#" class="btn-pill">Module Library</a>
+    <span class="search-box"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Start Search</span>
   </div>
+  <img class="logo-odu" src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2020/12/odu-white-11.png" alt="Old Dominion University">
 </nav>
 
-<!-- ============ HERO ============ -->
+<!-- ============ HERO (matches CIEES site — actual stock photo) ============ -->
 <div class="hero-banner">
-  <div class="hero-bg"></div>
-  <div class="hero-overlay"></div>
-  <h1>About</h1>
+  <h1>About CIEES</h1>
 </div>
 
-<!-- ============ BREADCRUMB ============ -->
-<div class="breadcrumb">
-  <a href="#">CIEES</a><span class="sep">–</span>About
+<!-- ============ BREADCRUMB (matches CIEES site) ============ -->
+<div class="breadcrumb-bar">
+  <span class="home-icon">&#9751;</span> <a href="#">CIEES</a><span class="sep">-</span>About CIEES
 </div>
 
 <!-- ============ ABOUT INTRO ============ -->
@@ -960,8 +1027,41 @@
 
 </div>
 
-<footer class="mock-footer">
-  CIEES Directory Redesign — Mockup v4 — Internal Review Only — March 2026
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-photo"></div>
+    <div class="footer-contact">
+      <h3>Center for Implementation and<br>Evaluation of Education Systems</h3>
+      <div class="contact-line">
+        <span class="icon">&#128205;</span>
+        <span><a href="#">Lions Child Study Center, Room 217</a><br>4501 Hampton Boulevard<br><a href="#">Norfolk, VA 23509</a></span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#128424;</span>
+        <span>757-683-4129</span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#128222;</span>
+        <span><a href="tel:757-683-5372">757-683-5372</a></span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#9993;</span>
+        <span><a href="mailto:CIEES@odu.edu">CIEES@odu.edu</a></span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; Old Dominion University &middot; Updated 1/27/2025</span>
+    <div class="footer-links">
+      <a href="#">About CIEES</a><span class="dot">&middot;</span>
+      <a href="#">Directory</a><span class="dot">&middot;</span>
+      <a href="#">Privacy</a><span class="dot">&middot;</span>
+      <a href="#">Terms &amp; Conditions</a><span class="dot">&middot;</span>
+      <a href="#">Accessibility</a><span class="dot">&middot;</span>
+      <a href="#">Consumer Information</a>
+    </div>
+    <span>Norfolk Website Design By TechArk</span>
+  </div>
 </footer>
 
 <script>

@@ -41,6 +41,13 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* ---- Focus Indicator (keyboard accessibility) ---- */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+
   :root {
     --navy: #042a4b;
     --navy-light: #0f3c61;
@@ -487,6 +494,28 @@
   }
 
   /* ---- Mockup Label ---- */
+  /* ---- Skip Link ---- */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0 0 6px 6px;
+    z-index: 10000;
+    text-decoration: none;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+
   .mockup-banner {
     background: #fff3cd;
     border-bottom: 1px solid #ffc107;
@@ -511,7 +540,7 @@
   .dev-notes-inner {
     padding: 24px 32px;
   }
-  .dev-notes h3 {
+  .dev-notes-heading {
     font-size: 18px;
     font-weight: 700;
     color: #003366;
@@ -519,7 +548,7 @@
     padding-bottom: 8px;
     border-bottom: 2px solid #003366;
   }
-  .dev-notes h4 {
+  .dev-notes-subheading {
     font-size: 15px;
     font-weight: 600;
     color: #003366;
@@ -574,42 +603,51 @@
 </head>
 <body>
 
-<!-- Mockup label -->
-<div class="mockup-banner">
-  <strong>MOCKUP v4a — March 2026</strong> &nbsp;|&nbsp; Logos as card footer marks — readable size, tag/title parity preserved. Multi-tag on CLC. Internal review only.
-</div>
+<!-- Skip Navigation — first focusable element on the page -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
-<!-- Developer Notes (visible) -->
-<div class="dev-notes">
-  <div class="dev-notes-inner">
-    <h3>Notes</h3>
-
-    <h4>Accessible "Read More" Links — Required</h4>
-    <p>Every "Read more" / "Show less" button <strong>must</strong> include a <code>.screen-reader-text</code> span containing the project title. Without it, screen readers announce nine identical "Read more" links with no context. The WordPress theme already defines <code>.screen-reader-text</code> in CSS — use that class.</p>
-    <p><strong>Pattern:</strong></p>
-    <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
-    <p>When the button toggles to "Show less," the hidden span must persist:</p>
-    <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
-    <p>The hidden text auto-populates from the portfolio item's <strong>title field</strong> via <code>get_the_title()</code> in the ACF template — no manual entry per card.</p>
+<!-- Mockup artifacts — outside page landmarks -->
+<aside aria-label="Mockup notes — not part of the page design">
+  <div class="mockup-banner">
+    <strong>MOCKUP v4a — March 2026</strong> &nbsp;|&nbsp; Logos as card footer marks — readable size, tag/title parity preserved. Multi-tag on CLC. Internal review only.
   </div>
-</div>
 
-<!-- Simulated Nav -->
-<nav class="mock-nav">
-  <div class="logo">CIEES</div>
-  <div class="nav-links"><a href="#">About</a></div>
-  <div class="nav-links"><a href="#">Directory</a></div>
-  <div class="nav-links"><a href="#">Programs</a></div>
-  <a href="#" class="nav-pill">Module Library</a>
-</nav>
+  <div class="dev-notes">
+    <div class="dev-notes-inner">
+      <p class="dev-notes-heading">Notes</p>
+
+      <p class="dev-notes-subheading">Accessible "Read More" Links — Required</p>
+      <p>Every "Read more" / "Show less" button <strong>must</strong> include a <code>.screen-reader-text</code> span containing the project title. Without it, screen readers announce nine identical "Read more" links with no context. The WordPress theme already defines <code>.screen-reader-text</code> in CSS — use that class.</p>
+      <p><strong>Pattern:</strong></p>
+      <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+      <p>When the button toggles to "Show less," the hidden span must persist:</p>
+      <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+      <p>The hidden text auto-populates from the portfolio item's <strong>title field</strong> via <code>get_the_title()</code> in the ACF template — no manual entry per card.</p>
+    </div>
+  </div>
+</aside>
+
+<!-- Site Header -->
+<header role="banner">
+  <nav class="mock-nav" aria-label="Main navigation">
+    <div class="logo">CIEES</div>
+    <div class="nav-links"><a href="#">About</a></div>
+    <div class="nav-links"><a href="#">Directory</a></div>
+    <div class="nav-links"><a href="#">Programs</a></div>
+    <a href="#" class="nav-pill">Module Library</a>
+  </nav>
+</header>
+
+<!-- Main Content Area -->
+<main id="main-content" role="main">
 
 <!-- Breadcrumb -->
-<div class="breadcrumb">
+<nav class="breadcrumb" aria-label="Breadcrumb">
   <a href="#">CIEES</a> &nbsp;&rsaquo;&nbsp; Library
-</div>
+</nav>
 
 <!-- Hero -->
-<section class="hero">
+<section class="hero" aria-labelledby="page-title">
   <div class="hero-inner">
     <div class="sp-brand">
       <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -625,7 +663,7 @@
         Center for the Implementation and<br>Evaluation of Education Systems
       </div>
     </div>
-    <h1>Library</h1>
+    <h1 id="page-title">Library</h1>
     <p class="intro">
       Browse the training module series and digital resources developed by the Special Projects team at CIEES in partnership with Virginia's public sector agencies. Each project below links to its own dedicated site or resource page.
     </p>
@@ -633,10 +671,10 @@
 </section>
 
 <!-- Filter Bar -->
-<div class="filter-bar" id="filter-bar">
+<nav class="filter-bar" id="filter-bar" aria-label="Filter projects by type">
   <span class="filter-label">Show:</span>
   <!-- Pills are generated by JS based on actual tags in the page -->
-</div>
+</nav>
 
 <!-- Main Content -->
 <div class="content-area" id="content-area">
@@ -645,7 +683,7 @@
   <div class="client-group" data-client="dbhds">
     <div class="client-header">
       <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2025/10/DBHDS-logo-e1772155111923.png" alt="DBHDS — Virginia Department of Behavioral Health and Developmental Services logo" class="client-logo">
-      <div class="client-name">Virginia Department of Behavioral Health and Developmental Services</div>
+      <h2 class="client-name">Virginia Department of Behavioral Health and Developmental Services</h2>
     </div>
     <div class="project-list">
 
@@ -655,7 +693,7 @@
         <div class="card-desc" id="desc-cm-sud">
           <span class="desc-preview">A 5-module series for case managers working with individuals and families affected by substance use disorders. Includes videos, case studies, and quizzes.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 5-module series is designed for case managers who work with individuals and families affected by substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an introduction to case management, the continuum of care, engagement and retention strategies, and considerations for special populations. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-cm-sud', this)">Read more<span class="screen-reader-text"> about Case Management for Substance Use Disorders</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-cm-sud', this)">Read more<span class="screen-reader-text"> about Case Management for Substance Use Disorders</span></button>
         </div>
       </div>
 
@@ -665,7 +703,7 @@
         <div class="card-desc" id="desc-revive">
           <span class="desc-preview">Training modules on opioid risk awareness and the critical role of naloxone in overdose situations, for healthcare workers and community partners.</span>
           <span class="desc-full">The REVIVE! modules focus on educating healthcare workers and community partners about the risks associated with opioid use and the critical role of naloxone in overdose situations. The modules cover key requirements for dispensing naloxone and provide essential guidance for individuals who administer it in emergency settings.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-revive', this)">Read more<span class="screen-reader-text"> about REVIVE! Opioid Overdose Awareness</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-revive', this)">Read more<span class="screen-reader-text"> about REVIVE! Opioid Overdose Awareness</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/09/REVIVE_Logo-e1772155187357.png" alt="REVIVE! logo">
@@ -678,7 +716,7 @@
         <div class="card-desc" id="desc-idd">
           <span class="desc-preview">Modules for community services board clinicians providing outpatient treatment to adults with intellectual or developmental disabilities and co-occurring SUDs.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 6-module series is designed for community services board (CSB) clinicians who provide outpatient treatment to adults with intellectual or developmental disabilities (IDD) and co-occurring substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an overview of IDD, unique treatment considerations, trauma-informed care approaches, and strategies for building effective support systems. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-idd', this)">Read more<span class="screen-reader-text"> about Working with Adults with IDD and Substance Use Disorders</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-idd', this)">Read more<span class="screen-reader-text"> about Working with Adults with IDD and Substance Use Disorders</span></button>
         </div>
       </div>
 
@@ -689,7 +727,7 @@
   <div class="client-group" data-client="vdoe">
     <div class="client-header">
       <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/03/VDOE-2022-Vertical-Full-Color-200x130-1-e1710356372799.png" alt="Virginia Department of Education logo" class="client-logo">
-      <div class="client-name">Virginia Department of Education</div>
+      <h2 class="client-name">Virginia Department of Education</h2>
     </div>
     <div class="project-list">
 
@@ -699,7 +737,7 @@
         <div class="card-desc" id="desc-odr">
           <span class="desc-preview">Two resource areas for special education professionals: practical guidance videos and an interactive timeline of the special education due process system.</span>
           <span class="desc-full">Developed in partnership with VDOE's Office of Dispute Resolution and Administrative Services (ODRAS), this library offers two resource areas for special education professionals: (1) practical guidance videos addressing common questions about dispute resolution, and (2) an interactive timeline of the special education due process system.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-odr', this)">Read more<span class="screen-reader-text"> about Office of Dispute Resolution Learning Library</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-odr', this)">Read more<span class="screen-reader-text"> about Office of Dispute Resolution Learning Library</span></button>
         </div>
       </div>
 
@@ -709,7 +747,7 @@
         <div class="card-desc" id="desc-rs">
           <span class="desc-preview">A training series on Virginia's restraint and seclusion regulations for school division staff, with videos, knowledge checks, and certificates of completion.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Education (VDOE), this training series is designed for school division staff responsible for understanding and implementing Virginia's regulations on the use of restraint and seclusion. Each module includes a video, knowledge check, and certificate of completion.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-rs', this)">Read more<span class="screen-reader-text"> about Regulations Governing the Use of Restraint and Seclusion</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-rs', this)">Read more<span class="screen-reader-text"> about Regulations Governing the Use of Restraint and Seclusion</span></button>
         </div>
       </div>
 
@@ -719,7 +757,7 @@
         <div class="card-desc" id="desc-vlst">
           <span class="desc-preview">Eleven asynchronous modules giving school leaders and educators research-based tools for effective virtual and blended instruction.</span>
           <span class="desc-full">Developed in partnership with VDOE's Office of STEM and Innovation, this series of 11 asynchronous modules gives school leaders and educators research-based tools for effective virtual and blended instruction. Topics span supporting positive student behavior online, planning and structuring virtual lessons, strategies for student engagement and participation, and leveraging technology to personalize learning.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-vlst', this)">Read more<span class="screen-reader-text"> about Virtual Learning Support Toolkit</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-vlst', this)">Read more<span class="screen-reader-text"> about Virtual Learning Support Toolkit</span></button>
         </div>
       </div>
 
@@ -733,7 +771,7 @@
         <div class="card-desc" id="desc-clc">
           <span class="desc-preview">A one-stop professional development and resource collection for school counselors, psychologists, social workers, nurses, and administrators.</span>
           <span class="desc-full">In partnership with CIEES, the VDOE Office of Student Services (OSS) offers a one-stop professional development and resource collection for specialized instructional support personnel such as school counselors, school psychologists, school social workers, school nurses, and administrators.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-clc', this)">Read more<span class="screen-reader-text"> about Career and Learning Center for School Mental Health Professionals</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-clc', this)">Read more<span class="screen-reader-text"> about Career and Learning Center for School Mental Health Professionals</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/12/VDOE-OBHSS-Vertical-Full-Color-Resized.png" alt="Office of Behavioral Health and Student Safety logo">
@@ -747,7 +785,7 @@
         <div class="card-desc" id="desc-ccc">
           <span class="desc-preview">A learning hub supporting the implementation of multi-tiered systems of supports across Virginia's school divisions, with video series, quizzes, and certificates.</span>
           <span class="desc-full">A learning hub developed in collaboration with the Virginia Department of Education to support the implementation of a multi-tiered system of supports across Virginia's school divisions. Educators and division leaders will find multiple video series with quizzes and certificates of completion covering topics in positive behavior, academic support systems, and data-driven decision making.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-ccc', this)">Read more<span class="screen-reader-text"> about Creating Capacity for Change Collaborative</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-ccc', this)">Read more<span class="screen-reader-text"> about Creating Capacity for Change Collaborative</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/03/CCC-logo-small-2.png" alt="Creating Capacity for Change Collaborative logo">
@@ -760,7 +798,7 @@
   <!-- ============ Other Partners ============ -->
   <div class="client-group" data-client="other">
     <div class="client-header no-logo">
-      <div class="client-name">Other Partners</div>
+      <h2 class="client-name">Other Partners</h2>
     </div>
     <div class="project-list">
       <div class="project-card" data-tag="Event Calendar" data-external="true">
@@ -769,7 +807,7 @@
         <div class="card-desc" id="desc-ecpd">
           <span class="desc-preview">A searchable calendar connecting early childhood educators in southeastern Virginia with live, in-person, on-demand, and self-paced training opportunities.</span>
           <span class="desc-full">Developed by Special Projects and maintained in partnership with multiple regional early childhood organizations, this professional development calendar connects early childhood educators and providers in southeastern Virginia with training opportunities in one searchable place. Browse live, in-person, on-demand, and self-paced events spanning behavior management, curriculum, family engagement, health and safety, social-emotional development, and more — all organized by Ready Region Southeastern.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-ecpd', this)">Read more<span class="screen-reader-text"> about Early Childhood Professional Development Calendar</span></button>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-ecpd', this)">Read more<span class="screen-reader-text"> about Early Childhood Professional Development Calendar</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2026/02/Ready-Regions-Southeastern-e1772155241697.png" alt="Ready Region Southeastern logo">
@@ -778,20 +816,24 @@
     </div>
   </div>
 
-  <div class="no-results" id="no-results">No projects match this filter.</div>
+  <div class="no-results" id="no-results" role="status">No projects match this filter.</div>
 
 </div>
 
-<!-- Partner CTA -->
-<section class="cta-section">
-  <div class="cta-inner">
-    <div>
-      <h2>Partner With Us</h2>
-      <p>Facing big goals and complex systems? Our team is ready to turn ideas into thoughtful, effective digital solutions.</p>
+</main>
+
+<!-- Site Footer -->
+<footer role="contentinfo">
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <div>
+        <h2 id="cta-heading">Partner With Us</h2>
+        <p>Facing big goals and complex systems? Our team is ready to turn ideas into thoughtful, effective digital solutions.</p>
+      </div>
+      <a href="https://cieesdev.wpenginepowered.com/special-projects/partner-with-special-projects/" class="cta-btn">Let's Get Started</a>
     </div>
-    <a href="https://cieesdev.wpenginepowered.com/special-projects/partner-with-special-projects/" class="cta-btn">Let's Get Started</a>
-  </div>
-</section>
+  </section>
+</footer>
 
 <script>
 /* ---- Read More toggle ---- */
@@ -802,9 +844,11 @@ function toggleDesc(id, btn) {
   const isExpanded = desc.classList.contains('expanded');
   if (isExpanded) {
     desc.classList.remove('expanded');
+    btn.setAttribute('aria-expanded', 'false');
     btn.innerHTML = 'Read more' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
   } else {
     desc.classList.add('expanded');
+    btn.setAttribute('aria-expanded', 'true');
     btn.innerHTML = 'Show less' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
   }
 }
@@ -837,6 +881,7 @@ function toggleDesc(id, btn) {
   const allPill = document.createElement('button');
   allPill.className = 'filter-pill active';
   allPill.dataset.filter = 'all';
+  allPill.setAttribute('aria-pressed', 'true');
   allPill.innerHTML = 'All <span class="pill-count">' + cards.length + '</span>';
   filterBar.appendChild(allPill);
 
@@ -845,6 +890,7 @@ function toggleDesc(id, btn) {
     const pill = document.createElement('button');
     pill.className = 'filter-pill';
     pill.dataset.filter = tag;
+    pill.setAttribute('aria-pressed', 'false');
     pill.innerHTML = tag + ' <span class="pill-count">' + tagCounts[tag] + '</span>';
     filterBar.appendChild(pill);
   });
@@ -854,9 +900,13 @@ function toggleDesc(id, btn) {
     const pill = e.target.closest('.filter-pill');
     if (!pill) return;
 
-    // Update active state
-    filterBar.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+    // Update active state and aria-pressed
+    filterBar.querySelectorAll('.filter-pill').forEach(p => {
+      p.classList.remove('active');
+      p.setAttribute('aria-pressed', 'false');
+    });
     pill.classList.add('active');
+    pill.setAttribute('aria-pressed', 'true');
 
     const filter = pill.dataset.filter;
 

@@ -523,7 +523,7 @@
     font-size: 15px;
     font-weight: 600;
     color: #003366;
-    margin-top: 16px;
+    margin-top: 4px;
     margin-bottom: 6px;
   }
   .dev-notes p {
@@ -582,7 +582,7 @@
 <!-- Developer Notes (visible) -->
 <div class="dev-notes">
   <div class="dev-notes-inner">
-    <h3>Developer Implementation Notes</h3>
+    <h3>Notes</h3>
 
     <h4>Accessible "Read More" Links — Required</h4>
     <p>Every "Read more" / "Show less" button <strong>must</strong> include a <code>.screen-reader-text</code> span containing the project title. Without it, screen readers announce nine identical "Read more" links with no context. The WordPress theme already defines <code>.screen-reader-text</code> in CSS — use that class.</p>
@@ -591,12 +591,6 @@
     <p>When the button toggles to "Show less," the hidden span must persist:</p>
     <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
     <p>The hidden text auto-populates from the portfolio item's <strong>title field</strong> via <code>get_the_title()</code> in the ACF template — no manual entry per card.</p>
-
-    <h4>Tags (Filter Pills)</h4>
-    <p>Tags should be an ACF taxonomy or repeater field on the portfolio custom post type. The filter JS reads <code>data-tag</code> values from cards at page load and builds the pill bar dynamically — no hardcoded tag list needed. Multi-tag cards use comma-separated values (e.g., <code>data-tag="Resource Hub, Learning Platform"</code>) and appear under each matching filter.</p>
-
-    <h4>External Link Indicator</h4>
-    <p>The external-link icon is driven by <code>data-external="true"</code> on the card div. Set this based on whether the resource URL points to the CIEES domain (internal) or an external domain (external). The icon is rendered via a CSS <code>::after</code> pseudo-element on the card heading link.</p>
   </div>
 </div>
 

@@ -211,8 +211,10 @@
 
   /* ---- Tags (inline badges) ---- */
   .tag-row {
-    margin-top: 4px;
-    margin-bottom: 2px;
+    margin-bottom: 4px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
   }
   .tag {
     display: inline-block;
@@ -621,9 +623,9 @@
           </div>
         </div>
         <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <div class="t2-name">Keren Plowden</div>
           <div class="t2-title">TTAC Director</div>
-          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <a class="t2-email" href="mailto:kplowden@odu.edu">kplowden@odu.edu</a>
           <p class="t2-bio">Keren is the director of the ODU Training and Technical Assistance Center (TTAC ODU). She brings over 25 years of experience working in public and non-public school systems in both urban and rural settings along the east coast.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Keren Plowden</span></button>
@@ -637,9 +639,9 @@
           </div>
         </div>
         <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
           <div class="t2-name">Dr. Corinne Wilson</div>
           <div class="t2-title">VTSS Evaluation Director</div>
-          <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
           <a class="t2-email" href="mailto:CCooking@odu.edu">CCooking@odu.edu</a>
           <p class="t2-bio">Corinne supports center activities including grant writing, development of research and evaluation designs, and data collection, management, and analysis. She serves as evaluator for the Virginia Tiered Systems of Supports (VTSS) initiative.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Corinne Wilson</span></button>
@@ -653,9 +655,9 @@
           </div>
         </div>
         <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <div class="t2-name">Daniel Biegun, EdD</div>
           <div class="t2-title">TTAC Associate Director</div>
-          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <a class="t2-email" href="mailto:dbiegun@odu.edu">dbiegun@odu.edu</a>
           <p class="t2-bio">Daniel serves as both the Associate Director of T-TAC ODU and the Education Specialist for Intellectual Disabilities. He supports educators in designing and delivering engaging, evidence-based instruction for diverse learners.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Daniel Biegun</span></button>
@@ -669,9 +671,9 @@
           </div>
         </div>
         <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-sp">Special Projects</span></div>
           <div class="t2-name">Kristen Ingram</div>
           <div class="t2-title">Assistant Director of Special Projects</div>
-          <div class="tag-row"><span class="tag tag-sp">Special Projects</span></div>
           <a class="t2-email" href="mailto:Kingram@odu.edu">Kingram@odu.edu</a>
           <p class="t2-bio">Kristen joins CIEES after 13 years as a dedicated Education Specialist at TTAC ODU, where she worked to bridge research to practice to improve outcomes for students with disabilities.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Kristen Ingram</span></button>
@@ -687,39 +689,39 @@
     <div class="tier-3-grid" id="tier3Grid">
 
       <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <div class="t3-name">Kayla Abrahamson, PhD</div>
         <div class="t3-title">Program Evaluator</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:kabraham@odu.edu">kabraham@odu.edu</a>
         <div class="t3-bio-preview">Kayla is a program evaluator specializing in evaluating and analyzing Multi-Tiered Systems of Support (MTSS). She collaborates with center staff, partners, and stakeholders.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kayla Abrahamson</span></button>
         <div class="bio-full"><p>She provides technical assistance in data visualization, works in data management and analysis, and helps develop and select appropriate evaluation methodologies for various initiatives and proposals.</p></div>
       </div>
 
-      <div class="tier-3-card" data-tag="VTSS">
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Dayla A. Brown</div>
         <div class="t3-title">VTSS Systems Coach</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:d7brown@odu.edu">d7brown@odu.edu</a>
         <div class="t3-bio-preview">Dayla is a VTSS Systems Coach at TTAC ODU. She supports public school districts in Regions 2 &amp; 3 through the implementation of multi-tiered systems of support.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dayla Brown</span></button>
         <div class="bio-full"><p>Dayla has over 20 years of experience working in the non-profit sector and within public and non-public school systems. She is committed to partnering with districts to cultivate environments which promote equity and deeper student engagement.</p></div>
       </div>
 
-      <div class="tier-3-card" data-tag="VTSS">
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Patricia B. Clark</div>
         <div class="t3-title">VTSS Systems Coach</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:pbclark@ttacodu.org">pbclark@ttacodu.org</a>
         <div class="t3-bio-preview">Pat spent 32 years in public schools as a Special Education Teacher, General Education Teacher and School Administrator. She now serves as a State Systems Coach.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Patricia Clark</span></button>
         <div class="bio-full"><p>Pat supports several school divisions in their design and implementation of Multi-Tiered Systems of Support in Academics, Behavior/Social Emotional Wellness and Attendance.</p></div>
       </div>
 
-      <div class="tier-3-card" data-tag="VTSS">
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Nicholas Q. Diggs</div>
         <div class="t3-title">VTSS Systems Coach &amp; Behavioral Specialist</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:ndiggs@odu.edu">ndiggs@odu.edu</a>
         <div class="t3-bio-preview">Nicholas is a VTSS systems coach and behavioral specialist at TTAC ODU. He supports school districts by implementing multi-tiered systems of support.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Nicholas Diggs</span></button>
@@ -727,9 +729,9 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Lisa M. Gehring, EdS</div>
         <div class="t3-title">Education Specialist, Early Childhood</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:Lgehring@odu.edu">Lgehring@odu.edu</a>
         <div class="t3-bio-preview">Lisa serves as an Early Childhood Specialist at TTAC ODU. She has a passion for supporting sustainable growth in inclusive environments through systems change.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Lisa Gehring</span></button>
@@ -737,19 +739,19 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Amy Husk</div>
         <div class="t3-title">Education Specialist, Autism</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:ahusk@odu.edu">ahusk@odu.edu</a>
         <div class="t3-bio-preview">As the Education Specialist (autism focus) at T-TAC ODU, Amy provides coaching, professional development, and resources to teachers and administrators.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amy Husk</span></button>
         <div class="bio-full"><p>Her passion lies in empowering educators to support diverse learners with confidence and joy. She firmly believes that every student has the right to an equitable and meaningful education.</p></div>
       </div>
 
-      <div class="tier-3-card" data-tag="VTSS">
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">AnnMarie Jones</div>
         <div class="t3-title">VTSS Systems Coach</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:ajones@ttacodu.org">ajones@ttacodu.org</a>
         <div class="t3-bio-preview">AnnMarie joined TTAC ODU with 13 years of experience as a secondary English and Language Arts teacher, along with serving as a VTSS leader at the school and division-level.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about AnnMarie Jones</span></button>
@@ -757,16 +759,16 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Robin McCracken</div>
         <div class="t3-title">TTAC Staff</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:rmccrack@odu.edu">rmccrack@odu.edu</a>
       </div>
 
-      <div class="tier-3-card" data-tag="CSEEP">
+      <div class="tier-3-card" data-tag="CSEEP, CIEES">
+        <div class="tag-row"><span class="tag tag-cseep">CSEEP</span> <span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-name">Tracy Murray</div>
         <div class="t3-title">Program Support Technician Senior</div>
-        <div class="tag-row"><span class="tag tag-cseep">CSEEP</span></div>
         <a class="t3-email" href="mailto:tmurray@odu.edu">tmurray@odu.edu</a>
         <div class="t3-bio-preview">Tracy has worked for Commonwealth Special Education Endorsement Program (CSEEP) for 16 wonderful years, helping to run the day-to-day aspects of CSEEP.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Tracy Murray</span></button>
@@ -774,9 +776,9 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Ynez Peterson</div>
         <div class="t3-title">Assistive Technology Specialist</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:ypeterso@odu.edu">ypeterso@odu.edu</a>
         <div class="t3-bio-preview">Ynez is the assistive technology specialist for T-TAC ODU with over 28 years' experience as an occupational therapist and AT specialist in the Virginia Public School System.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Ynez Peterson</span></button>
@@ -784,9 +786,9 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Crystal Pope, PhD</div>
         <div class="t3-title">Mathematics Specialist</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:cmpope@odu.edu">cmpope@odu.edu</a>
         <div class="t3-bio-preview">Crystal is a Mathematics Specialist at TTAC ODU. Her areas of focus are specially designed instruction, student engagement, mathematical foundations and connections, and critical thinking.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Crystal Pope</span></button>
@@ -794,16 +796,16 @@
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-name">Pat Pulliam</div>
         <div class="t3-title">CIEES Staff</div>
-        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <a class="t3-email" href="mailto:pwoolard@odu.edu">pwoolard@odu.edu</a>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Erin Saxon</div>
         <div class="t3-title">Early Childhood/Literacy Educational Specialist</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:esaxon@odu.edu">esaxon@odu.edu</a>
         <div class="t3-bio-preview">Erin is an educational specialist at TTAC ODU, providing training and technical assistance in the areas of early childhood special education and early literacy.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Erin Saxon</span></button>
@@ -811,9 +813,9 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Danielle Sentz</div>
         <div class="t3-title">Early Childhood Educational Specialist</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:dsentz@odu.edu">dsentz@odu.edu</a>
         <div class="t3-bio-preview">Danielle is the newest addition to the Early Childhood Education Specialist trio at TTAC ODU, with a dually endorsed master's degree in Inclusive Early Childhood Education.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Danielle Sentz</span></button>
@@ -821,9 +823,9 @@
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Shannon Smith</div>
         <div class="t3-title">Office Services Specialist</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:sduncan@odu.edu">sduncan@odu.edu</a>
         <div class="t3-bio-preview">Shannon works as support staff for VTSS/PBIS. She began working for T-TAC in 2001 and has learned so much about special education over those 20+ years.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Shannon Smith</span></button>
@@ -831,16 +833,16 @@
       </div>
 
       <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <div class="t3-name">Sheryl Spence</div>
         <div class="t3-title">Part-time Data Support</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:sspence@odu.edu">sspence@odu.edu</a>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <div class="t3-name">Kathy Thumm</div>
         <div class="t3-title">TTAC Staff</div>
-        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
         <a class="t3-email" href="mailto:kthumm@odu.edu">kthumm@odu.edu</a>
         <div class="t3-bio-preview">Kathy produces professional development materials for training workshops and inputs data for the VDOE database at TTAC ODU.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kathy Thumm</span></button>
@@ -848,19 +850,19 @@
       </div>
 
       <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <div class="t3-name">Amanda Working, PhD</div>
         <div class="t3-title">Research Analyst</div>
-        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
         <a class="t3-email" href="mailto:aworking@odu.edu">aworking@odu.edu</a>
         <div class="t3-bio-preview">Amanda is a research analyst for CIEES. She supports center activities including research and evaluation design, data collection, management, analysis, and report generation.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amanda Working</span></button>
         <div class="bio-full"><p>As a program evaluator, she serves on the evaluation, leadership, and implementation teams for Virginia Tiered Systems of Supports (VTSS).</p></div>
       </div>
 
-      <div class="tier-3-card" data-tag="Special Projects">
+      <div class="tier-3-card" data-tag="Special Projects, CIEES">
+        <div class="tag-row"><span class="tag tag-sp">Special Projects</span> <span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-name">Michelle Young, DPT, CPACC</div>
         <div class="t3-title">Center Technology Specialist</div>
-        <div class="tag-row"><span class="tag tag-sp">Special Projects</span></div>
         <a class="t3-email" href="mailto:m3young@odu.edu">m3young@odu.edu</a>
         <div class="t3-bio-preview">Michelle serves as Center Technology Specialist for CIEES. The combination of her work in physical therapy and tech has allowed her to fulfill her passion for accessibility advocacy.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Michelle Young</span></button>
@@ -876,18 +878,18 @@
     <div class="emeriti-grid" id="emeritiGrid">
 
       <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-name">Dr. Stephen W. Tonelson</div>
         <div class="t3-title">Senior Advisor / Director Emeritus</div>
-        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-bio-preview">Steve is a senior advisor/director emeritus of CIEES. He has extensive experience in program evaluation, especially in substance abuse and individuals and families with special needs.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Tonelson</span></button>
         <div class="bio-full"><p>He earned the status of emeritus professor of early childhood and special education at Old Dominion University when he retired from the university in 2022.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-name">Dr. Robert A. Gable</div>
         <div class="t3-title">Senior Advisor / Director Emeritus</div>
-        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-bio-preview">Bob is a senior advisor/director emeritus of CIEES and the Constance and Colgate Darden Professor of Special Education (emeritus) at ODU.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Gable</span></button>
         <div class="bio-full"><p>He has published extensively on academic assessment, functional behavioral assessment, positive behavioral interventions and supports, and collaboration in schools. He was president of CCBD and a Fulbright Senior Scholar.</p></div>

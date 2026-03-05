@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About CIEES — Directory Redesign Mockup v2</title>
+<title>About CIEES — Directory Redesign Mockup v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
@@ -209,21 +209,19 @@
     display: inline-block;
   }
 
-  /* ---- Tag Badges ---- */
-  /* Tag as absolute badge — top right of card */
-  .card-tag-badge {
-    position: absolute;
-    top: 12px;
-    right: 12px;
+  /* ---- Tags (inline badges) ---- */
+  .tag-row {
+    margin-top: 4px;
+    margin-bottom: 2px;
   }
   .tag {
     display: inline-block;
-    font-size: 10.5px;
+    font-size: 10px;
     font-weight: 700;
     font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    padding: 3px 10px;
+    padding: 2px 8px;
     border-radius: 3px;
   }
   .tag-ciees { background: var(--tag-ciees-bg); color: var(--tag-ciees); }
@@ -247,6 +245,7 @@
   .tier-1-card {
     background: var(--white);
     border: 1px solid var(--gray-border);
+    border-left: 4px solid var(--tag-ciees);
     border-radius: 12px;
     padding: 32px 28px 28px;
     text-align: center;
@@ -255,6 +254,9 @@
     transition: box-shadow 0.2s;
     position: relative;
   }
+  .tier-1-card[data-tag*="TTAC"] { border-left-color: var(--tag-ttac); }
+  .tier-1-card[data-tag*="VTSS"] { border-left-color: var(--tag-vtss); }
+  .tier-1-card[data-tag*="Special Projects"] { border-left-color: var(--tag-sp); }
   .tier-1-card:hover {
     box-shadow: 0 6px 24px rgba(0,0,0,0.07);
   }
@@ -335,6 +337,7 @@
   .tier-2-card {
     background: var(--white);
     border: 1px solid var(--gray-border);
+    border-left: 4px solid var(--tag-ciees);
     border-radius: 10px;
     padding: 24px;
     display: flex;
@@ -343,6 +346,9 @@
     transition: box-shadow 0.2s;
     position: relative;
   }
+  .tier-2-card[data-tag*="TTAC"] { border-left-color: var(--tag-ttac); }
+  .tier-2-card[data-tag*="VTSS"] { border-left-color: var(--tag-vtss); }
+  .tier-2-card[data-tag*="Special Projects"] { border-left-color: var(--tag-sp); }
   .tier-2-card:hover {
     box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
@@ -442,79 +448,55 @@
   .tier-3-card {
     background: var(--white);
     border: 1px solid var(--gray-border);
+    border-left: 4px solid var(--tag-ciees);
     border-radius: 8px;
-    padding: 20px;
+    padding: 20px 22px;
     transition: box-shadow 0.2s, border-color 0.2s;
     position: relative;
   }
+  .tier-3-card[data-tag*="TTAC"] { border-left-color: var(--tag-ttac); }
+  .tier-3-card[data-tag*="VTSS"] { border-left-color: var(--tag-vtss); }
+  .tier-3-card[data-tag*="Special Projects"] { border-left-color: var(--tag-sp); }
+  .tier-3-card[data-tag*="CSEEP"] { border-left-color: var(--tag-cseep); }
   .tier-3-card:hover {
     border-color: #ccd5dd;
+    border-left-width: 4px;
     box-shadow: 0 3px 12px rgba(0,0,0,0.05);
-  }
-  .t3-header {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .t3-photo {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    overflow: hidden;
-    flex-shrink: 0;
-    position: relative;
-    background: var(--navy);
-  }
-  .t3-photo.has-photo::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--navy);
-    mix-blend-mode: color;
-    opacity: 0.15;
-    border-radius: 50%;
-    pointer-events: none;
-  }
-  .t3-photo img, .t3-photo .sim-photo {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
   }
   .t3-name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 700;
     color: var(--navy);
     line-height: 1.3;
   }
   .t3-title {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.35;
+    margin-top: 2px;
   }
   .t3-email {
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     color: var(--teal);
     text-decoration: none;
     display: inline-block;
     margin-top: 2px;
   }
-  .t3-meta {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-  }
   .t3-bio-preview {
     font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.55;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--gray-border);
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  .t3-bio-preview:empty {
+    display: none;
   }
   .bio-toggle {
     display: inline-block;
@@ -572,7 +554,7 @@
 <body>
 
 <div class="mockup-banner">
-  <strong>MOCKUP v2 — March 2026</strong> &nbsp;|&nbsp; Three-tier directory. Condensed About section up top, directory below. Filter pills cut across all tiers. Internal review only.
+  <strong>MOCKUP v3 — March 2026</strong> &nbsp;|&nbsp; Three-tier directory. No photos on Tier 3. Colored left accent borders for org identity. Inline tags. Internal review only.
 </div>
 
 <nav class="mock-nav">
@@ -616,8 +598,8 @@
         </div>
         <div class="t1-name">Dr. Jonna Bobzien</div>
         <div class="t1-title">Executive Director</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <a class="t1-email" href="mailto:jbobzien@odu.edu">jbobzien@odu.edu</a>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
         <p class="t1-bio">Jonna Bobzien is the executive director of CIEES and an associate professor of special education at ODU. She previously served as the department chair of CDSE and as the special education graduate program director. Jonna has published dozens of articles on working with students with disabilities.</p>
         <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Jonna Bobzien</span></button>
       </div>
@@ -628,8 +610,8 @@
         </div>
         <div class="t1-name">Dr. Ann Maydosz</div>
         <div class="t1-title">Director of Administration & Operations</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <a class="t1-email" href="mailto:amaydosz@odu.edu">amaydosz@odu.edu</a>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
         <p class="t1-bio">Ann brings over 23 years of grant administration expertise to CIEES. She also has 20 years of experience instructing adult learners as an adjunct professor with a research focus on special education law and policy and marginalized populations.</p>
         <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Ann Maydosz</span></button>
       </div>
@@ -640,8 +622,8 @@
         </div>
         <div class="t1-name">Ms. Jacqueline Royster</div>
         <div class="t1-title">Director of Budgeting & Finance</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <a class="t1-email" href="mailto:jroyster@odu.edu">jroyster@odu.edu</a>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
         <p class="t1-bio">Jackie has over 25 years of experience in sponsored program administration that supports strategic and tactical initiatives. Her responsibilities include maintaining contract and grant negotiations with sponsors while overseeing finances and developing budgets.</p>
         <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Ms. Jacqueline Royster</span></button>
       </div>
@@ -663,8 +645,8 @@
         <div class="t2-info">
           <div class="t2-name">Keren Plowden</div>
           <div class="t2-title">TTAC Director</div>
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <a class="t2-email" href="mailto:kplowden@odu.edu">kplowden@odu.edu</a>
-          <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
           <p class="t2-bio">Keren is the director of the ODU Training and Technical Assistance Center (TTAC ODU). She brings over 25 years of experience working in public and non-public school systems in both urban and rural settings along the east coast.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Keren Plowden</span></button>
         </div>
@@ -679,8 +661,8 @@
         <div class="t2-info">
           <div class="t2-name">Dr. Corinne Wilson</div>
           <div class="t2-title">VTSS Evaluation Director</div>
+          <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
           <a class="t2-email" href="mailto:CCooking@odu.edu">CCooking@odu.edu</a>
-          <div class="card-tag-badge"><span class="tag tag-vtss">VTSS</span></div>
           <p class="t2-bio">Corinne supports center activities including grant writing, development of research and evaluation designs, and data collection, management, and analysis. She serves as evaluator for the Virginia Tiered Systems of Supports (VTSS) initiative.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Corinne Wilson</span></button>
         </div>
@@ -695,8 +677,8 @@
         <div class="t2-info">
           <div class="t2-name">Daniel Biegun, EdD</div>
           <div class="t2-title">TTAC Associate Director</div>
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
           <a class="t2-email" href="mailto:dbiegun@odu.edu">dbiegun@odu.edu</a>
-          <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
           <p class="t2-bio">Daniel serves as both the Associate Director of T-TAC ODU and the Education Specialist for Intellectual Disabilities. He supports educators in designing and delivering engaging, evidence-based instruction for diverse learners.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Daniel Biegun</span></button>
         </div>
@@ -711,8 +693,8 @@
         <div class="t2-info">
           <div class="t2-name">Kristen Ingram</div>
           <div class="t2-title">Assistant Director of Special Projects</div>
+          <div class="tag-row"><span class="tag tag-sp">Special Projects</span></div>
           <a class="t2-email" href="mailto:Kingram@odu.edu">Kingram@odu.edu</a>
-          <div class="card-tag-badge"><span class="tag tag-sp">Special Projects</span></div>
           <p class="t2-bio">Kristen joins CIEES after 13 years as a dedicated Education Specialist at TTAC ODU, where she worked to bridge research to practice to improve outcomes for students with disabilities.</p>
           <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Kristen Ingram</span></button>
         </div>
@@ -727,317 +709,181 @@
     <div class="tier-3-grid" id="tier3Grid">
 
       <div class="tier-3-card" data-tag="CIEES, VTSS">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Kayla Abrahamson, PhD</div>
-            <div class="t3-title">Program Evaluator</div>
-            <a class="t3-email" href="mailto:kabraham@odu.edu">kabraham@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Kayla Abrahamson, PhD</div>
+        <div class="t3-title">Program Evaluator</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:kabraham@odu.edu">kabraham@odu.edu</a>
         <div class="t3-bio-preview">Kayla is a program evaluator specializing in evaluating and analyzing Multi-Tiered Systems of Support (MTSS). She collaborates with center staff, partners, and stakeholders.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kayla Abrahamson</span></button>
         <div class="bio-full"><p>She provides technical assistance in data visualization, works in data management and analysis, and helps develop and select appropriate evaluation methodologies for various initiatives and proposals.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Dayla A. Brown</div>
-            <div class="t3-title">VTSS Systems Coach</div>
-            <a class="t3-email" href="mailto:d7brown@odu.edu">d7brown@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Dayla A. Brown</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:d7brown@odu.edu">d7brown@odu.edu</a>
         <div class="t3-bio-preview">Dayla is a VTSS Systems Coach at TTAC ODU. She supports public school districts in Regions 2 &amp; 3 through the implementation of multi-tiered systems of support.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dayla Brown</span></button>
         <div class="bio-full"><p>Dayla has over 20 years of experience working in the non-profit sector and within public and non-public school systems. She is committed to partnering with districts to cultivate environments which promote equity and deeper student engagement.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Patricia B. Clark</div>
-            <div class="t3-title">VTSS Systems Coach</div>
-            <a class="t3-email" href="mailto:pbclark@ttacodu.org">pbclark@ttacodu.org</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Patricia B. Clark</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:pbclark@ttacodu.org">pbclark@ttacodu.org</a>
         <div class="t3-bio-preview">Pat spent 32 years in public schools as a Special Education Teacher, General Education Teacher and School Administrator. She now serves as a State Systems Coach.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Patricia Clark</span></button>
         <div class="bio-full"><p>Pat supports several school divisions in their design and implementation of Multi-Tiered Systems of Support in Academics, Behavior/Social Emotional Wellness and Attendance.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Nicholas Q. Diggs</div>
-            <div class="t3-title">VTSS Systems Coach &amp; Behavioral Specialist</div>
-            <a class="t3-email" href="mailto:ndiggs@odu.edu">ndiggs@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Nicholas Q. Diggs</div>
+        <div class="t3-title">VTSS Systems Coach &amp; Behavioral Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:ndiggs@odu.edu">ndiggs@odu.edu</a>
         <div class="t3-bio-preview">Nicholas is a VTSS systems coach and behavioral specialist at TTAC ODU. He supports school districts by implementing multi-tiered systems of support.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Nicholas Diggs</span></button>
         <div class="bio-full"><p>His previous professional experiences include teaching math and science and supporting PBIS implementation at the school and division level. His passions include coaching, increasing equity in practice, and promoting student achievement.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Lisa M. Gehring, EdS</div>
-            <div class="t3-title">Education Specialist, Early Childhood</div>
-            <a class="t3-email" href="mailto:Lgehring@odu.edu">Lgehring@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Lisa M. Gehring, EdS</div>
+        <div class="t3-title">Education Specialist, Early Childhood</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:Lgehring@odu.edu">Lgehring@odu.edu</a>
         <div class="t3-bio-preview">Lisa serves as an Early Childhood Specialist at TTAC ODU. She has a passion for supporting sustainable growth in inclusive environments through systems change.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Lisa Gehring</span></button>
         <div class="bio-full"><p>As a member of the first cohort of the VDOE's Aspiring Special Education Leaders Academy, she is committed to building systems that positively impact young children with disabilities across regions 2 and 3.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Amy Husk</div>
-            <div class="t3-title">Education Specialist, Autism</div>
-            <a class="t3-email" href="mailto:ahusk@odu.edu">ahusk@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Amy Husk</div>
+        <div class="t3-title">Education Specialist, Autism</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:ahusk@odu.edu">ahusk@odu.edu</a>
         <div class="t3-bio-preview">As the Education Specialist (autism focus) at T-TAC ODU, Amy provides coaching, professional development, and resources to teachers and administrators.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amy Husk</span></button>
         <div class="bio-full"><p>Her passion lies in empowering educators to support diverse learners with confidence and joy. She firmly believes that every student has the right to an equitable and meaningful education.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">AnnMarie Jones</div>
-            <div class="t3-title">VTSS Systems Coach</div>
-            <a class="t3-email" href="mailto:ajones@ttacodu.org">ajones@ttacodu.org</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">AnnMarie Jones</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:ajones@ttacodu.org">ajones@ttacodu.org</a>
         <div class="t3-bio-preview">AnnMarie joined TTAC ODU with 13 years of experience as a secondary English and Language Arts teacher, along with serving as a VTSS leader at the school and division-level.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about AnnMarie Jones</span></button>
         <div class="bio-full"><p>She is passionate about supporting Virginia's schools, teachers, students, and families, promoting equitable access to effective instruction and building literacy for all learners.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Robin McCracken</div>
-            <div class="t3-title">TTAC Staff</div>
-            <a class="t3-email" href="mailto:rmccrack@odu.edu">rmccrack@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
-        <div class="t3-bio-preview"></div>
+        <div class="t3-name">Robin McCracken</div>
+        <div class="t3-title">TTAC Staff</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:rmccrack@odu.edu">rmccrack@odu.edu</a>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Tracy Murray</div>
-            <div class="t3-title">Program Support Technician Senior</div>
-            <a class="t3-email" href="mailto:tmurray@odu.edu">tmurray@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Tracy Murray</div>
+        <div class="t3-title">Program Support Technician Senior</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:tmurray@odu.edu">tmurray@odu.edu</a>
         <div class="t3-bio-preview">Tracy has worked for Commonwealth Special Education Endorsement Program (CSEEP) for 16 wonderful years, helping to run the day-to-day aspects of CSEEP.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Tracy Murray</span></button>
         <div class="bio-full"><p>It gives her a great sense of pride helping those in the front lines of special education — our teachers!</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Ynez Peterson</div>
-            <div class="t3-title">Assistive Technology Specialist</div>
-            <a class="t3-email" href="mailto:ypeterso@odu.edu">ypeterso@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Ynez Peterson</div>
+        <div class="t3-title">Assistive Technology Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:ypeterso@odu.edu">ypeterso@odu.edu</a>
         <div class="t3-bio-preview">Ynez is the assistive technology specialist for T-TAC ODU with over 28 years' experience as an occupational therapist and AT specialist in the Virginia Public School System.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Ynez Peterson</span></button>
         <div class="bio-full"><p>She shares her passion for working with students with disabilities by consulting with teachers, presenting at national conferences, and creating professional development opportunities for educators.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Crystal Pope, PhD</div>
-            <div class="t3-title">Mathematics Specialist</div>
-            <a class="t3-email" href="mailto:cmpope@odu.edu">cmpope@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Crystal Pope, PhD</div>
+        <div class="t3-title">Mathematics Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:cmpope@odu.edu">cmpope@odu.edu</a>
         <div class="t3-bio-preview">Crystal is a Mathematics Specialist at TTAC ODU. Her areas of focus are specially designed instruction, student engagement, mathematical foundations and connections, and critical thinking.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Crystal Pope</span></button>
         <div class="bio-full"><p>She previously served as a middle school math teacher, math instructional coach, secondary math program specialist, and building administrator.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Pat Pulliam</div>
-            <div class="t3-title">CIEES Staff</div>
-            <a class="t3-email" href="mailto:pwoolard@odu.edu">pwoolard@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
-        <div class="t3-bio-preview"></div>
+        <div class="t3-name">Pat Pulliam</div>
+        <div class="t3-title">CIEES Staff</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:pwoolard@odu.edu">pwoolard@odu.edu</a>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Erin Saxon</div>
-            <div class="t3-title">Early Childhood/Literacy Educational Specialist</div>
-            <a class="t3-email" href="mailto:esaxon@odu.edu">esaxon@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Erin Saxon</div>
+        <div class="t3-title">Early Childhood/Literacy Educational Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:esaxon@odu.edu">esaxon@odu.edu</a>
         <div class="t3-bio-preview">Erin is an educational specialist at TTAC ODU, providing training and technical assistance in the areas of early childhood special education and early literacy.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Erin Saxon</span></button>
         <div class="bio-full"><p>She is encouraged by collaborative efforts within the field that aim to improve outcomes for children and students with disabilities.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Danielle Sentz</div>
-            <div class="t3-title">Early Childhood Educational Specialist</div>
-            <a class="t3-email" href="mailto:dsentz@odu.edu">dsentz@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Danielle Sentz</div>
+        <div class="t3-title">Early Childhood Educational Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:dsentz@odu.edu">dsentz@odu.edu</a>
         <div class="t3-bio-preview">Danielle is the newest addition to the Early Childhood Education Specialist trio at TTAC ODU, with a dually endorsed master's degree in Inclusive Early Childhood Education.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Danielle Sentz</span></button>
         <div class="bio-full"><p>She has a passion for the inclusion of each and every child, in any environment.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Shannon Smith</div>
-            <div class="t3-title">Office Services Specialist</div>
-            <a class="t3-email" href="mailto:sduncan@odu.edu">sduncan@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Shannon Smith</div>
+        <div class="t3-title">Office Services Specialist</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:sduncan@odu.edu">sduncan@odu.edu</a>
         <div class="t3-bio-preview">Shannon works as support staff for VTSS/PBIS. She began working for T-TAC in 2001 and has learned so much about special education over those 20+ years.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Shannon Smith</span></button>
         <div class="bio-full"><p>She has witnessed the important role the TTAC ODU team plays in supporting special education in the public school system.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Sheryl Spence</div>
-            <div class="t3-title">Part-time Data Support</div>
-            <a class="t3-email" href="mailto:sspence@odu.edu">sspence@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
-        <div class="t3-bio-preview"></div>
+        <div class="t3-name">Sheryl Spence</div>
+        <div class="t3-title">Part-time Data Support</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:sspence@odu.edu">sspence@odu.edu</a>
       </div>
 
       <div class="tier-3-card" data-tag="TTAC">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill ttac"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="28">T</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Kathy Thumm</div>
-            <div class="t3-title">TTAC Staff</div>
-            <a class="t3-email" href="mailto:kthumm@odu.edu">kthumm@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Kathy Thumm</div>
+        <div class="t3-title">TTAC Staff</div>
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <a class="t3-email" href="mailto:kthumm@odu.edu">kthumm@odu.edu</a>
         <div class="t3-bio-preview">Kathy produces professional development materials for training workshops and inputs data for the VDOE database at TTAC ODU.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kathy Thumm</span></button>
         <div class="bio-full"><p>Previous experience includes graphic design, public affairs, volunteerism, and non-profit management. Her passion is pottery and graphic design.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES, VTSS">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Amanda Working, PhD</div>
-            <div class="t3-title">Research Analyst</div>
-            <a class="t3-email" href="mailto:aworking@odu.edu">aworking@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Amanda Working, PhD</div>
+        <div class="t3-title">Research Analyst</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:aworking@odu.edu">aworking@odu.edu</a>
         <div class="t3-bio-preview">Amanda is a research analyst for CIEES. She supports center activities including research and evaluation design, data collection, management, analysis, and report generation.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amanda Working</span></button>
         <div class="bio-full"><p>As a program evaluator, she serves on the evaluation, leadership, and implementation teams for Virginia Tiered Systems of Supports (VTSS).</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Michelle Young, DPT, CPACC</div>
-            <div class="t3-title">Center Technology Specialist</div>
-            <a class="t3-email" href="mailto:m3young@odu.edu">m3young@odu.edu</a>
-          </div>
-        </div>
-        <div class="card-tag-badge"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Michelle Young, DPT, CPACC</div>
+        <div class="t3-title">Center Technology Specialist</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <a class="t3-email" href="mailto:m3young@odu.edu">m3young@odu.edu</a>
         <div class="t3-bio-preview">Michelle serves as Center Technology Specialist for CIEES. The combination of her work in physical therapy and tech has allowed her to fulfill her passion for accessibility advocacy.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Michelle Young</span></button>
         <div class="bio-full"><p>She is a Certified Professional in Accessibility Core Competencies (CPACC), bringing expertise in web development, cyber security, and website ADA compliance and remediation.</p></div>
@@ -1052,30 +898,18 @@
     <div class="emeriti-grid" id="emeritiGrid">
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill" style="background:#3d3d3d;"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24" fill="rgba(255,255,255,0.45)">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Dr. Stephen W. Tonelson</div>
-            <div class="t3-title">Senior Advisor / Director Emeritus</div>
-          </div>
-        </div>
+        <div class="t3-name">Dr. Stephen W. Tonelson</div>
+        <div class="t3-title">Senior Advisor / Director Emeritus</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-bio-preview">Steve is a senior advisor/director emeritus of CIEES. He has extensive experience in program evaluation, especially in substance abuse and individuals and families with special needs.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Tonelson</span></button>
         <div class="bio-full"><p>He earned the status of emeritus professor of early childhood and special education at Old Dominion University when he retired from the university in 2022.</p></div>
       </div>
 
       <div class="tier-3-card" data-tag="CIEES">
-        <div class="t3-header">
-          <div class="t3-photo">
-            <div class="logo-fill" style="background:#3d3d3d;"><svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24" fill="rgba(255,255,255,0.45)">C</text></svg></div>
-          </div>
-          <div>
-            <div class="t3-name">Dr. Robert A. Gable</div>
-            <div class="t3-title">Senior Advisor / Director Emeritus</div>
-          </div>
-        </div>
+        <div class="t3-name">Dr. Robert A. Gable</div>
+        <div class="t3-title">Senior Advisor / Director Emeritus</div>
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
         <div class="t3-bio-preview">Bob is a senior advisor/director emeritus of CIEES and the Constance and Colgate Darden Professor of Special Education (emeritus) at ODU.</div>
         <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Gable</span></button>
         <div class="bio-full"><p>He has published extensively on academic assessment, functional behavioral assessment, positive behavioral interventions and supports, and collaboration in schools. He was president of CCBD and a Fulbright Senior Scholar.</p></div>
@@ -1087,7 +921,7 @@
 </div>
 
 <footer class="mock-footer">
-  CIEES Directory Redesign — Mockup v2 — Internal Review Only — March 2026
+  CIEES Directory Redesign — Mockup v3 — Internal Review Only — March 2026
 </footer>
 
 <script>

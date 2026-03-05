@@ -52,7 +52,7 @@
     --navy: #042a4b;
     --navy-light: #0f3c61;
     --teal: #00aea9;
-    --teal-hover: #009e99;
+    --teal-hover: #00817d;
     --blue-light: #eef7ff;
     --gray-bg: #f5f7fa;
     --gray-border: #e2e6ea;
@@ -368,7 +368,7 @@
     text-decoration: none;
     transition: color 0.2s;
   }
-  .project-card h3 a:hover { color: var(--teal); text-decoration: underline; }
+  .project-card h3 a:hover { color: var(--teal-hover); text-decoration: underline; }
 
   /* External link icon — only on resources hosted outside the CIEES site */
   .project-card[data-external="true"] h3 a::after {
@@ -414,13 +414,15 @@
     padding: 0;
     margin-left: 4px;
     text-decoration: underline;
+    text-decoration-thickness: 1px;
     text-decoration-color: rgba(4, 42, 75, 0.3);
     text-underline-offset: 2px;
-    transition: color 0.2s, text-decoration-color 0.2s;
+    transition: color 0.2s, text-decoration-color 0.2s, text-decoration-thickness 0.2s;
   }
   .read-more-btn:hover {
-    color: var(--teal);
-    text-decoration-color: var(--teal);
+    color: var(--teal-hover);
+    text-decoration-color: var(--teal-hover);
+    text-decoration-thickness: 2.5px;
   }
 
   /* ---- Accessible screen-reader-text (matches WP theme class) ----

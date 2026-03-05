@@ -22,6 +22,13 @@
        and appear under each matching filter pill
 
      DEVELOPER NOTES (for TechArk/vendor):
+     - ACCESSIBILITY — REQUIRED: Every "Read more" / "Show less" button MUST
+       include a .screen-reader-text span with the project title so screen readers
+       announce "Read more about [Project Name]" instead of nine identical
+       "Read more" links. See the HTML for the pattern. The WordPress theme
+       already defines .screen-reader-text — use that class. When building
+       the ACF template, the hidden span text should auto-populate from the
+       portfolio item's title field.
      - Tags should be an ACF taxonomy or repeater field on the portfolio CPT.
        The filter JS reads data-tag values from cards at page load and builds
        the pill bar dynamically — no hardcoded tag list needed.
@@ -408,6 +415,23 @@
     text-decoration-color: var(--teal);
   }
 
+  /* ---- Accessible screen-reader-text (matches WP theme class) ----
+     NOTE FOR VENDOR: This class already exists in the WordPress theme
+     stylesheet. It is duplicated here only so the standalone mockup
+     renders correctly. In production, remove this block and rely on
+     the theme's .screen-reader-text rule. */
+  .screen-reader-text {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    overflow-wrap: normal !important;
+  }
+
   /* ---- No-results message ---- */
   .no-results {
     display: none;
@@ -563,7 +587,7 @@
         <div class="card-desc" id="desc-cm-sud">
           <span class="desc-preview">A 5-module series for case managers working with individuals and families affected by substance use disorders. Includes videos, case studies, and quizzes.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 5-module series is designed for case managers who work with individuals and families affected by substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an introduction to case management, the continuum of care, engagement and retention strategies, and considerations for special populations. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-cm-sud', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-cm-sud', this)">Read more<span class="screen-reader-text"> about Case Management for Substance Use Disorders</span></button>
         </div>
       </div>
 
@@ -573,7 +597,7 @@
         <div class="card-desc" id="desc-revive">
           <span class="desc-preview">Training modules on opioid risk awareness and the critical role of naloxone in overdose situations, for healthcare workers and community partners.</span>
           <span class="desc-full">The REVIVE! modules focus on educating healthcare workers and community partners about the risks associated with opioid use and the critical role of naloxone in overdose situations. The modules cover key requirements for dispensing naloxone and provide essential guidance for individuals who administer it in emergency settings.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-revive', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-revive', this)">Read more<span class="screen-reader-text"> about REVIVE! Opioid Overdose Awareness</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/09/REVIVE_Logo-e1772155187357.png" alt="REVIVE! logo">
@@ -586,7 +610,7 @@
         <div class="card-desc" id="desc-idd">
           <span class="desc-preview">Modules for community services board clinicians providing outpatient treatment to adults with intellectual or developmental disabilities and co-occurring SUDs.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 6-module series is designed for community services board (CSB) clinicians who provide outpatient treatment to adults with intellectual or developmental disabilities (IDD) and co-occurring substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an overview of IDD, unique treatment considerations, trauma-informed care approaches, and strategies for building effective support systems. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-idd', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-idd', this)">Read more<span class="screen-reader-text"> about Working with Adults with IDD and Substance Use Disorders</span></button>
         </div>
       </div>
 
@@ -607,7 +631,7 @@
         <div class="card-desc" id="desc-odr">
           <span class="desc-preview">Two resource areas for special education professionals: practical guidance videos and an interactive timeline of the special education due process system.</span>
           <span class="desc-full">Developed in partnership with VDOE's Office of Dispute Resolution and Administrative Services (ODRAS), this library offers two resource areas for special education professionals: (1) practical guidance videos addressing common questions about dispute resolution, and (2) an interactive timeline of the special education due process system.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-odr', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-odr', this)">Read more<span class="screen-reader-text"> about Office of Dispute Resolution Learning Library</span></button>
         </div>
       </div>
 
@@ -617,7 +641,7 @@
         <div class="card-desc" id="desc-rs">
           <span class="desc-preview">A training series on Virginia's restraint and seclusion regulations for school division staff, with videos, knowledge checks, and certificates of completion.</span>
           <span class="desc-full">Developed in partnership with the Virginia Department of Education (VDOE), this training series is designed for school division staff responsible for understanding and implementing Virginia's regulations on the use of restraint and seclusion. Each module includes a video, knowledge check, and certificate of completion.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-rs', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-rs', this)">Read more<span class="screen-reader-text"> about Regulations Governing the Use of Restraint and Seclusion</span></button>
         </div>
       </div>
 
@@ -627,7 +651,7 @@
         <div class="card-desc" id="desc-vlst">
           <span class="desc-preview">Eleven asynchronous modules giving school leaders and educators research-based tools for effective virtual and blended instruction.</span>
           <span class="desc-full">Developed in partnership with VDOE's Office of STEM and Innovation, this series of 11 asynchronous modules gives school leaders and educators research-based tools for effective virtual and blended instruction. Topics span supporting positive student behavior online, planning and structuring virtual lessons, strategies for student engagement and participation, and leveraging technology to personalize learning.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-vlst', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-vlst', this)">Read more<span class="screen-reader-text"> about Virtual Learning Support Toolkit</span></button>
         </div>
       </div>
 
@@ -641,7 +665,7 @@
         <div class="card-desc" id="desc-clc">
           <span class="desc-preview">A one-stop professional development and resource collection for school counselors, psychologists, social workers, nurses, and administrators.</span>
           <span class="desc-full">In partnership with CIEES, the VDOE Office of Student Services (OSS) offers a one-stop professional development and resource collection for specialized instructional support personnel such as school counselors, school psychologists, school social workers, school nurses, and administrators.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-clc', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-clc', this)">Read more<span class="screen-reader-text"> about Career and Learning Center for School Mental Health Professionals</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/12/VDOE-OBHSS-Vertical-Full-Color-Resized.png" alt="Office of Behavioral Health and Student Safety logo">
@@ -655,7 +679,7 @@
         <div class="card-desc" id="desc-ccc">
           <span class="desc-preview">A learning hub supporting the implementation of multi-tiered systems of supports across Virginia's school divisions, with video series, quizzes, and certificates.</span>
           <span class="desc-full">A learning hub developed in collaboration with the Virginia Department of Education to support the implementation of a multi-tiered system of supports across Virginia's school divisions. Educators and division leaders will find multiple video series with quizzes and certificates of completion covering topics in positive behavior, academic support systems, and data-driven decision making.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-ccc', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-ccc', this)">Read more<span class="screen-reader-text"> about Creating Capacity for Change Collaborative</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/03/CCC-logo-small-2.png" alt="Creating Capacity for Change Collaborative logo">
@@ -677,7 +701,7 @@
         <div class="card-desc" id="desc-ecpd">
           <span class="desc-preview">A searchable calendar connecting early childhood educators in southeastern Virginia with live, in-person, on-demand, and self-paced training opportunities.</span>
           <span class="desc-full">Developed by Special Projects and maintained in partnership with multiple regional early childhood organizations, this professional development calendar connects early childhood educators and providers in southeastern Virginia with training opportunities in one searchable place. Browse live, in-person, on-demand, and self-paced events spanning behavior management, curriculum, family engagement, health and safety, social-emotional development, and more — all organized by Ready Region Southeastern.</span>
-          <button class="read-more-btn" onclick="toggleDesc('desc-ecpd', this)">Read more</button>
+          <button class="read-more-btn" onclick="toggleDesc('desc-ecpd', this)">Read more<span class="screen-reader-text"> about Early Childhood Professional Development Calendar</span></button>
         </div>
         <div class="card-logo-footer">
           <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2026/02/Ready-Regions-Southeastern-e1772155241697.png" alt="Ready Region Southeastern logo">
@@ -705,13 +729,15 @@
 /* ---- Read More toggle ---- */
 function toggleDesc(id, btn) {
   const desc = document.getElementById(id);
+  const srSpan = btn.querySelector('.screen-reader-text');
+  const srText = srSpan ? srSpan.textContent : '';
   const isExpanded = desc.classList.contains('expanded');
   if (isExpanded) {
     desc.classList.remove('expanded');
-    btn.textContent = 'Read more';
+    btn.innerHTML = 'Read more' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
   } else {
     desc.classList.add('expanded');
-    btn.textContent = 'Show less';
+    btn.innerHTML = 'Show less' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
   }
 }
 

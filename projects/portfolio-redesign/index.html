@@ -493,6 +493,86 @@
     transform: translateY(-1px);
   }
 
+  /* ---- Footer Contact ---- */
+  .footer-contact {
+    background: var(--navy);
+    color: #fff;
+    padding: 48px 40px;
+  }
+  .footer-contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-org-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  .footer-info address {
+    font-style: normal;
+    line-height: 1.6;
+  }
+  .footer-info address p {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  .footer-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: rgba(255,255,255,0.7);
+  }
+  .footer-info a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .footer-info a:hover {
+    color: var(--teal);
+  }
+
+  /* ---- Footer Bottom Bar ---- */
+  .footer-bottom {
+    background: #021a33;
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+  .footer-copyright {
+    white-space: nowrap;
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .footer-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .footer-links a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+  .footer-links a + a::before {
+    content: "•";
+    margin-right: 6px;
+    color: rgba(255,255,255,0.4);
+  }
+
   /* ---- Mockup Label ---- */
   /* ---- Skip Link ---- */
   .skip-link {
@@ -514,6 +594,9 @@
     top: 0;
     outline: 3px solid var(--teal);
     outline-offset: 2px;
+  }
+  .skip-link-footer {
+    left: 250px;
   }
 
   .mockup-banner {
@@ -598,13 +681,20 @@
     .filter-bar { gap: 6px; }
     .filter-pill { font-size: 12px; padding: 5px 12px; }
     .card-logo-footer img { height: 56px; max-width: 160px; }
+    .footer-contact { padding: 32px 20px; }
+    .footer-org-name { font-size: 18px; }
+    .footer-bottom { padding: 12px 20px; flex-direction: column; align-items: flex-start; }
+    .footer-links { gap: 4px; }
+    .skip-link-footer { left: 16px; top: -200%; }
+    .skip-link-footer:focus { top: 44px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Skip Navigation — first focusable element on the page -->
+<!-- Skip Navigation — first focusable elements on the page -->
 <a class="skip-link" href="#main-content">Skip to main content</a>
+<a class="skip-link skip-link-footer" href="#site-footer">Skip to footer</a>
 
 <!-- Mockup artifacts — outside page landmarks -->
 <aside aria-label="Mockup notes — not part of the page design">
@@ -823,7 +913,9 @@
 </main>
 
 <!-- Site Footer -->
-<footer role="contentinfo">
+<footer id="site-footer" role="contentinfo">
+
+  <!-- Partner CTA -->
   <section class="cta-section" aria-labelledby="cta-heading">
     <div class="cta-inner">
       <div>
@@ -833,6 +925,47 @@
       <a href="https://cieesdev.wpenginepowered.com/special-projects/partner-with-special-projects/" class="cta-btn">Let's Get Started</a>
     </div>
   </section>
+
+  <!-- Footer Contact -->
+  <div class="footer-contact">
+    <div class="footer-contact-inner">
+      <div class="footer-info">
+        <p class="footer-org-name">Center for Implementation and Evaluation of Education Systems</p>
+        <address>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <a href="https://goo.gl/maps/w7G4K9H3PCNuTnmT7" target="_blank" rel="noopener">Lions Child Study Center, Room 217<br>4501 Hampton Boulevard<br>Norfolk, VA 23509</a>
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-8v4h8z"/></svg>
+            757-683-4129
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.35a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.75.32 1.54.55 2.35.68a2 2 0 011.72 2.05z"/></svg>
+            <a href="tel:757-683-5372">757-683-5372</a>
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:CIEES@odu.edu">CIEES@odu.edu</a>
+          </p>
+        </address>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom Bar -->
+  <div class="footer-bottom">
+    <span class="footer-copyright">&copy; Old Dominion University</span>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="https://cieesdev.wpenginepowered.com/about-us/">About CIEES</a>
+      <a href="https://cieesdev.wpenginepowered.com/directory/">Directory</a>
+      <a href="https://cieesdev.wpenginepowered.com/privacy/">Privacy</a>
+      <a href="https://cieesdev.wpenginepowered.com/term-conditions/">Terms &amp; Conditions</a>
+      <a href="https://www.odu.edu/educationalaccessibility">Accessibility</a>
+      <a href="https://www.odu.edu/about/compliance/transparency">Consumer Information</a>
+    </nav>
+  </div>
+
 </footer>
 
 <script>

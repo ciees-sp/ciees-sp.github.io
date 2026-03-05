@@ -102,7 +102,7 @@
     text-decoration: none;
     transition: color 0.2s;
   }
-  .mock-nav a:hover { color: var(--white); }
+  .mock-nav a:hover { color: var(--white); text-decoration: underline; }
   .mock-nav .nav-pill {
     border: 1px solid rgba(255,255,255,0.6);
     border-radius: 100px;
@@ -110,7 +110,7 @@
     color: var(--white);
     transition: border-color 0.2s ease;
   }
-  .mock-nav .nav-pill:hover { border-color: rgb(91, 194, 231); }
+  .mock-nav .nav-pill:hover { border-color: rgb(91, 194, 231); text-decoration: underline; }
 
   /* ---- Breadcrumb ---- */
   .breadcrumb {
@@ -213,6 +213,7 @@
   .filter-pill:hover {
     border-color: #b8cdd8;
     color: var(--navy);
+    text-decoration: underline;
   }
   .filter-pill.active {
     background: var(--navy);
@@ -367,7 +368,7 @@
     text-decoration: none;
     transition: color 0.2s;
   }
-  .project-card h3 a:hover { color: var(--teal); }
+  .project-card h3 a:hover { color: var(--teal); text-decoration: underline; }
 
   /* External link icon — only on resources hosted outside the CIEES site */
   .project-card[data-external="true"] h3 a::after {
@@ -535,6 +536,7 @@
   }
   .footer-info a:hover {
     color: var(--teal);
+    text-decoration: underline;
   }
 
   /* ---- Footer Bottom Bar ---- */

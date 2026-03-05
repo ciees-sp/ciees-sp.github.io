@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About CIEES — Directory Redesign Mockup v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     CIEES Directory Redesign — Mockup v5
+     March 2026
+
+     THREE-TIER LAYOUT:
+     Tier 1 — Executive leadership (3 today, 1 eventually)
+              Large headshots, full bio preview, most real estate
+     Tier 2 — Directors & Assistant Directors (4 people)
+              Medium treatment, photo + visible bio opener
+     Tier 3 — All staff (everyone else)
+              Dignified cards, photo/logo, one sentence visible, expand
+
+     DESIGN NOTES:
+     - Visually distinct from Library page cards (different shape,
+       layout, and content treatment — shared element is filter pills only)
+     - Filter pills cut across all tiers
+     - Org logo as default photo when no headshot uploaded
+     - CSS duotone overlay on real photos for cohesion
+     - Tier 1 designed to work as 3-across OR 1-centered
+     ======================================== */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #042a4b;
+    --navy-light: #0f3c61;
+    --navy-soft: #1a3d5c;
+    --link-blue: #002f5d;
+    --accent-blue: #5bc2e7;
+    --gray-bg: #f5f7fa;
+    --gray-border: #e2e6ea;
+    --gray-light: #f0f2f5;
+    --text-dark: #2d2d2d;
+    --text-muted: #444444;
+    --text-light: #8891a0;
+    --white: #ffffff;
+    /* All-blue tag palette — 5 distinct shades */
+    --tag-ciees-bg: #e3ecf5;
+    --tag-ciees: #003057;
+    --tag-ttac-bg: #dceef8;
+    --tag-ttac: #0d4f7a;
+    --tag-vtss-bg: #e0e8f4;
+    --tag-vtss: #1a3a6b;
+    --tag-sp-bg: #d8eef5;
+    --tag-sp: #0a5e73;
+    --tag-cseep-bg: #e5e9f2;
+    --tag-cseep: #2c4066;
+    --max-width: 1100px;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Mockup Banner ---- */
+  .mockup-banner {
+    background: #fff3cd;
+    color: #856404;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.3px;
+    position: sticky;
+    top: 0;
+    z-index: 200;
+  }
+
+  /* ---- Nav (replicates CIEES site header) ---- */
+  .mock-nav {
+    background: var(--navy);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    height: 114px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    text-transform: uppercase;
+    color: var(--white);
+    position: sticky;
+    top: 36px;
+    z-index: 100;
+  }
+  .mock-nav .logo-ciees {
+    height: 55px;
+    flex-shrink: 0;
+  }
+  .mock-nav .nav-links {
+    display: flex;
+    gap: 28px;
+    margin-left: auto;
+    align-items: center;
+  }
+  .mock-nav .nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+  }
+  .mock-nav .nav-links a.active {
+    color: var(--accent-blue);
+  }
+  .mock-nav .nav-links a.btn-pill {
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 100px;
+    padding: 4px 14px;
+  }
+  .mock-nav .nav-links .dropdown-arrow {
+    font-size: 10px;
+    margin-left: 4px;
+    opacity: 0.7;
+  }
+  .mock-nav .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    cursor: pointer;
+  }
+  .mock-nav .search-box svg { width: 16px; height: 16px; fill: var(--white); }
+  .mock-nav .logo-odu {
+    height: 70px;
+    margin-left: 24px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Hero Banner (matches CIEES page headers — actual stock photo) ---- */
+  .hero-banner {
+    position: relative;
+    height: 370px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: url('https://cieesdev.wpenginepowered.com/wp-content/uploads/2023/06/CIEES-headerbg_about-us.jpg') center top / cover no-repeat;
+  }
+  .hero-banner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  .hero-banner h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 60px;
+    font-weight: 500;
+    color: var(--white);
+    z-index: 2;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- Breadcrumb (matches CIEES site) ---- */
+  .breadcrumb-bar {
+    padding: 14px 40px;
+    font-size: 14px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--gray-border);
+    font-family: 'Montserrat', sans-serif;
+  }
+  .breadcrumb-bar a {
+    color: var(--link-blue);
+    text-decoration: none;
+  }
+  .breadcrumb-bar a:hover { text-decoration: underline; }
+  .breadcrumb-bar .sep { margin: 0 6px; color: var(--text-light); }
+  .breadcrumb-bar .home-icon { margin-right: 4px; font-size: 13px; }
+
+  /* ---- About Intro (1/3 lead + 2/3 paragraph) ---- */
+  .about-intro {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 48px 40px 40px;
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .about-intro .intro-lead {
+    flex: 0 0 30%;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.35;
+    color: var(--navy);
+  }
+  .about-intro p {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ---- Page Content ---- */
+  .page-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 40px 40px 0;
+  }
+
+  /* ---- Filter Pills ---- */
+  .filter-bar {
+    padding: 32px 0 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--gray-border);
+    margin-bottom: 40px;
+  }
+  .filter-bar .label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-light);
+    margin-right: 4px;
+  }
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid var(--gray-border);
+    background: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent-blue); color: var(--text-dark); }
+  .pill.active {
+    background: var(--navy);
+    color: var(--white);
+    border-color: var(--navy);
+  }
+  .pill .count {
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(0,0,0,0.08);
+    padding: 1px 7px;
+    border-radius: 10px;
+  }
+  .pill.active .count { background: rgba(255,255,255,0.2); }
+
+  /* ---- Tier Labels ---- */
+  .tier-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--navy);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .tier-label::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--navy);
+  }
+
+  /* ---- Tags (inline badges) ---- */
+  .tag-row {
+    margin-bottom: 4px;
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 2px 8px;
+    border-radius: 3px;
+  }
+  .tag-ciees { background: var(--tag-ciees-bg); color: var(--tag-ciees); }
+  .tag-ttac { background: var(--tag-ttac-bg); color: var(--tag-ttac); }
+  .tag-vtss { background: var(--tag-vtss-bg); color: var(--tag-vtss); }
+  .tag-sp { background: var(--tag-sp-bg); color: var(--tag-sp); }
+  .tag-cseep { background: var(--tag-cseep-bg); color: var(--tag-cseep); }
+
+  /* ========================================
+     TIER 1 — Leadership
+     ======================================== */
+  .tier-1 {
+    margin-bottom: 48px;
+  }
+  .tier-1-grid {
+    display: flex;
+    gap: 28px;
+    justify-content: center;
+  }
+  /* When only 1 card, it centers naturally */
+  .tier-1-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 12px;
+    padding: 32px 28px 28px;
+    text-align: center;
+    flex: 1;
+    max-width: 320px;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .tier-1-card:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+  }
+  .t1-photo {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    overflow: hidden;
+    position: relative;
+    background: var(--navy);
+  }
+  .t1-photo.has-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--navy);
+    mix-blend-mode: color;
+    opacity: 0.15;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .t1-photo img, .t1-photo .sim-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .t1-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .t1-title {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .t1-email {
+    font-size: 0.82rem;
+    color: var(--link-blue);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 12px;
+  }
+  .t1-email:hover { text-decoration: underline; }
+  .t1-bio {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+    text-align: left;
+    border-top: 1px solid var(--gray-border);
+    padding-top: 14px;
+    margin-top: 4px;
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .t1-bio.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  /* ========================================
+     TIER 2 — Directors / Assistant Directors
+     ======================================== */
+  .tier-2 {
+    margin-bottom: 48px;
+  }
+  .tier-2-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  .tier-2-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 10px;
+    padding: 24px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+    position: relative;
+  }
+  .tier-2-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+  .t2-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    background: var(--navy);
+  }
+  .t2-photo.has-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--navy);
+    mix-blend-mode: color;
+    opacity: 0.15;
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .t2-photo img, .t2-photo .sim-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .t2-info { flex: 1; min-width: 0; }
+  .t2-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 2px;
+  }
+  .t2-title {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .t2-email {
+    font-size: 0.82rem;
+    color: var(--link-blue);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+  .t2-email:hover { text-decoration: underline; }
+  .t2-bio {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--gray-border);
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .t2-bio.expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+
+  /* Logo placeholder in circles */
+  .logo-fill {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: var(--navy);
+  }
+  .logo-fill.ttac { background: var(--navy-soft); }
+  .logo-fill.vtss { background: #1a3a6b; }
+  .logo-fill svg text {
+    fill: rgba(255,255,255,0.6);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+  }
+
+  /* ========================================
+     TIER 3 — All Staff
+     ======================================== */
+  .tier-3 {
+    margin-bottom: 48px;
+  }
+  .tier-3-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 900px) { .tier-3-grid, .tier-2-grid { grid-template-columns: 1fr; } }
+
+  .tier-3-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 20px 22px;
+    transition: box-shadow 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .tier-3-card:hover {
+    border-color: #ccd5dd;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  }
+  .t3-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .t3-title {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.35;
+    margin-top: 2px;
+  }
+  .t3-email {
+    font-size: 0.8rem;
+    color: var(--link-blue);
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 2px;
+  }
+  .t3-bio-preview {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--gray-border);
+    margin-bottom: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .t3-bio-preview:empty {
+    display: none;
+  }
+  .bio-toggle {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--link-blue);
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    padding: 0;
+    margin-top: 4px;
+  }
+  .bio-toggle:hover { text-decoration: underline; }
+  .bio-full {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.35s ease;
+  }
+  .bio-full.open {
+    max-height: 400px;
+  }
+  .bio-full p {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    padding-top: 8px;
+  }
+
+  /* ---- Emeriti Section ---- */
+  .emeriti-section {
+    margin-bottom: 48px;
+  }
+  .emeriti-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  /* ---- Footer (matches CIEES site) ---- */
+  .site-footer {
+    background: #003057;
+    color: var(--white);
+    margin-top: 24px;
+  }
+  .footer-main {
+    display: flex;
+    min-height: 320px;
+  }
+  .footer-photo {
+    flex: 0 0 50%;
+    background: url('https://cieesdev.wpenginepowered.com/wp-content/uploads/2020/12/notes.jpg') center / cover no-repeat;
+  }
+  .footer-contact {
+    flex: 1;
+    padding: 48px 48px 40px;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .footer-contact h3 {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.35;
+    margin-bottom: 24px;
+  }
+  .footer-contact .contact-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .footer-contact .contact-line .icon {
+    flex-shrink: 0;
+    width: 20px;
+    text-align: center;
+    opacity: 0.7;
+    margin-top: 2px;
+  }
+  .footer-contact a {
+    color: var(--white);
+    text-decoration: underline;
+  }
+  .footer-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
+    font-size: 12px;
+    font-family: 'Montserrat', sans-serif;
+    color: rgba(255,255,255,0.6);
+    border-top: 1px solid rgba(255,255,255,0.12);
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .footer-bottom a {
+    color: rgba(255,255,255,0.6);
+    text-decoration: none;
+  }
+  .footer-bottom a:hover { text-decoration: underline; }
+  .footer-bottom .footer-links {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .footer-bottom .footer-links .dot {
+    color: rgba(255,255,255,0.3);
+  }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="mockup-banner">
+  <strong>MOCKUP v5 — March 2026</strong> &nbsp;|&nbsp; Matches existing CIEES site chrome (nav, hero, footer). Internal review only.
+</div>
+
+<nav class="mock-nav">
+  <img class="logo-ciees" src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2021/01/ciees-logo.png" alt="CIEES — Center for Implementation and Evaluation of Education Systems">
+  <div class="nav-links">
+    <a href="#" class="active">About</a>
+    <a href="#">Directory</a>
+    <a href="#">Programs <span class="dropdown-arrow">&#9660;</span></a>
+    <a href="#" class="btn-pill">Module Library</a>
+    <span class="search-box"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.47 6.47 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>Start Search</span>
+  </div>
+  <img class="logo-odu" src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2020/12/odu-white-11.png" alt="Old Dominion University">
+</nav>
+
+<!-- ============ HERO (matches CIEES site — actual stock photo) ============ -->
+<div class="hero-banner">
+  <h1>About CIEES</h1>
+</div>
+
+<!-- ============ BREADCRUMB (matches CIEES site) ============ -->
+<div class="breadcrumb-bar">
+  <span class="home-icon">&#9751;</span> <a href="#">CIEES</a><span class="sep">-</span>About CIEES
+</div>
+
+<!-- ============ ABOUT INTRO ============ -->
+<div class="about-intro">
+  <div class="intro-lead">CIEES brings educators, youth and families, community members, public sector leaders, and policymakers together to create education systems innovation.</div>
+  <p>With powerful partners and immensely talented staff, the <strong>Center for Implementation and Evaluation of Education Systems (CIEES)</strong> is uniquely situated to create meaningful changes in the outcomes of students and adults with disabilities or marginalizing conditions. Focus areas include teacher preparation, systemwide leadership and evaluation, training and technical assistance, recruitment and retention, and engaging adult learners. CIEES believes that education is the platform for social change — change that ensures equitable opportunities for all individuals.</p>
+</div>
+
+<!-- ============ DIRECTORY ============ -->
+<div class="page-content">
+
+  <!-- ============ TIER 1: Leadership ============ -->
+  <section class="tier-1">
+    <div class="tier-label">Leadership</div>
+    <div class="tier-1-grid" id="tier1Grid">
+
+      <div class="tier-1-card" data-tag="CIEES">
+        <div class="t1-photo has-photo">
+          <div class="sim-photo" style="background:linear-gradient(135deg, #8ba4b8 0%, #c8bfb0 50%, #c4a882 100%);"></div>
+        </div>
+        <div class="t1-name">Dr. Jonna Bobzien</div>
+        <div class="t1-title">Executive Director</div>
+        <a class="t1-email" href="mailto:jbobzien@odu.edu">jbobzien@odu.edu</a>
+        <p class="t1-bio">Jonna Bobzien is the executive director of CIEES and an associate professor of special education at ODU. She previously served as the department chair of CDSE and as the special education graduate program director. Jonna has published dozens of articles on working with students with disabilities.</p>
+        <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Jonna Bobzien</span></button>
+      </div>
+
+      <div class="tier-1-card" data-tag="CIEES">
+        <div class="t1-photo has-photo">
+          <div class="sim-photo" style="background:linear-gradient(135deg, #9ea8b0 0%, #c8cdd2 40%, #d4c8b8 70%, #b8a090 100%);"></div>
+        </div>
+        <div class="t1-name">Dr. Ann Maydosz</div>
+        <div class="t1-title">Director of Administration & Operations</div>
+        <a class="t1-email" href="mailto:amaydosz@odu.edu">amaydosz@odu.edu</a>
+        <p class="t1-bio">Ann brings over 23 years of grant administration expertise to CIEES. She also has 20 years of experience instructing adult learners as an adjunct professor with a research focus on special education law and policy and marginalized populations.</p>
+        <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Ann Maydosz</span></button>
+      </div>
+
+      <div class="tier-1-card" data-tag="CIEES">
+        <div class="t1-photo has-photo">
+          <div class="sim-photo" style="background:linear-gradient(135deg, #7a8a9a 0%, #a0b0c0 40%, #c0b0a0 70%, #a09080 100%);"></div>
+        </div>
+        <div class="t1-name">Ms. Jacqueline Royster</div>
+        <div class="t1-title">Director of Budgeting & Finance</div>
+        <a class="t1-email" href="mailto:jroyster@odu.edu">jroyster@odu.edu</a>
+        <p class="t1-bio">Jackie has over 25 years of experience in sponsored program administration that supports strategic and tactical initiatives. Her responsibilities include maintaining contract and grant negotiations with sponsors while overseeing finances and developing budgets.</p>
+        <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Ms. Jacqueline Royster</span></button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ TIER 2: Directors & ADs ============ -->
+  <section class="tier-2">
+    <div class="tier-label">Directors & Assistant Directors</div>
+    <div class="tier-2-grid" id="tier2Grid">
+
+      <div class="tier-2-card" data-tag="TTAC">
+        <div class="t2-photo">
+          <div class="logo-fill ttac">
+            <svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">TTAC</text></svg>
+          </div>
+        </div>
+        <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+          <div class="t2-name">Keren Plowden</div>
+          <div class="t2-title">TTAC Director</div>
+          <a class="t2-email" href="mailto:kplowden@odu.edu">kplowden@odu.edu</a>
+          <p class="t2-bio">Keren is the director of the ODU Training and Technical Assistance Center (TTAC ODU). She brings over 25 years of experience working in public and non-public school systems in both urban and rural settings along the east coast.</p>
+          <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Keren Plowden</span></button>
+        </div>
+      </div>
+
+      <div class="tier-2-card" data-tag="VTSS">
+        <div class="t2-photo">
+          <div class="logo-fill vtss">
+            <svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="22">VTSS</text></svg>
+          </div>
+        </div>
+        <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
+          <div class="t2-name">Dr. Corinne Wilson</div>
+          <div class="t2-title">VTSS Evaluation Director</div>
+          <a class="t2-email" href="mailto:CCooking@odu.edu">CCooking@odu.edu</a>
+          <p class="t2-bio">Corinne supports center activities including grant writing, development of research and evaluation designs, and data collection, management, and analysis. She serves as evaluator for the Virginia Tiered Systems of Supports (VTSS) initiative.</p>
+          <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Dr. Corinne Wilson</span></button>
+        </div>
+      </div>
+
+      <div class="tier-2-card" data-tag="TTAC">
+        <div class="t2-photo">
+          <div class="logo-fill ttac">
+            <svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="24">TTAC</text></svg>
+          </div>
+        </div>
+        <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+          <div class="t2-name">Daniel Biegun, EdD</div>
+          <div class="t2-title">TTAC Associate Director</div>
+          <a class="t2-email" href="mailto:dbiegun@odu.edu">dbiegun@odu.edu</a>
+          <p class="t2-bio">Daniel serves as both the Associate Director of T-TAC ODU and the Education Specialist for Intellectual Disabilities. He supports educators in designing and delivering engaging, evidence-based instruction for diverse learners.</p>
+          <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Daniel Biegun</span></button>
+        </div>
+      </div>
+
+      <div class="tier-2-card" data-tag="Special Projects, CIEES">
+        <div class="t2-photo">
+          <div class="logo-fill">
+            <svg viewBox="0 0 100 100"><text x="50" y="58" text-anchor="middle" font-size="22">CIEES</text></svg>
+          </div>
+        </div>
+        <div class="t2-info">
+          <div class="tag-row"><span class="tag tag-sp">Special Projects</span></div>
+          <div class="t2-name">Kristen Ingram</div>
+          <div class="t2-title">Assistant Director of Special Projects</div>
+          <a class="t2-email" href="mailto:Kingram@odu.edu">Kingram@odu.edu</a>
+          <p class="t2-bio">Kristen joins CIEES after 13 years as a dedicated Education Specialist at TTAC ODU, where she worked to bridge research to practice to improve outcomes for students with disabilities.</p>
+          <button class="bio-toggle" onclick="toggleBioClamp(this)">Read more<span class="sr-only"> about Kristen Ingram</span></button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ TIER 3: Staff ============ -->
+  <section class="tier-3">
+    <div class="tier-label">Staff</div>
+    <div class="tier-3-grid" id="tier3Grid">
+
+      <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
+        <div class="t3-name">Kayla Abrahamson, PhD</div>
+        <div class="t3-title">Program Evaluator</div>
+        <a class="t3-email" href="mailto:kabraham@odu.edu">kabraham@odu.edu</a>
+        <div class="t3-bio-preview">Kayla is a program evaluator specializing in evaluating and analyzing Multi-Tiered Systems of Support (MTSS). She collaborates with center staff, partners, and stakeholders.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kayla Abrahamson</span></button>
+        <div class="bio-full"><p>She provides technical assistance in data visualization, works in data management and analysis, and helps develop and select appropriate evaluation methodologies for various initiatives and proposals.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Dayla A. Brown</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <a class="t3-email" href="mailto:d7brown@odu.edu">d7brown@odu.edu</a>
+        <div class="t3-bio-preview">Dayla is a VTSS Systems Coach at TTAC ODU. She supports public school districts in Regions 2 &amp; 3 through the implementation of multi-tiered systems of support.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dayla Brown</span></button>
+        <div class="bio-full"><p>Dayla has over 20 years of experience working in the non-profit sector and within public and non-public school systems. She is committed to partnering with districts to cultivate environments which promote equity and deeper student engagement.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Patricia B. Clark</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <a class="t3-email" href="mailto:pbclark@ttacodu.org">pbclark@ttacodu.org</a>
+        <div class="t3-bio-preview">Pat spent 32 years in public schools as a Special Education Teacher, General Education Teacher and School Administrator. She now serves as a State Systems Coach.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Patricia Clark</span></button>
+        <div class="bio-full"><p>Pat supports several school divisions in their design and implementation of Multi-Tiered Systems of Support in Academics, Behavior/Social Emotional Wellness and Attendance.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Nicholas Q. Diggs</div>
+        <div class="t3-title">VTSS Systems Coach &amp; Behavioral Specialist</div>
+        <a class="t3-email" href="mailto:ndiggs@odu.edu">ndiggs@odu.edu</a>
+        <div class="t3-bio-preview">Nicholas is a VTSS systems coach and behavioral specialist at TTAC ODU. He supports school districts by implementing multi-tiered systems of support.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Nicholas Diggs</span></button>
+        <div class="bio-full"><p>His previous professional experiences include teaching math and science and supporting PBIS implementation at the school and division level. His passions include coaching, increasing equity in practice, and promoting student achievement.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Lisa M. Gehring, EdS</div>
+        <div class="t3-title">Education Specialist, Early Childhood</div>
+        <a class="t3-email" href="mailto:Lgehring@odu.edu">Lgehring@odu.edu</a>
+        <div class="t3-bio-preview">Lisa serves as an Early Childhood Specialist at TTAC ODU. She has a passion for supporting sustainable growth in inclusive environments through systems change.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Lisa Gehring</span></button>
+        <div class="bio-full"><p>As a member of the first cohort of the VDOE's Aspiring Special Education Leaders Academy, she is committed to building systems that positively impact young children with disabilities across regions 2 and 3.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Amy Husk</div>
+        <div class="t3-title">Education Specialist, Autism</div>
+        <a class="t3-email" href="mailto:ahusk@odu.edu">ahusk@odu.edu</a>
+        <div class="t3-bio-preview">As the Education Specialist (autism focus) at T-TAC ODU, Amy provides coaching, professional development, and resources to teachers and administrators.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amy Husk</span></button>
+        <div class="bio-full"><p>Her passion lies in empowering educators to support diverse learners with confidence and joy. She firmly believes that every student has the right to an equitable and meaningful education.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS, TTAC">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span> <span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">AnnMarie Jones</div>
+        <div class="t3-title">VTSS Systems Coach</div>
+        <a class="t3-email" href="mailto:ajones@ttacodu.org">ajones@ttacodu.org</a>
+        <div class="t3-bio-preview">AnnMarie joined TTAC ODU with 13 years of experience as a secondary English and Language Arts teacher, along with serving as a VTSS leader at the school and division-level.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about AnnMarie Jones</span></button>
+        <div class="bio-full"><p>She is passionate about supporting Virginia's schools, teachers, students, and families, promoting equitable access to effective instruction and building literacy for all learners.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Robin McCracken</div>
+        <div class="t3-title">TTAC Staff</div>
+        <a class="t3-email" href="mailto:rmccrack@odu.edu">rmccrack@odu.edu</a>
+      </div>
+
+      <div class="tier-3-card" data-tag="CSEEP, CIEES">
+        <div class="tag-row"><span class="tag tag-cseep">CSEEP</span> <span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Tracy Murray</div>
+        <div class="t3-title">Program Support Technician Senior</div>
+        <a class="t3-email" href="mailto:tmurray@odu.edu">tmurray@odu.edu</a>
+        <div class="t3-bio-preview">Tracy has worked for Commonwealth Special Education Endorsement Program (CSEEP) for 16 wonderful years, helping to run the day-to-day aspects of CSEEP.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Tracy Murray</span></button>
+        <div class="bio-full"><p>It gives her a great sense of pride helping those in the front lines of special education — our teachers!</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Ynez Peterson</div>
+        <div class="t3-title">Assistive Technology Specialist</div>
+        <a class="t3-email" href="mailto:ypeterso@odu.edu">ypeterso@odu.edu</a>
+        <div class="t3-bio-preview">Ynez is the assistive technology specialist for T-TAC ODU with over 28 years' experience as an occupational therapist and AT specialist in the Virginia Public School System.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Ynez Peterson</span></button>
+        <div class="bio-full"><p>She shares her passion for working with students with disabilities by consulting with teachers, presenting at national conferences, and creating professional development opportunities for educators.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Crystal Pope, PhD</div>
+        <div class="t3-title">Mathematics Specialist</div>
+        <a class="t3-email" href="mailto:cmpope@odu.edu">cmpope@odu.edu</a>
+        <div class="t3-bio-preview">Crystal is a Mathematics Specialist at TTAC ODU. Her areas of focus are specially designed instruction, student engagement, mathematical foundations and connections, and critical thinking.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Crystal Pope</span></button>
+        <div class="bio-full"><p>She previously served as a middle school math teacher, math instructional coach, secondary math program specialist, and building administrator.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Pat Pulliam</div>
+        <div class="t3-title">CIEES Staff</div>
+        <a class="t3-email" href="mailto:pwoolard@odu.edu">pwoolard@odu.edu</a>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Erin Saxon</div>
+        <div class="t3-title">Early Childhood/Literacy Educational Specialist</div>
+        <a class="t3-email" href="mailto:esaxon@odu.edu">esaxon@odu.edu</a>
+        <div class="t3-bio-preview">Erin is an educational specialist at TTAC ODU, providing training and technical assistance in the areas of early childhood special education and early literacy.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Erin Saxon</span></button>
+        <div class="bio-full"><p>She is encouraged by collaborative efforts within the field that aim to improve outcomes for children and students with disabilities.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Danielle Sentz</div>
+        <div class="t3-title">Early Childhood Educational Specialist</div>
+        <a class="t3-email" href="mailto:dsentz@odu.edu">dsentz@odu.edu</a>
+        <div class="t3-bio-preview">Danielle is the newest addition to the Early Childhood Education Specialist trio at TTAC ODU, with a dually endorsed master's degree in Inclusive Early Childhood Education.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Danielle Sentz</span></button>
+        <div class="bio-full"><p>She has a passion for the inclusion of each and every child, in any environment.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Shannon Smith</div>
+        <div class="t3-title">Office Services Specialist</div>
+        <a class="t3-email" href="mailto:sduncan@odu.edu">sduncan@odu.edu</a>
+        <div class="t3-bio-preview">Shannon works as support staff for VTSS/PBIS. She began working for T-TAC in 2001 and has learned so much about special education over those 20+ years.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Shannon Smith</span></button>
+        <div class="bio-full"><p>She has witnessed the important role the TTAC ODU team plays in supporting special education in the public school system.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
+        <div class="t3-name">Sheryl Spence</div>
+        <div class="t3-title">Part-time Data Support</div>
+        <a class="t3-email" href="mailto:sspence@odu.edu">sspence@odu.edu</a>
+      </div>
+
+      <div class="tier-3-card" data-tag="TTAC">
+        <div class="tag-row"><span class="tag tag-ttac">TTAC</span></div>
+        <div class="t3-name">Kathy Thumm</div>
+        <div class="t3-title">TTAC Staff</div>
+        <a class="t3-email" href="mailto:kthumm@odu.edu">kthumm@odu.edu</a>
+        <div class="t3-bio-preview">Kathy produces professional development materials for training workshops and inputs data for the VDOE database at TTAC ODU.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Kathy Thumm</span></button>
+        <div class="bio-full"><p>Previous experience includes graphic design, public affairs, volunteerism, and non-profit management. Her passion is pottery and graphic design.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="VTSS">
+        <div class="tag-row"><span class="tag tag-vtss">VTSS</span></div>
+        <div class="t3-name">Amanda Working, PhD</div>
+        <div class="t3-title">Research Analyst</div>
+        <a class="t3-email" href="mailto:aworking@odu.edu">aworking@odu.edu</a>
+        <div class="t3-bio-preview">Amanda is a research analyst for CIEES. She supports center activities including research and evaluation design, data collection, management, analysis, and report generation.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Amanda Working</span></button>
+        <div class="bio-full"><p>As a program evaluator, she serves on the evaluation, leadership, and implementation teams for Virginia Tiered Systems of Supports (VTSS).</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="Special Projects, CIEES">
+        <div class="tag-row"><span class="tag tag-sp">Special Projects</span> <span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Michelle Young, DPT, CPACC</div>
+        <div class="t3-title">Center Technology Specialist</div>
+        <a class="t3-email" href="mailto:m3young@odu.edu">m3young@odu.edu</a>
+        <div class="t3-bio-preview">Michelle serves as Center Technology Specialist for CIEES. The combination of her work in physical therapy and tech has allowed her to fulfill her passion for accessibility advocacy.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Michelle Young</span></button>
+        <div class="bio-full"><p>She is a Certified Professional in Accessibility Core Competencies (CPACC), bringing expertise in web development, cyber security, and website ADA compliance and remediation.</p></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ EMERITI ============ -->
+  <section class="emeriti-section">
+    <div class="tier-label">Director Emeriti / Senior Advisors</div>
+    <div class="emeriti-grid" id="emeritiGrid">
+
+      <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Dr. Stephen W. Tonelson</div>
+        <div class="t3-title">Senior Advisor / Director Emeritus</div>
+        <div class="t3-bio-preview">Steve is a senior advisor/director emeritus of CIEES. He has extensive experience in program evaluation, especially in substance abuse and individuals and families with special needs.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Tonelson</span></button>
+        <div class="bio-full"><p>He earned the status of emeritus professor of early childhood and special education at Old Dominion University when he retired from the university in 2022.</p></div>
+      </div>
+
+      <div class="tier-3-card" data-tag="CIEES">
+        <div class="tag-row"><span class="tag tag-ciees">CIEES</span></div>
+        <div class="t3-name">Dr. Robert A. Gable</div>
+        <div class="t3-title">Senior Advisor / Director Emeritus</div>
+        <div class="t3-bio-preview">Bob is a senior advisor/director emeritus of CIEES and the Constance and Colgate Darden Professor of Special Education (emeritus) at ODU.</div>
+        <button class="bio-toggle" onclick="toggleBio(this)">Read more<span class="sr-only"> about Dr. Gable</span></button>
+        <div class="bio-full"><p>He has published extensively on academic assessment, functional behavioral assessment, positive behavioral interventions and supports, and collaboration in schools. He was president of CCBD and a Fulbright Senior Scholar.</p></div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-main">
+    <div class="footer-photo"></div>
+    <div class="footer-contact">
+      <h3>Center for Implementation and<br>Evaluation of Education Systems</h3>
+      <div class="contact-line">
+        <span class="icon">&#128205;</span>
+        <span><a href="#">Lions Child Study Center, Room 217</a><br>4501 Hampton Boulevard<br><a href="#">Norfolk, VA 23509</a></span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#128424;</span>
+        <span>757-683-4129</span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#128222;</span>
+        <span><a href="tel:757-683-5372">757-683-5372</a></span>
+      </div>
+      <div class="contact-line">
+        <span class="icon">&#9993;</span>
+        <span><a href="mailto:CIEES@odu.edu">CIEES@odu.edu</a></span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; Old Dominion University &middot; Updated 1/27/2025</span>
+    <div class="footer-links">
+      <a href="#">About CIEES</a><span class="dot">&middot;</span>
+      <a href="#">Directory</a><span class="dot">&middot;</span>
+      <a href="#">Privacy</a><span class="dot">&middot;</span>
+      <a href="#">Terms &amp; Conditions</a><span class="dot">&middot;</span>
+      <a href="#">Accessibility</a><span class="dot">&middot;</span>
+      <a href="#">Consumer Information</a>
+    </div>
+    <span>Norfolk Website Design By TechArk</span>
+  </div>
+</footer>
+
+<script>
+  // Tier 3: toggles hidden bio-full div
+  function toggleBio(btn) {
+    var full = btn.nextElementSibling;
+    var isOpen = full.classList.contains('open');
+    full.classList.toggle('open');
+    var card = btn.closest('.tier-3-card') || btn.closest('.tier-2-card') || btn.closest('.tier-1-card');
+    var nameEl = card.querySelector('.t3-name') || card.querySelector('.t2-name') || card.querySelector('.t1-name');
+    var label = isOpen ? 'Read more' : 'Show less';
+    btn.innerHTML = label + '<span class="sr-only"> about ' + nameEl.textContent + '</span>';
+  }
+
+  // Tier 1 & 2: toggles line-clamp on the bio paragraph
+  function toggleBioClamp(btn) {
+    var bio = btn.previousElementSibling;
+    var isExpanded = bio.classList.contains('expanded');
+    bio.classList.toggle('expanded');
+    var card = btn.closest('.tier-1-card') || btn.closest('.tier-2-card');
+    var nameEl = card.querySelector('.t1-name') || card.querySelector('.t2-name');
+    var label = isExpanded ? 'Read more' : 'Show less';
+    btn.innerHTML = label + '<span class="sr-only"> about ' + nameEl.textContent + '</span>';
+  }
+
+  // Filter system removed — tags are informational only
+</script>
+
+</body>
+</html>

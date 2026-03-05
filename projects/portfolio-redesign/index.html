@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Library — CIEES Special Projects (Redesign Mockup v4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     CIEES Portfolio / Module Library Redesign
+     Mockup v3 — March 2026
+
+     v3b — March 2026
+
+     Changes from v2:
+     - Filter pill bar at top of content area (All, Module Series, Resource Hub, etc.)
+     - Ready Region moved to "Other Partners" catch-all (no logo)
+     - Future-proof: filter system auto-discovers tags from data-tag attributes
+     - External link icon (↗) only on resources hosted outside CIEES site
+     - Multi-tag support: cards can carry multiple tags (comma-separated data-tag)
+       and appear under each matching filter pill
+
+     DEVELOPER NOTES (for TechArk/vendor):
+     - ACCESSIBILITY — REQUIRED: Every "Read more" / "Show less" button MUST
+       include a .screen-reader-text span with the project title so screen readers
+       announce "Read more about [Project Name]" instead of nine identical
+       "Read more" links. See the HTML for the pattern. The WordPress theme
+       already defines .screen-reader-text — use that class. When building
+       the ACF template, the hidden span text should auto-populate from the
+       portfolio item's title field.
+     - Tags should be an ACF taxonomy or repeater field on the portfolio CPT.
+       The filter JS reads data-tag values from cards at page load and builds
+       the pill bar dynamically — no hardcoded tag list needed.
+     - Multi-tag: if a card has data-tag="Resource Hub, Learning Platform",
+       it will appear when either filter is active.
+     - External link icon is driven by data-external="true" on the card.
+       Set this based on whether the resource URL points to cieesdev.wpenginepowered.com
+       (internal) or an external domain (external).
+     ======================================== */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  /* ---- Focus Indicator (keyboard accessibility) ---- */
+  a:focus-visible,
+  button:focus-visible {
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  :root {
+    --navy: #042a4b;
+    --navy-light: #0f3c61;
+    --teal: #00aea9;
+    --teal-hover: #00817d;
+    --blue-light: #eef7ff;
+    --gray-bg: #f5f7fa;
+    --gray-border: #e2e6ea;
+    --text-dark: #2d2d2d;
+    --text-muted: #5a6370;
+    --white: #ffffff;
+    --tag-bg: #e8f4f8;
+    --tag-text: #0a5e73;
+    --max-width: 1140px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Simulated Nav ---- */
+  .mock-nav {
+    background: var(--navy);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .mock-nav .logo {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    margin-right: auto;
+    opacity: 0.95;
+  }
+  .mock-nav a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .mock-nav a:hover { color: var(--white); text-decoration: underline; }
+  .mock-nav .nav-pill {
+    border: 1px solid rgba(255,255,255,0.6);
+    border-radius: 100px;
+    padding: 4px 14px;
+    color: var(--white);
+    transition: border-color 0.2s ease;
+  }
+  .mock-nav .nav-pill:hover { border-color: rgb(91, 194, 231); text-decoration: underline; }
+
+  /* ---- Breadcrumb ---- */
+  .breadcrumb {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 12px 40px;
+    background: var(--blue-light);
+  }
+  .breadcrumb a { color: var(--navy); text-decoration: underline; }
+
+  /* ---- Hero ---- */
+  .hero {
+    background: var(--blue-light);
+    padding: 48px 40px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: -80px; right: -120px;
+    width: 500px; height: 500px;
+    border: 2px solid rgba(0,174,169,0.15);
+    transform: rotate(30deg);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+  .sp-brand {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    opacity: 0.9;
+  }
+  .sp-brand svg { width: 56px; height: 56px; }
+  .sp-brand-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .sp-brand-text strong {
+    font-size: 20px;
+    display: block;
+    font-weight: 600;
+  }
+  .hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .hero .intro {
+    font-size: 18px;
+    color: var(--text-dark);
+    max-width: 780px;
+    line-height: 1.65;
+  }
+
+  /* ---- Filter Pills ---- */
+  .filter-bar {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 32px 40px 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  .filter-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-right: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .filter-pill {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--gray-border);
+    background: var(--white);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .filter-pill:hover {
+    border-color: #b8cdd8;
+    color: var(--navy);
+    text-decoration: underline;
+  }
+  .filter-pill.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+  .filter-pill .pill-count {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 1px 6px;
+    margin-left: 5px;
+  }
+  .filter-pill.active .pill-count {
+    background: rgba(255,255,255,0.25);
+  }
+  .filter-pill:not(.active) .pill-count {
+    background: var(--gray-bg);
+    color: var(--text-muted);
+  }
+
+  /* ---- Main Content ---- */
+  .content-area {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 32px 40px 64px;
+  }
+
+  /* ---- Client Group ---- */
+  .client-group {
+    margin-bottom: 56px;
+    transition: opacity 0.25s, max-height 0.3s;
+  }
+  .client-group:last-child { margin-bottom: 0; }
+  .client-group.hidden {
+    display: none;
+  }
+
+  .client-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid var(--navy);
+    margin-bottom: 28px;
+  }
+  .client-logo {
+    height: 80px;
+    width: auto;
+    max-width: 160px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .client-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.3;
+  }
+  .client-name .sub-office {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+
+  /* Other Partners — no logo variant */
+  .client-header.no-logo {
+    gap: 0;
+  }
+
+  /* ---- Project Cards ---- */
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+
+  .project-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 24px 28px;
+    transition: border-color 0.2s, box-shadow 0.2s, opacity 0.25s;
+    display: flex;
+    flex-direction: column;
+    /* Logo footer uses margin-top:auto to push to bottom of card */
+  }
+  .project-card:hover {
+    border-color: #b8cdd8;
+    box-shadow: 0 2px 12px rgba(4, 42, 75, 0.06);
+  }
+  .project-card.hidden {
+    display: none;
+  }
+
+  /* Optional per-card project logo — footer position.
+     Lives at the bottom of the card via margin-top:auto so it never
+     shifts the tag/title/description. Tag is always first in flow,
+     title always second, at the exact same position on every card.
+     Logo is the last element — a "brought to you by" mark. */
+  .card-logo-footer {
+    margin-top: auto;
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+  }
+  .card-logo-footer img {
+    height: 72px;
+    width: auto;
+    max-width: 200px;
+    object-fit: contain;
+  }
+
+  /* Multi-tag display: show all tags inline */
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  /* Tags */
+  .project-card .tag {
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 3px 10px;
+    border-radius: 4px;
+    width: fit-content;
+  }
+
+  /* Title = link */
+  .project-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.4;
+    margin-bottom: 12px;
+  }
+  .project-card h3 a {
+    color: var(--navy);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .project-card h3 a:hover { color: var(--teal-hover); text-decoration: underline; }
+
+  /* External link icon — only on resources hosted outside the CIEES site */
+  .project-card[data-external="true"] h3 a::after {
+    content: '';
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-left: 6px;
+    vertical-align: middle;
+    opacity: 0.4;
+    /* SVG external link icon (box with arrow) */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23042a4b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 3.5H3a1 1 0 0 0-1 1V13a1 1 0 0 0 1 1h8.5a1 1 0 0 0 1-1V9.5'/%3E%3Cpath d='M9.5 2h4.5v4.5'/%3E%3Cpath d='M14 2L7.5 8.5'/%3E%3C/svg%3E");
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: opacity 0.2s;
+  }
+  .project-card[data-external="true"] h3 a:hover::after {
+    opacity: 0.7;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2300aea9' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6.5 3.5H3a1 1 0 0 0-1 1V13a1 1 0 0 0 1 1h8.5a1 1 0 0 0 1-1V9.5'/%3E%3Cpath d='M9.5 2h4.5v4.5'/%3E%3Cpath d='M14 2L7.5 8.5'/%3E%3C/svg%3E");
+  }
+
+  /* Collapsible description */
+  .card-desc {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    flex-grow: 1;
+  }
+  .card-desc .desc-preview { display: inline; }
+  .card-desc .desc-full { display: none; }
+  .card-desc.expanded .desc-preview { display: none; }
+  .card-desc.expanded .desc-full { display: inline; }
+
+  .read-more-btn {
+    display: inline;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--navy);
+    cursor: pointer;
+    padding: 0;
+    margin-left: 4px;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-decoration-color: rgba(4, 42, 75, 0.3);
+    text-underline-offset: 2px;
+    transition: color 0.2s, text-decoration-color 0.2s, text-decoration-thickness 0.2s;
+  }
+  .read-more-btn:hover {
+    color: var(--teal-hover);
+    text-decoration-color: var(--teal-hover);
+    text-decoration-thickness: 1.5px;
+  }
+
+  /* ---- Accessible screen-reader-text (matches WP theme class) ----
+     NOTE FOR VENDOR: This class already exists in the WordPress theme
+     stylesheet. It is duplicated here only so the standalone mockup
+     renders correctly. In production, remove this block and rely on
+     the theme's .screen-reader-text rule. */
+  .screen-reader-text {
+    border: 0;
+    clip-path: inset(50%);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+    overflow-wrap: normal !important;
+  }
+
+  /* ---- No-results message ---- */
+  .no-results {
+    display: none;
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-muted);
+    font-size: 15px;
+  }
+  .no-results.visible { display: block; }
+
+  /* ---- Partner CTA ---- */
+  .cta-section {
+    background: var(--teal);
+    padding: 48px 40px;
+  }
+  .cta-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+  }
+  .cta-inner h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+  .cta-inner p {
+    color: var(--navy);
+    font-size: 16px;
+    max-width: 560px;
+  }
+  .cta-btn {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    background: var(--white);
+    padding: 12px 28px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.1s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .cta-btn:hover {
+    background: #f0f4f7;
+    transform: translateY(-1px);
+  }
+
+  /* ---- Footer Contact ---- */
+  .footer-contact {
+    background: var(--navy);
+    color: #fff;
+    padding: 48px 40px;
+  }
+  .footer-contact-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .footer-org-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    line-height: 1.3;
+  }
+  .footer-info address {
+    font-style: normal;
+    line-height: 1.6;
+  }
+  .footer-info address p {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+    font-size: 15px;
+  }
+  .footer-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: rgba(255,255,255,0.7);
+  }
+  .footer-info a {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .footer-info a:hover {
+    color: var(--teal);
+    text-decoration: underline;
+  }
+
+  /* ---- Footer Bottom Bar ---- */
+  .footer-bottom {
+    background: #021a33;
+    padding: 14px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+  }
+  .footer-copyright {
+    white-space: nowrap;
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+  }
+  .footer-links a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .footer-links a:hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+  .footer-links a + a::before {
+    content: "•";
+    margin-right: 6px;
+    color: rgba(255,255,255,0.4);
+  }
+
+  /* ---- Mockup Label ---- */
+  /* ---- Skip Link ---- */
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 16px;
+    background: var(--navy);
+    color: #fff;
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 0 0 6px 6px;
+    z-index: 10000;
+    text-decoration: none;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 0;
+    outline: 3px solid var(--teal);
+    outline-offset: 2px;
+  }
+  .skip-link-footer {
+    left: 250px;
+  }
+
+  .mockup-banner {
+    background: #fff3cd;
+    border-bottom: 1px solid #ffc107;
+    padding: 10px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: #664d03;
+    text-align: center;
+  }
+  .mockup-banner strong { font-weight: 600; }
+
+  .dev-notes {
+    background: #f0f4ff;
+    border: 2px solid #003366;
+    border-radius: 8px;
+    margin: 20px 40px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: #1a1a2e;
+    line-height: 1.6;
+  }
+  .dev-notes-inner {
+    padding: 24px 32px;
+  }
+  .dev-notes-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #003366;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #003366;
+  }
+  .dev-notes-subheading {
+    font-size: 15px;
+    font-weight: 600;
+    color: #003366;
+    margin-top: 4px;
+    margin-bottom: 6px;
+  }
+  .dev-notes p {
+    margin-bottom: 8px;
+  }
+  .dev-notes code {
+    background: #e2e8f0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+  }
+  .dev-notes pre {
+    background: #1a1a2e;
+    color: #e2e8f0;
+    padding: 12px 16px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+  }
+  .dev-notes pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+    font-size: 13px;
+  }
+
+  /* ---- Responsive ---- */
+  @media (max-width: 991px) {
+    .hero h1 { font-size: 32px; }
+    .project-list { grid-template-columns: 1fr; }
+    .client-header { gap: 16px; }
+    .client-logo { height: 60px; }
+    .cta-inner { flex-direction: column; text-align: center; }
+    .mock-nav { padding: 12px 20px; gap: 16px; font-size: 12px; }
+    .hero, .content-area, .breadcrumb, .filter-bar { padding-left: 20px; padding-right: 20px; }
+  }
+  @media (max-width: 600px) {
+    .mock-nav .nav-links { display: none; }
+    .hero h1 { font-size: 28px; }
+    .client-name { font-size: 16px; }
+    .client-logo { height: 48px; }
+    .filter-bar { gap: 6px; }
+    .filter-pill { font-size: 12px; padding: 5px 12px; }
+    .card-logo-footer img { height: 56px; max-width: 160px; }
+    .footer-contact { padding: 32px 20px; }
+    .footer-org-name { font-size: 18px; }
+    .footer-bottom { padding: 12px 20px; flex-direction: column; align-items: flex-start; }
+    .footer-links { gap: 4px; }
+    .skip-link-footer { left: 16px; top: -200%; }
+    .skip-link-footer:focus { top: 44px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Skip Navigation — first focusable elements on the page -->
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<a class="skip-link skip-link-footer" href="#site-footer">Skip to footer</a>
+
+<!-- Mockup artifacts — outside page landmarks -->
+<aside aria-label="Mockup notes — not part of the page design">
+  <div class="mockup-banner">
+    <strong>MOCKUP v4a — March 2026</strong> &nbsp;|&nbsp; Logos as card footer marks — readable size, tag/title parity preserved. Multi-tag on CLC. Internal review only.
+  </div>
+
+  <div class="dev-notes">
+    <div class="dev-notes-inner">
+      <p class="dev-notes-heading">Notes</p>
+
+      <p class="dev-notes-subheading">Accessible "Read More" Links</p>
+      <p>Given our need for WCAG AA compliance, the "Read more" links on this page will need screen reader text added so that each button announces the project name (e.g., "Read more about [Project Name]" rather than nine identical "Read more" links). The theme already defines <code>.screen-reader-text</code> in CSS, and the ACF title field can populate the hidden text automatically. Proposed pattern:</p>
+      <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+      <p>Same idea for the toggled state:</p>
+      <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+    </div>
+  </div>
+</aside>
+
+<!-- Site Header -->
+<header role="banner">
+  <nav class="mock-nav" aria-label="Main navigation">
+    <div class="logo">CIEES</div>
+    <div class="nav-links"><a href="#">About</a></div>
+    <div class="nav-links"><a href="#">Directory</a></div>
+    <div class="nav-links"><a href="#">Programs</a></div>
+    <a href="#" class="nav-pill">Module Library</a>
+  </nav>
+</header>
+
+<!-- Main Content Area -->
+<main id="main-content" role="main">
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb" aria-label="Breadcrumb">
+  <a href="#">CIEES</a> &nbsp;&rsaquo;&nbsp; Library
+</nav>
+
+<!-- Hero -->
+<section class="hero" aria-labelledby="page-title">
+  <div class="hero-inner">
+    <div class="sp-brand">
+      <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="28" r="6" stroke="#042a4b" stroke-width="2.5" fill="none"/>
+        <circle cx="42" cy="14" r="6" stroke="#042a4b" stroke-width="2.5" fill="none"/>
+        <circle cx="42" cy="42" r="6" stroke="#042a4b" stroke-width="2.5" fill="none"/>
+        <line x1="19" y1="25" x2="36" y2="16" stroke="#00aea9" stroke-width="2"/>
+        <line x1="19" y1="31" x2="36" y2="40" stroke="#00aea9" stroke-width="2"/>
+        <line x1="42" y1="20" x2="42" y2="36" stroke="#042a4b" stroke-width="2"/>
+      </svg>
+      <div class="sp-brand-text">
+        <strong>Special Projects</strong>
+        Center for the Implementation and<br>Evaluation of Education Systems
+      </div>
+    </div>
+    <h1 id="page-title">Library</h1>
+    <p class="intro">
+      Browse the training module series and digital resources developed by the Special Projects team at CIEES in partnership with Virginia's public sector agencies. Each project below links to its own dedicated site or resource page.
+    </p>
+  </div>
+</section>
+
+<!-- Filter Bar -->
+<nav class="filter-bar" id="filter-bar" aria-label="Filter projects by type">
+  <span class="filter-label">Show:</span>
+  <!-- Pills are generated by JS based on actual tags in the page -->
+</nav>
+
+<!-- Main Content -->
+<div class="content-area" id="content-area">
+
+  <!-- ============ DBHDS ============ -->
+  <div class="client-group" data-client="dbhds">
+    <div class="client-header">
+      <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2025/10/DBHDS-logo-e1772155111923.png" alt="DBHDS — Virginia Department of Behavioral Health and Developmental Services logo" class="client-logo">
+      <h2 class="client-name">Virginia Department of Behavioral Health and Developmental Services</h2>
+    </div>
+    <div class="project-list">
+
+      <div class="project-card" data-tag="Module Series">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/case-management-for-sud/" target="_blank">Case Management for Substance Use Disorders</a></h3>
+        <div class="card-desc" id="desc-cm-sud">
+          <span class="desc-preview">A 5-module series for case managers working with individuals and families affected by substance use disorders. Includes videos, case studies, and quizzes.</span>
+          <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 5-module series is designed for case managers who work with individuals and families affected by substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an introduction to case management, the continuum of care, engagement and retention strategies, and considerations for special populations. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-cm-sud', this)">Read more<span class="screen-reader-text"> about Case Management for Substance Use Disorders</span></button>
+        </div>
+      </div>
+
+      <div class="project-card" data-tag="Module Series" data-external="true">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://revive.cieesodu.org/" target="_blank">REVIVE! Opioid Overdose Awareness</a></h3>
+        <div class="card-desc" id="desc-revive">
+          <span class="desc-preview">Training modules on opioid risk awareness and the critical role of naloxone in overdose situations, for healthcare workers and community partners.</span>
+          <span class="desc-full">The REVIVE! modules focus on educating healthcare workers and community partners about the risks associated with opioid use and the critical role of naloxone in overdose situations. The modules cover key requirements for dispensing naloxone and provide essential guidance for individuals who administer it in emergency settings.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-revive', this)">Read more<span class="screen-reader-text"> about REVIVE! Opioid Overdose Awareness</span></button>
+        </div>
+        <div class="card-logo-footer">
+          <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/09/REVIVE_Logo-e1772155187357.png" alt="REVIVE! logo">
+        </div>
+      </div>
+
+      <div class="project-card" data-tag="Module Series">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/initiatives/idd/" target="_blank">Working with Adults with IDD &amp; Substance Use Disorders</a></h3>
+        <div class="card-desc" id="desc-idd">
+          <span class="desc-preview">Modules for community services board clinicians providing outpatient treatment to adults with intellectual or developmental disabilities and co-occurring SUDs.</span>
+          <span class="desc-full">Developed in partnership with the Virginia Department of Behavioral Health and Developmental Services (DBHDS), this 6-module series is designed for community services board (CSB) clinicians who provide outpatient treatment to adults with intellectual or developmental disabilities (IDD) and co-occurring substance use disorders (SUDs). Each module includes a video, case study, and quiz and takes approximately one hour to complete. Topics include an overview of IDD, unique treatment considerations, trauma-informed care approaches, and strategies for building effective support systems. Certificates of completion are awarded upon passing the quiz with a score of 80% or higher.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-idd', this)">Read more<span class="screen-reader-text"> about Working with Adults with IDD and Substance Use Disorders</span></button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ VDOE ============ -->
+  <div class="client-group" data-client="vdoe">
+    <div class="client-header">
+      <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/03/VDOE-2022-Vertical-Full-Color-200x130-1-e1710356372799.png" alt="Virginia Department of Education logo" class="client-logo">
+      <h2 class="client-name">Virginia Department of Education</h2>
+    </div>
+    <div class="project-list">
+
+      <div class="project-card" data-tag="Module Series">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/office-of-dispute-resolution-learning-library/" target="_blank">Office of Dispute Resolution Learning Library</a></h3>
+        <div class="card-desc" id="desc-odr">
+          <span class="desc-preview">Two resource areas for special education professionals: practical guidance videos and an interactive timeline of the special education due process system.</span>
+          <span class="desc-full">Developed in partnership with VDOE's Office of Dispute Resolution and Administrative Services (ODRAS), this library offers two resource areas for special education professionals: (1) practical guidance videos addressing common questions about dispute resolution, and (2) an interactive timeline of the special education due process system.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-odr', this)">Read more<span class="screen-reader-text"> about Office of Dispute Resolution Learning Library</span></button>
+        </div>
+      </div>
+
+      <div class="project-card" data-tag="Module Series">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/initiatives/restraint-and-seclusion/" target="_blank">Regulations Governing the Use of Restraint &amp; Seclusion</a></h3>
+        <div class="card-desc" id="desc-rs">
+          <span class="desc-preview">A training series on Virginia's restraint and seclusion regulations for school division staff, with videos, knowledge checks, and certificates of completion.</span>
+          <span class="desc-full">Developed in partnership with the Virginia Department of Education (VDOE), this training series is designed for school division staff responsible for understanding and implementing Virginia's regulations on the use of restraint and seclusion. Each module includes a video, knowledge check, and certificate of completion.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-rs', this)">Read more<span class="screen-reader-text"> about Regulations Governing the Use of Restraint and Seclusion</span></button>
+        </div>
+      </div>
+
+      <div class="project-card" data-tag="Module Series">
+        <div class="tag-row"><span class="tag">Module Series</span></div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/initiatives/virtual-learning-support-toolkit/" target="_blank">Virtual Learning Support Toolkit</a></h3>
+        <div class="card-desc" id="desc-vlst">
+          <span class="desc-preview">Eleven asynchronous modules giving school leaders and educators research-based tools for effective virtual and blended instruction.</span>
+          <span class="desc-full">Developed in partnership with VDOE's Office of STEM and Innovation, this series of 11 asynchronous modules gives school leaders and educators research-based tools for effective virtual and blended instruction. Topics span supporting positive student behavior online, planning and structuring virtual lessons, strategies for student engagement and participation, and leveraging technology to personalize learning.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-vlst', this)">Read more<span class="screen-reader-text"> about Virtual Learning Support Toolkit</span></button>
+        </div>
+      </div>
+
+      <!-- CLC — two tags + OBHSS footer logo + external (lives on its own server) -->
+      <div class="project-card" data-tag="Resource Hub, Learning Platform" data-external="true">
+        <div class="tag-row">
+          <span class="tag">Resource Hub</span>
+          <span class="tag">Learning Platform</span>
+        </div>
+        <h3><a href="https://cieesdev.wpenginepowered.com/career-and-learning-center/" target="_blank">Career &amp; Learning Center for School Mental Health Professionals</a></h3>
+        <div class="card-desc" id="desc-clc">
+          <span class="desc-preview">A one-stop professional development and resource collection for school counselors, psychologists, social workers, nurses, and administrators.</span>
+          <span class="desc-full">In partnership with CIEES, the VDOE Office of Student Services (OSS) offers a one-stop professional development and resource collection for specialized instructional support personnel such as school counselors, school psychologists, school social workers, school nurses, and administrators.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-clc', this)">Read more<span class="screen-reader-text"> about Career and Learning Center for School Mental Health Professionals</span></button>
+        </div>
+        <div class="card-logo-footer">
+          <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/12/VDOE-OBHSS-Vertical-Full-Color-Resized.png" alt="Office of Behavioral Health and Student Safety logo">
+        </div>
+      </div>
+
+      <!-- CCC — footer logo -->
+      <div class="project-card" data-tag="Learning Platform" data-external="true">
+        <div class="tag-row"><span class="tag">Learning Platform</span></div>
+        <h3><a href="https://osep.cieesodu.org/" target="_blank">Creating Capacity for Change Collaborative</a></h3>
+        <div class="card-desc" id="desc-ccc">
+          <span class="desc-preview">A learning hub supporting the implementation of multi-tiered systems of supports across Virginia's school divisions, with video series, quizzes, and certificates.</span>
+          <span class="desc-full">A learning hub developed in collaboration with the Virginia Department of Education to support the implementation of a multi-tiered system of supports across Virginia's school divisions. Educators and division leaders will find multiple video series with quizzes and certificates of completion covering topics in positive behavior, academic support systems, and data-driven decision making.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-ccc', this)">Read more<span class="screen-reader-text"> about Creating Capacity for Change Collaborative</span></button>
+        </div>
+        <div class="card-logo-footer">
+          <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2024/03/CCC-logo-small-2.png" alt="Creating Capacity for Change Collaborative logo">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============ Other Partners ============ -->
+  <div class="client-group" data-client="other">
+    <div class="client-header no-logo">
+      <h2 class="client-name">Other Partners</h2>
+    </div>
+    <div class="project-list">
+      <div class="project-card" data-tag="Event Calendar" data-external="true">
+        <div class="tag-row"><span class="tag">Event Calendar</span></div>
+        <h3><a href="https://earlychildhoodpdva.org/" target="_blank">Early Childhood Professional Development Calendar</a></h3>
+        <div class="card-desc" id="desc-ecpd">
+          <span class="desc-preview">A searchable calendar connecting early childhood educators in southeastern Virginia with live, in-person, on-demand, and self-paced training opportunities.</span>
+          <span class="desc-full">Developed by Special Projects and maintained in partnership with multiple regional early childhood organizations, this professional development calendar connects early childhood educators and providers in southeastern Virginia with training opportunities in one searchable place. Browse live, in-person, on-demand, and self-paced events spanning behavior management, curriculum, family engagement, health and safety, social-emotional development, and more — all organized by Ready Region Southeastern.</span>
+          <button class="read-more-btn" aria-expanded="false" onclick="toggleDesc('desc-ecpd', this)">Read more<span class="screen-reader-text"> about Early Childhood Professional Development Calendar</span></button>
+        </div>
+        <div class="card-logo-footer">
+          <img src="https://cieesdev.wpenginepowered.com/wp-content/uploads/2026/02/Ready-Regions-Southeastern-e1772155241697.png" alt="Ready Region Southeastern logo">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="no-results" id="no-results" role="status">No projects match this filter.</div>
+
+</div>
+
+</main>
+
+<!-- Site Footer -->
+<footer id="site-footer" role="contentinfo">
+
+  <!-- Partner CTA -->
+  <section class="cta-section" aria-labelledby="cta-heading">
+    <div class="cta-inner">
+      <div>
+        <h2 id="cta-heading">Partner With Us</h2>
+        <p>Facing big goals and complex systems? Our team is ready to turn ideas into thoughtful, effective digital solutions.</p>
+      </div>
+      <a href="https://cieesdev.wpenginepowered.com/special-projects/partner-with-special-projects/" class="cta-btn">Let's Get Started</a>
+    </div>
+  </section>
+
+  <!-- Footer Contact -->
+  <div class="footer-contact">
+    <div class="footer-contact-inner">
+      <div class="footer-info">
+        <p class="footer-org-name">Center for Implementation and Evaluation of Education Systems</p>
+        <address>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            <a href="https://goo.gl/maps/w7G4K9H3PCNuTnmT7" target="_blank" rel="noopener">Lions Child Study Center, Room 217<br>4501 Hampton Boulevard<br>Norfolk, VA 23509</a>
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 3h-8v4h8z"/></svg>
+            757-683-4129
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.86 19.86 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.86 19.86 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.81.36 1.6.68 2.35a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.75.32 1.54.55 2.35.68a2 2 0 011.72 2.05z"/></svg>
+            <a href="tel:757-683-5372">757-683-5372</a>
+          </p>
+          <p>
+            <svg class="footer-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:CIEES@odu.edu">CIEES@odu.edu</a>
+          </p>
+        </address>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Bottom Bar -->
+  <div class="footer-bottom">
+    <span class="footer-copyright">&copy; Old Dominion University</span>
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="https://cieesdev.wpenginepowered.com/about-us/">About CIEES</a>
+      <a href="https://cieesdev.wpenginepowered.com/directory/">Directory</a>
+      <a href="https://cieesdev.wpenginepowered.com/privacy/">Privacy</a>
+      <a href="https://cieesdev.wpenginepowered.com/term-conditions/">Terms &amp; Conditions</a>
+      <a href="https://www.odu.edu/educationalaccessibility">Accessibility</a>
+      <a href="https://www.odu.edu/about/compliance/transparency">Consumer Information</a>
+    </nav>
+  </div>
+
+</footer>
+
+<script>
+/* ---- Read More toggle ---- */
+function toggleDesc(id, btn) {
+  const desc = document.getElementById(id);
+  const srSpan = btn.querySelector('.screen-reader-text');
+  const srText = srSpan ? srSpan.textContent : '';
+  const isExpanded = desc.classList.contains('expanded');
+  if (isExpanded) {
+    desc.classList.remove('expanded');
+    btn.setAttribute('aria-expanded', 'false');
+    btn.innerHTML = 'Read more' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
+  } else {
+    desc.classList.add('expanded');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.innerHTML = 'Show less' + (srText ? '<span class="screen-reader-text">' + srText + '</span>' : '');
+  }
+}
+
+/* ---- Filter system ---- */
+(function() {
+  const filterBar = document.getElementById('filter-bar');
+  const cards = document.querySelectorAll('.project-card[data-tag]');
+  const groups = document.querySelectorAll('.client-group');
+  const noResults = document.getElementById('no-results');
+
+  // Build tag list from actual cards (future-proof: auto-discovers new tags)
+  // Supports multi-tag: data-tag="Resource Hub, Learning Platform"
+  const tagCounts = {};
+  cards.forEach(card => {
+    const tags = card.dataset.tag.split(',').map(t => t.trim());
+    tags.forEach(tag => {
+      tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+    });
+  });
+
+  // Define display order: Module Series first, then alphabetical
+  const orderedTags = Object.keys(tagCounts).sort((a, b) => {
+    if (a === 'Module Series') return -1;
+    if (b === 'Module Series') return 1;
+    return a.localeCompare(b);
+  });
+
+  // Create "All" pill
+  const allPill = document.createElement('button');
+  allPill.className = 'filter-pill active';
+  allPill.dataset.filter = 'all';
+  allPill.setAttribute('aria-pressed', 'true');
+  allPill.innerHTML = 'All <span class="pill-count">' + cards.length + '</span>';
+  filterBar.appendChild(allPill);
+
+  // Create pill for each tag
+  orderedTags.forEach(tag => {
+    const pill = document.createElement('button');
+    pill.className = 'filter-pill';
+    pill.dataset.filter = tag;
+    pill.setAttribute('aria-pressed', 'false');
+    pill.innerHTML = tag + ' <span class="pill-count">' + tagCounts[tag] + '</span>';
+    filterBar.appendChild(pill);
+  });
+
+  // Filter logic
+  filterBar.addEventListener('click', function(e) {
+    const pill = e.target.closest('.filter-pill');
+    if (!pill) return;
+
+    // Update active state and aria-pressed
+    filterBar.querySelectorAll('.filter-pill').forEach(p => {
+      p.classList.remove('active');
+      p.setAttribute('aria-pressed', 'false');
+    });
+    pill.classList.add('active');
+    pill.setAttribute('aria-pressed', 'true');
+
+    const filter = pill.dataset.filter;
+
+    // Show/hide cards (supports multi-tag)
+    let visibleCount = 0;
+    cards.forEach(card => {
+      const cardTags = card.dataset.tag.split(',').map(t => t.trim());
+      if (filter === 'all' || cardTags.includes(filter)) {
+        card.classList.remove('hidden');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+      }
+    });
+
+    // Show/hide client groups (hide group if all its cards are hidden)
+    groups.forEach(group => {
+      const groupCards = group.querySelectorAll('.project-card[data-tag]');
+      const visibleCards = group.querySelectorAll('.project-card[data-tag]:not(.hidden)');
+      if (visibleCards.length === 0) {
+        group.classList.add('hidden');
+      } else {
+        group.classList.remove('hidden');
+      }
+    });
+
+    // No results message
+    if (visibleCount === 0) {
+      noResults.classList.add('visible');
+    } else {
+      noResults.classList.remove('visible');
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

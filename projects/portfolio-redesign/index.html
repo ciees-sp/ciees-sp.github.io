@@ -711,12 +711,10 @@
       <p class="dev-notes-heading">Notes</p>
 
       <p class="dev-notes-subheading">Accessible "Read More" Links</p>
-      <p>The WordPress theme already defines <code>.screen-reader-text</code> in CSS, and this can be paired with the portfolio item's title field via the ACF template so that each "Read more" button automatically includes the project name for screen readers. The idea proposed below would give screen readers "Read more about [Project Name]" instead of nine identical "Read more" links.</p>
-      <p><strong>Proposed pattern:</strong></p>
+      <p>Given our need for WCAG AA compliance, the "Read more" links on this page will need screen reader text added so that each button announces the project name (e.g., "Read more about [Project Name]" rather than nine identical "Read more" links). The theme already defines <code>.screen-reader-text</code> in CSS, and the ACF title field can populate the hidden text automatically. Proposed pattern:</p>
       <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
-      <p>When the button toggles to "Show less," the hidden span should persist:</p>
+      <p>Same idea for the toggled state:</p>
       <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
-      <p>Since the title field is already there, no manual entry per card would be needed.</p>
     </div>
   </div>
 </aside>

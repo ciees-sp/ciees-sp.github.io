@@ -187,34 +187,36 @@
   .breadcrumb-bar .sep { margin: 0 6px; color: var(--text-light); }
   .breadcrumb-bar .home-icon { margin-right: 4px; font-size: 13px; }
 
-  /* ---- About Intro (1/3 bold lead + 2/3 paragraph) ---- */
+  /* ---- About Intro (pull quote + paragraph, light background band) ---- */
+  .about-band {
+    background: var(--gray-bg);
+    border-bottom: 1px solid var(--gray-border);
+  }
   .about-intro {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 48px 40px 40px;
+    padding: 40px 40px 44px;
     display: flex;
-    gap: 40px;
+    gap: 36px;
     align-items: flex-start;
   }
-  .about-intro .intro-lead {
-    flex: 0 0 30%;
+  .about-pullquote {
+    flex: 0 0 260px;
     font-family: 'Montserrat', sans-serif;
-    font-size: 26px;
-    font-weight: 300;
-    line-height: 1.35;
+    font-size: 16px;
+    font-weight: 500;
+    font-style: italic;
+    line-height: 1.55;
     color: var(--navy);
+    border-left: 4px solid var(--accent-blue);
+    padding-left: 20px;
   }
-  .about-intro .intro-body {
-    flex: 1;
-  }
-  .about-intro .intro-body p {
+  .about-intro p {
     color: var(--text-muted);
     font-size: 16px;
-    line-height: 1.7;
-    margin-bottom: 16px;
-  }
-  .about-intro .intro-body p:last-child {
-    margin-bottom: 0;
+    line-height: 1.75;
+    flex: 1;
+    min-width: 0;
   }
 
   /* ---- Page Content ---- */
@@ -724,11 +726,10 @@
 </div>
 
 <!-- ============ ABOUT INTRO ============ -->
-<div class="about-intro">
-  <div class="intro-lead">CIEES seeks to solve complex social problems by engaging educators, youth and families, community members, and policymakers in systems innovation.</div>
-  <div class="intro-body">
-    <p>The <strong>Center for Implementation and Evaluation of Education Systems</strong> (CIEES) is Old Dominion University's first center to focus extensive grant funds on the comprehensive improvement of education systems for K-12 students with diverse learning needs. With over 89 million dollars in grant awards from state and federal agencies and from not-for-profit organizations, CIEES is uniquely situated to create meaningful change in the outcomes of students with and without disabilities, operating nationally with the greatest concentration of services in Virginia.</p>
-    <p>Emphasizing evidence-based problem-solving, CIEES promotes a communitarian approach in interdisciplinary research efforts to plan, implement, and evaluate positive change programs in schools and communities. Focus areas include teacher preparation and licensure, leadership and evaluation, training and technical assistance, and systems change. Ultimately, the goal of all CIEES programs is to support education as a platform for social change — change that ensures equitable opportunities for all individuals.</p>
+<div class="about-band">
+  <div class="about-intro">
+    <div class="about-pullquote">CIEES brings educators, youth and families, community members, public sector leaders, and policymakers together to create education systems innovation.</div>
+    <p>With powerful partners and immensely talented staff, the <strong>Center for Implementation and Evaluation of Education Systems (CIEES)</strong> is uniquely situated to create meaningful changes in the outcomes of students and adults with disabilities or marginalizing conditions. Focus areas include teacher preparation, systemwide leadership and evaluation, training and technical assistance, recruitment and retention, and engaging adult learners. CIEES believes that education is the platform for social change — change that ensures equitable opportunities for all individuals.</p>
   </div>
 </div>
 

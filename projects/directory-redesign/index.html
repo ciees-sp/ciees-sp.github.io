@@ -271,14 +271,20 @@
   /* ---- Tier Labels ---- */
   .tier-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 15px;
+    font-size: 18px;
     font-weight: 600;
     letter-spacing: 0.3px;
     color: var(--navy);
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--gray-border);
-    display: inline-block;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .tier-label::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--navy);
   }
 
   /* ---- Tags (inline badges) ---- */

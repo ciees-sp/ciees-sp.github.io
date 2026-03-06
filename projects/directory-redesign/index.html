@@ -187,34 +187,27 @@
   .breadcrumb-bar .sep { margin: 0 6px; color: var(--text-light); }
   .breadcrumb-bar .home-icon { margin-right: 4px; font-size: 13px; }
 
-  /* ---- About Intro (pull quote + paragraph, light background band) ---- */
-  .about-band {
-    background: var(--gray-bg);
-    border-bottom: 1px solid var(--gray-border);
-  }
+  /* ---- About Intro (1/3 lead + 2/3 paragraph) ---- */
   .about-intro {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 40px 40px 44px;
+    padding: 48px 40px 40px;
     display: flex;
-    gap: 36px;
+    gap: 40px;
     align-items: flex-start;
   }
-  .about-pullquote {
-    flex: 0 0 260px;
+  .about-intro .intro-lead {
+    flex: 0 0 30%;
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 500;
-    font-style: italic;
-    line-height: 1.55;
+    font-size: 26px;
+    font-weight: 300;
+    line-height: 1.35;
     color: var(--navy);
-    border-left: 4px solid var(--accent-blue);
-    padding-left: 20px;
   }
   .about-intro p {
     color: var(--text-muted);
     font-size: 16px;
-    line-height: 1.75;
+    line-height: 1.7;
     flex: 1;
     min-width: 0;
   }
@@ -709,11 +702,9 @@
 </div>
 
 <!-- ============ ABOUT INTRO ============ -->
-<div class="about-band">
-  <div class="about-intro">
-    <div class="about-pullquote">CIEES brings educators, youth and families, community members, public sector leaders, and policymakers together to create education systems innovation.</div>
-    <p>With powerful partners and immensely talented staff, the <strong>Center for Implementation and Evaluation of Education Systems (CIEES)</strong> is uniquely situated to create meaningful changes in the outcomes of students and adults with disabilities or marginalizing conditions. Focus areas include teacher preparation, systemwide leadership and evaluation, training and technical assistance, recruitment and retention, and engaging adult learners. CIEES believes that education is the platform for social change — change that ensures equitable opportunities for all individuals.</p>
-  </div>
+<div class="about-intro">
+  <div class="intro-lead">CIEES brings educators, youth and families, community members, public sector leaders, and policymakers together to create education systems innovation.</div>
+  <p>With powerful partners and immensely talented staff, the <strong>Center for Implementation and Evaluation of Education Systems (CIEES)</strong> is uniquely situated to create meaningful changes in the outcomes of students and adults with disabilities or marginalizing conditions. Focus areas include teacher preparation, systemwide leadership and evaluation, training and technical assistance, recruitment and retention, and engaging adult learners. CIEES believes that education is the platform for social change — change that ensures equitable opportunities for all individuals.</p>
 </div>
 
 <!-- ============ DIRECTORY ============ -->

@@ -3,12 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About CIEES — Directory Redesign Mockup v6</title>
+<title>About CIEES — Directory Redesign Mockup v5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ========================================
-     CIEES Directory Redesign — Mockup v6
+     CIEES Directory Redesign — Mockup v5
      March 2026
 
      THREE-TIER LAYOUT:
@@ -275,41 +275,35 @@
   }
   .pill.active .count { background: rgba(255,255,255,0.2); }
 
-  /* ---- Tier Labels (echoes portfolio section headers — subtler) ---- */
+  /* ---- Tier Labels ---- */
   .tier-label {
     font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
+    font-size: 15px;
     font-weight: 600;
     letter-spacing: 0.3px;
     color: var(--navy);
-    margin-bottom: 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .tier-label::after {
-    content: '';
-    flex: 1;
-    height: 2px;
-    background: var(--navy);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--gray-border);
+    display: inline-block;
   }
 
-  /* ---- Tags (inline badges — matches portfolio card tags) ---- */
+  /* ---- Tags (inline badges) ---- */
   .tag-row {
-    margin-bottom: 10px;
+    margin-bottom: 4px;
     display: flex;
-    gap: 6px;
+    gap: 4px;
     flex-wrap: wrap;
   }
   .tag {
     display: inline-block;
-    font-size: 11px;
-    font-weight: 500;
-    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    padding: 3px 10px;
-    border-radius: 4px;
+    padding: 2px 8px;
+    border-radius: 3px;
   }
   .tag-ciees { background: var(--tag-ciees-bg); color: var(--tag-ciees); }
   .tag-ttac { background: var(--tag-ttac-bg); color: var(--tag-ttac); }
@@ -321,7 +315,7 @@
      TIER 1 — Leadership
      ======================================== */
   .tier-1 {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
   .tier-1-grid {
     display: flex;
@@ -332,17 +326,16 @@
   .tier-1-card {
     background: var(--white);
     border: 1px solid var(--gray-border);
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 32px 28px 28px;
     text-align: center;
     flex: 1;
     max-width: 320px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s;
     position: relative;
   }
   .tier-1-card:hover {
-    border-color: #b8cdd8;
-    box-shadow: 0 2px 12px rgba(4, 42, 75, 0.06);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.07);
   }
   .t1-photo {
     width: 140px;
@@ -371,18 +364,18 @@
   }
   .t1-name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 1.1rem;
+    font-weight: 700;
     color: var(--navy);
     margin-bottom: 4px;
   }
   .t1-title {
-    font-size: 14px;
+    font-size: 0.9rem;
     color: var(--text-muted);
     margin-bottom: 6px;
   }
   .t1-email {
-    font-size: 13px;
+    font-size: 0.82rem;
     color: var(--link-blue);
     text-decoration: none;
     display: inline-block;
@@ -390,13 +383,13 @@
   }
   .t1-email:hover { text-decoration: underline; }
   .t1-bio {
-    font-size: 14px;
+    font-size: 0.88rem;
     color: var(--text-muted);
-    line-height: 1.6;
+    line-height: 1.65;
     text-align: left;
     border-top: 1px solid var(--gray-border);
     padding-top: 14px;
-    margin-top: 8px;
+    margin-top: 4px;
     display: -webkit-box;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
@@ -411,7 +404,7 @@
      TIER 2 — Directors / Assistant Directors
      ======================================== */
   .tier-2 {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
   .tier-2-grid {
     display: grid;
@@ -421,17 +414,16 @@
   .tier-2-card {
     background: var(--white);
     border: 1px solid var(--gray-border);
-    border-radius: 8px;
-    padding: 24px 28px;
+    border-radius: 10px;
+    padding: 24px;
     display: flex;
     gap: 20px;
     align-items: flex-start;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: box-shadow 0.2s;
     position: relative;
   }
   .tier-2-card:hover {
-    border-color: #b8cdd8;
-    box-shadow: 0 2px 12px rgba(4, 42, 75, 0.06);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
   }
   .t2-photo {
     width: 96px;
@@ -461,18 +453,18 @@
   .t2-info { flex: 1; min-width: 0; }
   .t2-name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 700;
     color: var(--navy);
     margin-bottom: 2px;
   }
   .t2-title {
-    font-size: 14px;
+    font-size: 0.88rem;
     color: var(--text-muted);
     margin-bottom: 4px;
   }
   .t2-email {
-    font-size: 13px;
+    font-size: 0.82rem;
     color: var(--link-blue);
     text-decoration: none;
     display: inline-block;
@@ -480,11 +472,11 @@
   }
   .t2-email:hover { text-decoration: underline; }
   .t2-bio {
-    font-size: 14px;
+    font-size: 0.85rem;
     color: var(--text-muted);
     line-height: 1.6;
-    margin-top: 10px;
-    padding-top: 10px;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px solid var(--gray-border);
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -517,7 +509,7 @@
      TIER 3 — All Staff
      ======================================== */
   .tier-3 {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
   .tier-3-grid {
     display: grid;
@@ -530,40 +522,40 @@
     background: var(--white);
     border: 1px solid var(--gray-border);
     border-radius: 8px;
-    padding: 24px 28px;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    padding: 20px 22px;
+    transition: box-shadow 0.2s, border-color 0.2s;
     position: relative;
   }
   .tier-3-card:hover {
-    border-color: #b8cdd8;
-    box-shadow: 0 2px 12px rgba(4, 42, 75, 0.06);
+    border-color: #ccd5dd;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.05);
   }
   .t3-name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 15px;
-    font-weight: 600;
+    font-size: 0.95rem;
+    font-weight: 700;
     color: var(--navy);
-    line-height: 1.35;
+    line-height: 1.3;
   }
   .t3-title {
-    font-size: 14px;
+    font-size: 0.84rem;
     color: var(--text-muted);
-    line-height: 1.4;
+    line-height: 1.35;
     margin-top: 2px;
   }
   .t3-email {
-    font-size: 13px;
+    font-size: 0.8rem;
     color: var(--link-blue);
     text-decoration: none;
     display: inline-block;
-    margin-top: 4px;
+    margin-top: 2px;
   }
   .t3-bio-preview {
-    font-size: 14px;
+    font-size: 0.84rem;
     color: var(--text-muted);
-    line-height: 1.6;
-    margin-top: 10px;
-    padding-top: 10px;
+    line-height: 1.55;
+    margin-top: 8px;
+    padding-top: 8px;
     border-top: 1px solid var(--gray-border);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -573,28 +565,19 @@
   .t3-bio-preview:empty {
     display: none;
   }
-  /* Bio toggle — matches portfolio .read-more-btn */
   .bio-toggle {
     display: inline-block;
-    font-size: 13px;
-    color: var(--navy);
+    font-size: 0.8rem;
+    color: var(--link-blue);
     cursor: pointer;
     border: none;
     background: none;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     padding: 0;
-    margin-top: 6px;
-    text-decoration: underline;
-    text-decoration-thickness: 1px;
-    text-decoration-color: rgba(4, 42, 75, 0.3);
-    text-underline-offset: 2px;
-    transition: color 0.2s, text-decoration-color 0.2s;
+    margin-top: 4px;
   }
-  .bio-toggle:hover {
-    color: var(--navy-light);
-    text-decoration-color: var(--navy-light);
-  }
+  .bio-toggle:hover { text-decoration: underline; }
   .bio-full {
     max-height: 0;
     overflow: hidden;
@@ -604,7 +587,7 @@
     max-height: 400px;
   }
   .bio-full p {
-    font-size: 14px;
+    font-size: 0.84rem;
     color: var(--text-muted);
     line-height: 1.6;
     padding-top: 8px;
@@ -612,7 +595,7 @@
 
   /* ---- Emeriti Section ---- */
   .emeriti-section {
-    margin-bottom: 56px;
+    margin-bottom: 48px;
   }
   .emeriti-grid {
     display: grid;
@@ -700,7 +683,7 @@
 <body>
 
 <div class="mockup-banner">
-  <strong>MOCKUP v6 — March 2026</strong> &nbsp;|&nbsp; Matches existing CIEES site chrome (nav, hero, footer). Internal review only.
+  <strong>MOCKUP v5 — March 2026</strong> &nbsp;|&nbsp; Matches existing CIEES site chrome (nav, hero, footer). Internal review only.
 </div>
 
 <nav class="mock-nav">

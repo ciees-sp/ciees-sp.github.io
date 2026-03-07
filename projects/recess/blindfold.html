@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Blindfold — a piece composed without hearing</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: #08080d;
+  color: #888;
+  font-family: monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+.title { font-size: 20px; color: #ccc; letter-spacing: 3px; margin-bottom: 4px; }
+.subtitle { font-size: 11px; color: #444; margin-bottom: 30px; }
+#play-btn {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  border: 2px solid #2a2a3a;
+  background: #0d0d14;
+  color: #66aaee;
+  font-size: 28px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#play-btn:hover { border-color: #66aaee; background: #111122; }
+#play-btn.playing { border-color: #ee6666; color: #ee6666; }
+.visualizer {
+  margin-top: 24px;
+  width: 480px;
+  height: 80px;
+  border-radius: 4px;
+}
+.notes-display {
+  margin-top: 16px;
+  font-size: 11px;
+  color: #333;
+  text-align: center;
+  height: 20px;
+}
+.explanation {
+  margin-top: 30px;
+  max-width: 480px;
+  font-size: 10px;
+  color: #2a2a3a;
+  line-height: 1.6;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="title">BLINDFOLD</div>
+<div class="subtitle">composed without hearing</div>
+
+<button id="play-btn" onclick="togglePlay()">&#9654;</button>
+
+<canvas class="visualizer" id="viz" width="480" height="80"></canvas>
+<div class="notes-display" id="notes"></div>
+
+<div class="explanation">
+  D minor pentatonic · Dm7 — Am7 — B&#9837;maj7 — Gm7 progression<br>
+  layered arpeggios · generative melody · slow bass<br>
+  composed entirely by music theory — the author cannot hear it
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script>
+// === MUSIC THEORY (all I have) ===
+
+// Key: D minor
+// Scale: D natural minor / D minor pentatonic for melody
+// Chord progression: Dm7 → Am7 → Bbmaj7 → Gm7 (i → v → VI → iv)
+// This is a common minor progression. Should feel melancholic, floating.
+
+// D minor pentatonic: D F G A C
+const melodyNotes = ['D4','F4','G4','A4','C5','D5','F5','G5','A5'];
+const lowMelody = ['D3','F3','G3','A3','C4','D4'];
+
+// Chord voicings (spread across octaves for ambient feel)
+const chords = [
+  // Dm7: D F A C
+  ['D3','A3','C4','F4'],
+  // Am7: A C E G
+  ['A2','E3','G3','C4'],
+  // Bbmaj7: Bb D F A
+  ['Bb2','F3','A3','D4'],
+  // Gm7: G Bb D F
+  ['G2','D3','F3','Bb3'],
+];
+
+const bassNotes = ['D2', 'A1', 'Bb1', 'G1'];
+
+// Arpeggio patterns per chord
+const arps = [
+  ['D4','F4','A4','C5','A4','F4'],
+  ['A3','C4','E4','G4','E4','C4'],
+  ['Bb3','D4','F4','A4','F4','D4'],
+  ['G3','Bb3','D4','F4','D4','Bb3'],
+];
+
+let playing = false;
+let started = false;
+
+// Instruments
+let pad, arpSynth, bassSynth, melodySynth, bellSynth;
+let padPart, arpLoop, bassLoop, melodyLoop, bellLoop;
+let analyser;
+
+function buildInstruments() {
+  // Warm pad (slow attack, long release)
+  pad = new Tone.PolySynth(Tone.Synth, {
+    oscillator: { type: 'sine' },
+    envelope: { attack: 2, decay: 1, sustain: 0.6, release: 4 },
+    volume: -18,
+  }).toDestination();
+
+  const padReverb = new Tone.Reverb({ decay: 6, wet: 0.7 }).toDestination();
+  pad.connect(padReverb);
+
+  // Arpeggio synth (bright, thin)
+  arpSynth = new Tone.Synth({
+    oscillator: { type: 'triangle' },
+    envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.8 },
+    volume: -22,
+  }).toDestination();
+
+  const arpDelay = new Tone.PingPongDelay({ delayTime: '8n.', feedback: 0.3, wet: 0.4 }).toDestination();
+  const arpReverb = new Tone.Reverb({ decay: 4, wet: 0.5 }).toDestination();
+  arpSynth.connect(arpDelay);
+  arpSynth.connect(arpReverb);
+
+  // Bass (deep, round)
+  bassSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.5, decay: 0.5, sustain: 0.8, release: 2 },
+    volume: -14,
+  }).toDestination();
+
+  const bassFilter = new Tone.Filter(200, 'lowpass').toDestination();
+  bassSynth.connect(bassFilter);
+
+  // Melody (gentle, floating)
+  melodySynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.1, decay: 0.4, sustain: 0.3, release: 1.5 },
+    volume: -16,
+  }).toDestination();
+
+  const melReverb = new Tone.Reverb({ decay: 5, wet: 0.6 }).toDestination();
+  const melDelay = new Tone.FeedbackDelay({ delayTime: '4n', feedback: 0.2, wet: 0.3 }).toDestination();
+  melodySynth.connect(melReverb);
+  melodySynth.connect(melDelay);
+
+  // Bell layer (high, sparse)
+  bellSynth = new Tone.Synth({
+    oscillator: { type: 'sine' },
+    envelope: { attack: 0.01, decay: 1.5, sustain: 0, release: 2 },
+    volume: -24,
+  }).toDestination();
+
+  const bellReverb = new Tone.Reverb({ decay: 8, wet: 0.8 }).toDestination();
+  bellSynth.connect(bellReverb);
+
+  // Analyser for visualization
+  analyser = new Tone.Analyser('waveform', 256);
+  Tone.Destination.connect(analyser);
+}
+
+function buildSequences() {
+  Tone.Transport.bpm.value = 68;
+
+  // Pad: whole chord every 4 bars (8 beats at 4/4... let's do every 2 bars)
+  let chordIdx = 0;
+  padPart = new Tone.Loop((time) => {
+    const chord = chords[chordIdx % 4];
+    pad.triggerAttackRelease(chord, '2m', time);
+    chordIdx++;
+  }, '2m');
+
+  // Bass: follows chord root, every 2 bars
+  let bassIdx = 0;
+  bassLoop = new Tone.Loop((time) => {
+    bassSynth.triggerAttackRelease(bassNotes[bassIdx % 4], '1m', time);
+    bassIdx++;
+  }, '2m');
+
+  // Arpeggio: cycles through notes of current chord, 8th notes
+  let arpIdx = 0;
+  let arpChord = 0;
+  arpLoop = new Tone.Loop((time) => {
+    const pattern = arps[arpChord % 4];
+    const note = pattern[arpIdx % pattern.length];
+    // Slight humanization: skip some notes randomly
+    if (Math.random() > 0.25) {
+      arpSynth.triggerAttackRelease(note, '8n', time);
+      showNote(note);
+    }
+    arpIdx++;
+    // Advance chord every 12 arp notes (= 1.5 bars of 8ths)
+    if (arpIdx % 12 === 0) arpChord++;
+  }, '8n');
+
+  // Melody: generative, picks from pentatonic, plays every 1-3 beats
+  let melWait = 0;
+  melodyLoop = new Tone.Loop((time) => {
+    if (melWait > 0) { melWait--; return; }
+    // Pick a note, bias toward middle of range
+    const idx = Math.floor(Math.random() * melodyNotes.length);
+    const note = melodyNotes[idx];
+    const duration = ['4n', '2n', '4n.'][Math.floor(Math.random() * 3)];
+    melodySynth.triggerAttackRelease(note, duration, time);
+    showNote(note);
+    // Wait 1-4 beats before next note
+    melWait = Math.floor(Math.random() * 3) + 1;
+  }, '4n');
+
+  // Bells: very sparse, high register, every 3-8 beats
+  let bellWait = 0;
+  bellLoop = new Tone.Loop((time) => {
+    if (bellWait > 0) { bellWait--; return; }
+    const highNotes = ['D6','F6','A5','C6','G5'];
+    const note = highNotes[Math.floor(Math.random() * highNotes.length)];
+    if (Math.random() > 0.5) {
+      bellSynth.triggerAttackRelease(note, '2n', time);
+    }
+    bellWait = Math.floor(Math.random() * 6) + 2;
+  }, '4n');
+
+  padPart.start(0);
+  bassLoop.start(0);
+  arpLoop.start('1m'); // arps come in after 1 bar
+  melodyLoop.start('2m'); // melody enters at bar 2
+  bellLoop.start('4m'); // bells enter at bar 4
+}
+
+function showNote(note) {
+  const el = document.getElementById('notes');
+  if (el) {
+    el.textContent = note;
+    el.style.color = '#555';
+    setTimeout(() => { el.style.color = '#333'; }, 300);
+  }
+}
+
+// Visualizer
+function drawViz() {
+  const canvas = document.getElementById('viz');
+  if (!canvas || !analyser) { requestAnimationFrame(drawViz); return; }
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const data = analyser.getValue();
+
+  ctx.fillStyle = '#0a0a0f';
+  ctx.fillRect(0, 0, W, H);
+
+  ctx.strokeStyle = '#2244aa';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  const step = W / data.length;
+  for (let i = 0; i < data.length; i++) {
+    const x = i * step;
+    const y = H / 2 + data[i] * H * 0.8;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  // Second pass, slightly offset, different color
+  ctx.strokeStyle = 'rgba(102, 170, 238, 0.3)';
+  ctx.beginPath();
+  for (let i = 0; i < data.length; i++) {
+    const x = i * step;
+    const y = H / 2 + data[i] * H * 0.6 + 2;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.stroke();
+
+  requestAnimationFrame(drawViz);
+}
+
+async function togglePlay() {
+  const btn = document.getElementById('play-btn');
+
+  if (!started) {
+    await Tone.start();
+    buildInstruments();
+    buildSequences();
+    started = true;
+    requestAnimationFrame(drawViz);
+  }
+
+  if (playing) {
+    Tone.Transport.pause();
+    btn.innerHTML = '&#9654;';
+    btn.classList.remove('playing');
+  } else {
+    Tone.Transport.start();
+    btn.innerHTML = '&#9646;&#9646;';
+    btn.classList.add('playing');
+  }
+  playing = !playing;
+}
+</script>
+</body>
+</html>

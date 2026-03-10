@@ -38,6 +38,18 @@ blockquote {
   font-style: italic;
 }
 
+/* Intro-to-content transition — visual break after the last intro paragraph */
+p + .data-block,
+p + .photo-grid,
+p + .photo-pair,
+p + .photo-single,
+p + .doc-preview,
+p + blockquote {
+  margin-top: 35px;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
 /* Photo layouts */
 
 .photo-grid {

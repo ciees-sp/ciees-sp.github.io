@@ -68,12 +68,28 @@ blockquote {
   border: 1px solid #ddd;
 }
 
-.photo-single img {
-  max-width: 70%;
-  height: auto;
-  object-fit: contain;
-  border: 1px solid #ddd;
+.photo-single {
+  overflow: auto;
   margin: 15px 0;
+}
+
+.photo-single img {
+  float: left;
+  max-width: 45%;
+  max-height: 400px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+  margin: 0 20px 10px 0;
+}
+
+/* Data blocks */
+
+.data-block {
+  background: #e8f0fe;
+  text-align: center;
+  padding: 20px;
+  margin: 15px 0;
+  border-radius: 4px;
 }
 
 /* Photo alignment overrides — add data-align="top" etc. to any img */
@@ -82,3 +98,24 @@ img[data-align="top"]    { object-position: top; }
 img[data-align="bottom"] { object-position: bottom; }
 img[data-align="left"]   { object-position: left; }
 img[data-align="right"]  { object-position: right; }
+
+/* Percentage-based vertical alignment: data-align="5%" through "95%" in 5% increments */
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }

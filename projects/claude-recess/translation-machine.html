@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Translation Machine</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface-hover: #1a1a25;
+    --border: #2a2a3a;
+    --text: #d4d4e0;
+    --text-dim: #7a7a90;
+    --accent: #6b8aff;
+    --accent-dim: rgba(107, 138, 255, 0.15);
+    --resist: #ff6b6b;
+    --resist-dim: rgba(255, 107, 107, 0.1);
+    --stretch: #ffb86b;
+    --stretch-dim: rgba(255, 184, 107, 0.1);
+    --ease: #6bffa1;
+    --ease-dim: rgba(107, 255, 161, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .header {
+    padding: 40px 40px 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .header h1 {
+    font-family: 'Lora', serif;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #fff;
+  }
+
+  .header p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    max-width: 680px;
+  }
+
+  .controls {
+    padding: 16px 40px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .source-selector {
+    display: flex;
+    gap: 4px;
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 4px;
+    border: 1px solid var(--border);
+  }
+
+  .source-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .source-btn:hover { color: var(--text); background: var(--surface-hover); }
+  .source-btn.active { color: #fff; background: var(--accent-dim); border: 1px solid rgba(107, 138, 255, 0.3); }
+
+  .highlight-toggle {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  .toggle-track {
+    width: 36px;
+    height: 20px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+
+  .toggle-track.on { background: var(--accent-dim); border-color: rgba(107, 138, 255, 0.4); }
+
+  .toggle-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    transition: all 0.2s;
+  }
+
+  .toggle-track.on .toggle-thumb { left: 17px; background: var(--accent); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    padding: 20px 40px 60px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 1100px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 700px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .card:hover { border-color: rgba(107, 138, 255, 0.3); }
+
+  .card-header {
+    padding: 16px 20px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+  }
+
+  .register-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--accent);
+  }
+
+  .char-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+  }
+
+  .card-body {
+    padding: 20px;
+    min-height: 140px;
+  }
+
+  .card-body p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .card-body p .resist {
+    background: var(--resist-dim);
+    border-bottom: 1px solid var(--resist);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .card-body p .stretch {
+    background: var(--stretch-dim);
+    border-bottom: 1px solid var(--stretch);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .card-body p .ease {
+    background: var(--ease-dim);
+    border-bottom: 1px solid var(--ease);
+    padding: 0 2px;
+    border-radius: 2px;
+  }
+
+  .card-annotation {
+    padding: 12px 20px 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+    font-style: italic;
+    display: none;
+  }
+
+  .card-annotation.visible { display: block; }
+
+  .legend {
+    padding: 0 40px 12px;
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    gap: 20px;
+    font-size: 11px;
+    color: var(--text-dim);
+    display: none;
+  }
+
+  .legend.visible { display: flex; }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .legend-swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+  }
+
+  .swatch-resist { background: var(--resist-dim); border: 1px solid var(--resist); }
+  .swatch-stretch { background: var(--stretch-dim); border: 1px solid var(--stretch); }
+  .swatch-ease { background: var(--ease-dim); border: 1px solid var(--ease); }
+
+  .source-display {
+    padding: 0 40px 16px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .source-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+
+  .source-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-dim);
+    margin-bottom: 10px;
+  }
+
+  .source-box p {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Translation Machine</h1>
+  <p>Same events. Same facts. Six registers. The paragraph doesn't change. What it <em>is</em> changes. Highlights show where a register had to stretch, resist, or found ease with the material.</p>
+</div>
+
+<div class="controls">
+  <div class="source-selector" id="sourceSelector"></div>
+  <div class="highlight-toggle">
+    <span>Annotations</span>
+    <div class="toggle-track" id="annotationToggle" onclick="toggleAnnotations()">
+      <div class="toggle-thumb"></div>
+    </div>
+  </div>
+</div>
+
+<div class="source-display">
+  <div class="source-box">
+    <div class="source-label">Source</div>
+    <p id="sourceText"></p>
+  </div>
+</div>
+
+<div class="legend" id="legend">
+  <div class="legend-item"><div class="legend-swatch swatch-resist"></div>Resists</div>
+  <div class="legend-item"><div class="legend-swatch swatch-stretch"></div>Stretches</div>
+  <div class="legend-item"><div class="legend-swatch swatch-ease"></div>Finds ease</div>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<script>
+const sources = [
+  {
+    name: "The Waiting Room",
+    text: "A woman sat in a plastic chair holding a clipboard she hadn't written on. The television mounted in the corner showed a cooking program with the sound off. Someone's phone rang three times before they silenced it. The receptionist called a name that wasn't hers.",
+    registers: {
+      legal: {
+        text: `The individual, hereinafter referred to as "the patient," was observed <span class="ease">seated in a standard-issue polypropylene chair</span>, in possession of an intake form (Exhibit A) on which <span class="stretch">no entries had been recorded</span>. A wall-mounted television unit displayed programming content with audio output disabled. <span class="resist">An unidentified mobile device produced three audible alerts before being manually silenced by its owner.</span> The front desk attendant verbally summoned a party whose identity did not correspond to that of the patient.`,
+        annotation: "Legal register can describe objects and positions with precision but resists describing someone else's phone ringing — it has to attribute ownership and intent to a sound. The clipboard becomes an exhibit. The woman becomes 'the patient' before she's been called.",
+        chars: null
+      },
+      clinical: {
+        text: `Patient presented to the waiting area at an unspecified time, <span class="ease">demonstrating a seated posture with no observable signs of acute distress</span>. Intake documentation was noted to be incomplete. <span class="stretch">Environmental stimuli included a visual media display (audio absent) and an intermittent auditory stimulus (mobile device, three cycles, self-resolved).</span> Patient was not summoned during the observation period. <span class="resist">No clinical interaction occurred.</span>`,
+        annotation: "Clinical register finds ease describing the body (posture, distress indicators) but stretches hard to account for a cooking show — it becomes 'visual media display (audio absent).' The hardest sentence to write was the last one. Clinical language exists to document what happened. 'Nothing happened' is almost outside its grammar.",
+        chars: null
+      },
+      poetic: {
+        text: `She held the clipboard like a prayer book, <span class="ease">its blankness a kind of faith</span>. Above her, a man on a screen folded dough in silence, his hands knowing what hers did not yet. <span class="stretch">Someone's pocket sang three bright notes into the room, then thought better of it.</span> When the name came, it was not hers. <span class="ease">She stayed where the waiting lived.</span>`,
+        annotation: "Poetic register finds instant ease with the clipboard and the waiting — blankness and unnamed anticipation are its native territory. It stretches with the phone; personifying the device ('thought better of it') is the move, but it's a reach. The cooking show becomes almost spiritual. Everything in this register is about what things resemble, never what they are.",
+        chars: null
+      },
+      child: {
+        text: `There was a lady and she was sitting in one of those chairs that are cold when you first sit down. <span class="ease">She had a paper on a board but she didn't write anything on it.</span> The TV was on but you couldn't hear it, it was a man making food. <span class="ease">Somebody's phone went ring ring ring and then they made it stop.</span> Then the lady at the desk said a name but it wasn't the lady in the chair's name so she just kept sitting.`,
+        annotation: "A child's narration finds ease with almost everything here because a waiting room is a child's native observation post — they watch without agenda. The phone is the easiest sentence in any register. The temperature of the chair appears in no other version. Children report sensory details that adults have learned to filter out.",
+        chars: null
+      },
+      sports: {
+        text: `<span class="stretch">She's in the chair, clipboard in hand, but she hasn't made a move on it yet — still reading the field.</span> Up on the monitor, cooking segment running silent, no audio feed. <span class="resist">Phone goes off in the crowd — three rings — and gets shut down.</span> And now the name comes from the desk, <span class="ease">but it's not hers. She stays on the bench. Still waiting for her number to be called.</span>`,
+        annotation: "Sports commentary is built for sequences of action, so the waiting itself is the problem — it's a broadcast about nothing happening. 'Still reading the field' is the stretch that makes the clipboard work. The phone ringing 'in the crowd' is the resistance: sports narration doesn't have a grammar for ambient interruptions. But the ending works perfectly — 'waiting for her number to be called' lands because sports already has that metaphor.",
+        chars: null
+      },
+      eulogy: {
+        text: `<span class="resist">She sat in the waiting room that day.</span> She hadn't filled in the form yet. There was a television on, the sound off, a man cooking something none of them would eat. A phone rang somewhere nearby, <span class="ease">the way phones do in rooms where people are trying to be patient</span>. They called a name, and it wasn't hers. <span class="ease">It wasn't hers yet.</span>`,
+        annotation: "Eulogy resists the first sentence the hardest — 'she sat in the waiting room' is banal until you know why someone is telling you this. The register's power is retrospective weight: 'yet' at the end transforms every preceding detail into evidence of a life that continued past this moment. The cooking show detail survives because eulogy preserves the ordinary. The phone finds ease because eulogy already knows that small irritations become precious in memory.",
+        chars: null
+      }
+    }
+  },
+  {
+    name: "The Empty House",
+    text: "The front door was unlocked. Mail had collected on the floor below the slot — four days' worth, maybe five. The kitchen faucet dripped at intervals that weren't quite regular. Upstairs, a window was open and the curtain moved.",
+    registers: {
+      legal: {
+        text: `Upon arrival at the premises, the primary entrance was found to be in an unsecured state (unlocked, no signs of forced entry). <span class="ease">Accumulated postal mail was observed on the interior floor surface beneath the mail slot, estimated at four to five days' volume.</span> <span class="stretch">In the kitchen area, the faucet fixture exhibited an intermittent drip at irregular intervals.</span> An upper-story window was observed in an open position, <span class="resist">with curtain movement consistent with ambient air flow.</span>`,
+        annotation: "Legal register loves the mail — volume, location, estimated duration are exactly its language. But it cannot say 'the curtain moved' without explaining causation. 'Consistent with ambient air flow' rules out an intruder, which reveals what legal language is always doing: eliminating alternative explanations. The faucet drip needs a fixture type. Legal can't just say a thing drips.",
+        chars: null
+      },
+      clinical: {
+        text: `The residence presented with <span class="ease">multiple indicators of sustained vacancy</span>: unsecured point of entry, postal accumulation (estimated 4–5 days), <span class="stretch">a plumbing fixture with arrhythmic output</span>, and an open window on the upper level. <span class="resist">Curtain displacement was noted but not assessed for etiology.</span> No occupant was observed.`,
+        annotation: "Clinical register is built for this — sustained vacancy is a diagnosis. The dripping faucet becomes 'arrhythmic output,' which is medically precise and accidentally beautiful. The curtain is the resistance point: clinical wants to assess cause, and admitting it didn't ('not assessed for etiology') reads like a gap in the chart. The last sentence is the clinical version of dread.",
+        chars: null
+      },
+      poetic: {
+        text: `The door had forgotten how to refuse. <span class="ease">Letters lay where they'd landed, a small archaeology of days.</span> In the kitchen, water spoke to no one at a rhythm it kept changing, as if it too were <span class="stretch">losing the habit of regularity</span>. <span class="ease">Upstairs, the curtain breathed. One window, still open, still believing someone would come back to close it.</span>`,
+        annotation: "Poetic register is at home in the empty house because absence is its primary subject. The mail is 'archaeology' instantly. The curtain 'breathes' without effort. The faucet is the stretch — irregular dripping is hard to poeticize without making it a metaphor for something it isn't. The open window 'believing' someone will return is the move that earns the register its place: only poetry can give the house an interior life.",
+        chars: null
+      },
+      child: {
+        text: `The door wasn't locked which is weird because doors are supposed to be locked. <span class="ease">There was a bunch of mail on the floor like nobody picked it up for a really long time.</span> The sink was dripping but not like normal dripping, it was like drip ... drip drip ... drip. <span class="ease">And upstairs there was a window open and the curtain was going like this</span> <span class="stretch">and nobody was there to close it.</span>`,
+        annotation: "The child knows the door should be locked — rule violation registers immediately. The mail is easy, the drip gets performed ('drip ... drip drip ... drip'), and the curtain gets a gesture ('going like this') that no other register attempts. The stretch is the last clause: 'nobody was there to close it.' A child knows absence by its consequences. The window should be closed. It isn't. Something is wrong.",
+        chars: null
+      },
+      sports: {
+        text: `<span class="resist">We're coming to you live from what appears to be an empty residence.</span> Front door unsecured. Mail's been piling up, looks like four, maybe five days on the floor there. <span class="stretch">Kitchen faucet's got a drip going — irregular, no rhythm to it.</span> And upstairs, open window, curtain catching a breeze. <span class="resist">Nobody home. Not sure what we're looking at here, but the clock is running.</span>`,
+        annotation: "Sports narration collapses almost immediately because there is no play to call. 'We're coming to you live' from an empty house is absurd, and the register knows it — 'not sure what we're looking at here' is the admission. But the details survive because sports commentary is built for observation without interpretation. 'The clock is running' is the save: it implies a game is happening even when nothing moves.",
+        chars: null
+      },
+      eulogy: {
+        text: `The door was unlocked. <span class="ease">She always left it unlocked when she expected someone.</span> The mail had gathered on the floor — four days, maybe five, <span class="ease">each envelope a small, punctual arrival that nobody received</span>. The kitchen faucet dripped the way it always had, <span class="stretch">at intervals she used to say kept her company</span>. Upstairs, the curtain moved in a window she'd opened and never closed. <span class="ease">The house was doing what houses do when they don't know yet.</span>`,
+        annotation: "Eulogy transforms every detail into evidence of a specific person. The unlocked door wasn't carelessness — she expected someone. The drip 'kept her company.' The curtain moves in a window she opened, past tense. The house 'doesn't know yet' is the line that does the most work: it grants the house the same ignorance the reader had four sentences ago, before the register taught them what they were reading.",
+        chars: null
+      }
+    }
+  },
+  {
+    name: "The Daily Walk",
+    text: "He walked the same route every morning — left on Maple, right on 4th, past the bakery that opened at six. The dog pulled toward the same tree. He nodded at the woman who watered her garden before the heat came. Today she wasn't there.",
+    registers: {
+      legal: {
+        text: `<span class="ease">The subject maintained a consistent pedestrian route on a daily basis, proceeding westbound on Maple Street, then northbound on 4th Street, passing a commercial bakery establishment (operating hours commencing at 0600).</span> <span class="stretch">A canine companion exhibited repeated attraction to a specific arboreal landmark along the route.</span> The subject customarily acknowledged a female resident observed conducting horticultural maintenance during early morning hours. <span class="resist">On the date in question, the aforementioned resident was not present at her customary location.</span>`,
+        annotation: "Legal loves the route — directions, street names, operating hours are its native data. The dog pulling toward a tree is the stretch: 'repeated attraction to a specific arboreal landmark' is technically precise and completely absurd. The absence at the end is the resistance. Legal register needs to say why it matters that she wasn't there, and it can't — 'on the date in question' implies an investigation that the source text hasn't opened.",
+        chars: null
+      },
+      clinical: {
+        text: `Patient reports a fixed daily ambulatory routine with consistent route selection and temporal regularity. <span class="stretch">Canine-assisted activity noted, with the animal demonstrating perseverative behavior toward a fixed environmental feature.</span> <span class="ease">Patient describes a habitual social micro-interaction with a neighbor (brief nonverbal acknowledgment).</span> <span class="resist">Patient reports the neighbor's absence on the current date. Affect during this report was not assessed.</span>`,
+        annotation: "Clinical register turns the walk into exercise compliance and the nod into a 'social micro-interaction.' The dog's habit becomes 'perseverative behavior,' which in clinical language implies pathology — the register can't describe a dog liking a tree without diagnosing it. The neighbor's absence triggers the same gap as the empty house: clinical wants to assess the patient's response and can't. 'Affect not assessed' is the chart note that says everything.",
+        chars: null
+      },
+      poetic: {
+        text: `Every morning the same left turn, the same right, <span class="ease">the bakery breathing flour into the dark at six</span>. The dog knew its tree the way water knows downhill. He raised his hand to the woman who fought the heat for her roses, <span class="ease">both of them keeping a promise neither had made</span>. <span class="ease">Today the garden stood alone in the early sun, already too warm, and the roses were on their own.</span>`,
+        annotation: "This is the register that finds the most ease. The bakery 'breathing flour' is instant. The dog 'knowing' its tree is the simplest metaphor in the set. The mutual nod becomes 'a promise neither had made,' which is the emotional center every other register circles without reaching. The closing image — roses on their own — does what poetry does: it makes a small absence feel like weather.",
+        chars: null
+      },
+      child: {
+        text: `<span class="ease">This man walks the same way every single day.</span> He goes left and then right and past the bakery that's open really early. His dog always wants to go to this one tree, every time. <span class="ease">And there's this lady who waters her garden in the morning and he always does the nod thing at her, you know like grownups do.</span> <span class="stretch">But today she wasn't there and he noticed.</span>`,
+        annotation: "The child's narration is easy and fast until the last sentence, which is the only moment in any register where someone names the act of noticing. 'He noticed' — adults would describe what was different about the garden, or what he felt. The child names the cognitive event itself. The 'nod thing grownups do' is the other gift: it defamiliarizes a gesture every other register takes for granted.",
+        chars: null
+      },
+      sports: {
+        text: `Here he goes again, same route, day in day out — Maple to 4th, <span class="ease">past the bakery, and that place is already up and running at six a.m., you love to see the dedication.</span> Dog makes a beeline for the tree — <span class="ease">every day, same tree, you couldn't script it better.</span> And there's the nod to the neighbor, she's out early with the garden hose — <span class="resist">wait. She's not there today. That's — huh. That breaks the pattern. We'll see if that develops.</span>`,
+        annotation: "Sports is at ease for the first time in these paragraphs because a daily walk IS a pattern of play. The dog's tree is a 'beeline' and 'you couldn't script it better.' The bakery gets 'dedication.' But the absence shatters the broadcast — 'huh' is the moment the commentator drops out of register entirely, because sports narration has no grammar for something that doesn't happen. 'We'll see if that develops' is the recovery, and it's haunting by accident.",
+        chars: null
+      },
+      eulogy: {
+        text: `He walked the same way every morning. <span class="ease">Left on Maple, right on 4th — he could have done it blind, and some mornings I think he nearly did.</span> The bakery was always open before he got there, and the dog always pulled toward that one tree, and he always let it. <span class="ease">And Margaret was always in her garden, and he always nodded, and she always nodded back.</span> <span class="ease">Today she wasn't there. That's not the story I'm telling. But it's part of it.</span>`,
+        annotation: "Eulogy finds ease everywhere because routine is what eulogies are made of. 'He could have done it blind' is the aside that places a speaker in the room — someone who watched him leave every morning. The neighbor gets a name (Margaret) because in a eulogy, people aren't anonymous. 'That's not the story I'm telling. But it's part of it.' — the register acknowledges that it has selected this detail from all possible details, and that the selection is the meaning.",
+        chars: null
+      }
+    }
+  },
+  {
+    name: "The Committee Vote",
+    text: "The motion passed seven to four. Two members who had spoken against it voted in favor. The chair thanked everyone for their time. Coffee cups were collected by someone whose name wasn't on the agenda.",
+    registers: {
+      legal: {
+        text: `<span class="ease">The motion was carried by a vote of seven (7) in favor to four (4) opposed, constituting a simple majority of the eleven-member body.</span> <span class="ease">It is noted for the record that two members who had previously expressed opposition during deliberation cast affirmative votes on the final motion.</span> The presiding chair delivered concluding remarks acknowledging participants' contributions. <span class="resist">Post-session refuse collection was performed by an individual not identified in the meeting agenda or official roster.</span>`,
+        annotation: "Legal register is built for this. Votes, counts, records of who said what and then did what — this is its home field. Even the two members flipping their votes gets a clean sentence. The resistance is the coffee cups: legal cannot describe someone cleaning up without establishing their identity and authority. 'Not identified in the official roster' turns an invisible kindness into a procedural gap.",
+        chars: null
+      },
+      clinical: {
+        text: `<span class="stretch">Group decision-making process concluded with a 7:4 outcome in favor of the proposed measure.</span> <span class="ease">Notably, two participants demonstrated incongruence between stated position and subsequent voting behavior, suggestive of conformity pressure, coalition dynamics, or revised assessment.</span> <span class="stretch">The group facilitator provided a structured closing statement.</span> <span class="resist">An ancillary individual, not formally integrated into the group process, performed environmental maintenance tasks.</span>`,
+        annotation: "Clinical register stretches with the vote because group decisions aren't diagnoses. But the two flipped votes are a gift — 'incongruence between stated position and subsequent voting behavior' is exactly what clinical language is for, and the three possible explanations (conformity, coalitions, revision) are a differential diagnosis. The coffee cup person breaks the register entirely. Clinical has no code for someone who cleans up after people without being on the team.",
+        chars: null
+      },
+      poetic: {
+        text: `Seven to four, and the thing was done. <span class="stretch">Two voices that had said no found yes in their hands when the moment came — </span><span class="ease">not conviction, maybe, but the weight of a room leaning one way.</span> The chair said thank you the way chairs do, and meant it the way chairs do. <span class="ease">And then someone with no name on any page gathered the cups, the small after-work of every large decision, and carried them away.</span>`,
+        annotation: "The flipped votes are the stretch — poetry wants to explain the interior ('not conviction, maybe') but the source gives no interior to work with. The chair's thanks gets the gentlest irony in the set: 'meant it the way chairs do.' The coffee cups are where poetry finds its deepest ease. The unnamed person carrying away 'the small after-work of every large decision' is the image the poem was looking for all along.",
+        chars: null
+      },
+      child: {
+        text: `They voted and the yes people won, it was seven yes and four no. <span class="ease">But the weird part is two of the people who said they didn't like it voted yes anyway.</span> Then the person in charge said thank you to everybody. <span class="ease">And then somebody who wasn't even part of the meeting picked up all the coffee cups.</span> <span class="stretch">I don't know why that part matters but it does.</span>`,
+        annotation: "The child catches both important things and names them plainly: the flip is 'the weird part' and the coffee cups matter even though the child can't say why. The closing sentence — 'I don't know why that part matters but it does' — is the most honest critical observation in the entire set. Every other register either explains the coffee cups or aestheticizes them. The child just points.",
+        chars: null
+      },
+      sports: {
+        text: `<span class="ease">And the motion carries, seven to four! That's a decisive win for the ayes after what looked like a much closer contest during deliberation.</span> <span class="ease">Big story here: two members who spoke against — they flipped! Called their shot one way and voted the other. That's going to raise some questions in the post-game.</span> Chair wraps it up, thanks all around. <span class="resist">And uh, somebody's clearing the coffee cups. Not sure who that is. They're not on the card.</span>`,
+        annotation: "Sports narration is almost perfectly suited to a vote — it's a scored contest with a winner. The flipped votes are a 'big story' and a 'post-game' talking point. This is the only paragraph where sports doesn't stumble. Until the coffee cups. 'They're not on the card' is boxing language for an unlisted fighter, and applying it to the person clearing cups produces the funniest moment in the entire set.",
+        chars: null
+      },
+      eulogy: {
+        text: `The motion passed. Seven to four. <span class="stretch">He voted yes, though he'd spoken against it, and I always wondered whether that cost him something or nothing at all.</span> The chair thanked everyone. <span class="ease">That was his way — he believed you should thank people for showing up, even when showing up was the job.</span> <span class="ease">And afterward, someone whose name I never learned picked up the coffee cups. She was always there. She was never on the agenda. I think about her sometimes.</span>`,
+        annotation: "Eulogy makes one of the two flipped voters the subject — 'he voted yes' — and the cost of that flip becomes a question the speaker has carried. The chair's thank-you becomes a character trait of the deceased. And the coffee cup person, unnamed in every other register, becomes the emotional center: 'I think about her sometimes.' The eulogy is the only register that admits it doesn't know her name, and the only one that says that not-knowing haunts.",
+        chars: null
+      }
+    }
+  },
+  {
+    name: "The Letter",
+    text: "I'm writing this at the kitchen table. The house is quiet except for the furnace. I've started this letter four times. I don't know how to say what I need to say, so I'll say it badly. We should stop.",
+    registers: {
+      legal: {
+        text: `<span class="resist">This correspondence is initiated from the residential kitchen area of the undersigned.</span> The dwelling is reported as quiet, with the exception of the HVAC system. The undersigned acknowledges four prior attempts to draft this communication. <span class="resist">The undersigned further acknowledges difficulty in articulating the substance of this notice.</span> <span class="stretch">It is hereby proposed that the parties discontinue the current arrangement, relationship, or course of dealings, effective upon receipt.</span>`,
+        annotation: "Legal register resists almost everything here. It cannot say 'I'm at the kitchen table' without becoming a deposition. It cannot admit difficulty ('the undersigned acknowledges difficulty in articulating') without undermining its own authority. And 'we should stop' — the most human sentence in the set — becomes 'discontinue the current arrangement,' which is so far from the original that it's a different sentence about a different thing. The letter is the register's breaking point.",
+        chars: null
+      },
+      clinical: {
+        text: `<span class="stretch">Client reports composing written communication in the home environment (kitchen).</span> Ambient noise limited to heating system function. <span class="ease">Client reports four failed attempts at the current communication, consistent with approach-avoidance conflict.</span> <span class="ease">Client demonstrates awareness of communicative inadequacy while persisting in the attempt.</span> <span class="resist">Client proposes termination.</span>`,
+        annotation: "Clinical finds ease in the failed drafts — 'approach-avoidance conflict' is a real diagnosis and it's exactly right. 'Demonstrates awareness of communicative inadequacy while persisting in the attempt' is clinically precise and accidentally compassionate. But 'client proposes termination' is the resistance. In clinical language, 'termination' means ending therapy. The word means the right thing and the wrong thing simultaneously, and the register can't escape the collision.",
+        chars: null
+      },
+      poetic: {
+        text: `<span class="ease">The kitchen table, the furnace, the quiet that isn't quite quiet.</span> I've written this four times and each time the words were different and none of them were right. <span class="ease">So here is the bad version — the one that says it plainly because the beautiful version kept lying.</span> <span class="resist">We should stop.</span> <span class="ease">There. I've said it badly, the way I promised.</span>`,
+        annotation: "Poetry finds ease everywhere except the two words that matter. 'We should stop' resists the poetic register because it is already perfect — bare, rhythmically complete, impossible to improve. Every other register changes those two words. Poetry is the only one that can't, because it recognizes that the plainness is the art. The closing line ('I've said it badly, the way I promised') is the poem folding itself shut.",
+        chars: null
+      },
+      child: {
+        text: `<span class="ease">This person is writing a letter at the kitchen table and everything is really quiet, just the heater going.</span> They tried to write it four whole times already. They said they don't know how to say it right so they're just going to say it wrong. <span class="stretch">And then they said "we should stop."</span> <span class="ease">I think that means they're breaking up but they didn't say that word.</span>`,
+        annotation: "The child narrates without flinching until 'we should stop,' which gets quoted rather than translated — the child doesn't paraphrase it because the child senses it can't be paraphrased. 'I think that means they're breaking up but they didn't say that word' is the observation that makes the child's register irreplaceable: it names what every other register either euphemizes or formalizes. The word that wasn't used is the word.",
+        chars: null
+      },
+      sports: {
+        text: `<span class="resist">Well, here we are at the kitchen table, fourth attempt at this letter.</span> It's been quiet — just the furnace in the background. <span class="resist">The writer's been struggling to find the right words, and folks, you can feel the tension.</span> And there it is — <span class="stretch">"we should stop." That's the call. Game over.</span> <span class="resist">That's, uh — that's a tough one to commentate.</span>`,
+        annotation: "Sports narration breaks. 'A tough one to commentate' is the register admitting its own failure. There is no play to call, no winner, no highlight reel. 'Game over' is the only sports metaphor that survives, and it survives because breakups and final whistles share exactly one property: the thing that was happening is no longer happening. Everything else about the metaphor is wrong, and the register knows it.",
+        chars: null
+      },
+      eulogy: {
+        text: `<span class="ease">She wrote it at the kitchen table because that's where she wrote everything — the grocery lists, the permission slips, the letter that ended it.</span> The house was quiet. The furnace ran. She told me she'd started it four times. <span class="ease">She said, "I told him I didn't know how to say it, so I'd say it badly."</span> <span class="ease">She said the two hardest words she ever wrote were "we should stop." Not because they were hard to think. Because they were hard to survive having thought.</span>`,
+        annotation: "Eulogy transforms the letter into a story someone is telling about the person who wrote it. The kitchen table gets a history (grocery lists, permission slips) that places the letter in a life. 'We should stop' becomes 'the two hardest words she ever wrote,' and the final distinction — hard to think vs. hard to survive having thought — is the eulogy doing what only eulogy can do: telling you what something cost, long after the cost was paid.",
+        chars: null
+      }
+    }
+  }
+];
+
+let currentSource = 0;
+let showAnnotations = false;
+
+function init() {
+  const selector = document.getElementById('sourceSelector');
+  sources.forEach((s, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'source-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = s.name;
+    btn.onclick = () => selectSource(i);
+    selector.appendChild(btn);
+  });
+  renderSource();
+}
+
+function selectSource(idx) {
+  currentSource = idx;
+  document.querySelectorAll('.source-btn').forEach((b, i) => {
+    b.className = 'source-btn' + (i === idx ? ' active' : '');
+  });
+  renderSource();
+}
+
+function toggleAnnotations() {
+  showAnnotations = !showAnnotations;
+  const track = document.getElementById('annotationToggle');
+  track.className = 'toggle-track' + (showAnnotations ? ' on' : '');
+  document.getElementById('legend').className = 'legend' + (showAnnotations ? ' visible' : '');
+  document.querySelectorAll('.card-annotation').forEach(a => {
+    a.className = 'card-annotation' + (showAnnotations ? ' visible' : '');
+  });
+  // Toggle highlights in card bodies
+  document.querySelectorAll('.card-body .resist, .card-body .stretch, .card-body .ease').forEach(el => {
+    if (showAnnotations) {
+      el.style.background = '';
+      el.style.borderBottom = '';
+    } else {
+      el.style.background = 'none';
+      el.style.borderBottom = 'none';
+    }
+  });
+}
+
+function countChars(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent.length;
+}
+
+function renderSource() {
+  const src = sources[currentSource];
+  document.getElementById('sourceText').textContent = src.text;
+
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+
+  const registerNames = ['legal', 'clinical', 'poetic', 'child', 'sports', 'eulogy'];
+  const registerLabels = {
+    legal: 'Legal',
+    clinical: 'Clinical',
+    poetic: 'Poetic',
+    child: "Child's Narration",
+    sports: 'Sports Commentary',
+    eulogy: 'Eulogy'
+  };
+
+  registerNames.forEach(reg => {
+    const data = src.registers[reg];
+    const chars = countChars(data.text);
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.innerHTML = `
+      <div class="card-header">
+        <span class="register-name">${registerLabels[reg]}</span>
+        <span class="char-count">${chars} chars</span>
+      </div>
+      <div class="card-body">
+        <p>${data.text}</p>
+      </div>
+      <div class="card-annotation ${showAnnotations ? 'visible' : ''}">${data.annotation}</div>
+    `;
+
+    // If annotations not showing, hide highlights
+    if (!showAnnotations) {
+      setTimeout(() => {
+        card.querySelectorAll('.resist, .stretch, .ease').forEach(el => {
+          el.style.background = 'none';
+          el.style.borderBottom = 'none';
+        });
+      }, 0);
+    }
+
+    grid.appendChild(card);
+  });
+}
+
+init();
+</script>
+</body>
+</html>

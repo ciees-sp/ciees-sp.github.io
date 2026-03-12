@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Synesthesia Machine</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #0a0a0f; color: #ccc; font-family: 'Courier New', monospace; overflow: hidden; }
+canvas { display: block; }
+#ui {
+  position: fixed; top: 20px; left: 20px; z-index: 10;
+  background: rgba(10,10,15,0.85); padding: 16px 20px; border-radius: 6px;
+  border: 1px solid #333; max-width: 320px; font-size: 13px; line-height: 1.5;
+}
+#ui h1 { font-size: 15px; color: #e8e8e8; margin-bottom: 8px; letter-spacing: 1px; }
+#ui p { color: #888; margin-bottom: 10px; }
+#ui .control { margin: 8px 0; }
+#ui label { color: #aaa; display: block; margin-bottom: 4px; }
+#ui select, #ui input[type="range"] { width: 100%; }
+#ui select { background: #1a1a2e; color: #ccc; border: 1px solid #444; padding: 4px; border-radius: 3px; }
+#ui input[type="range"] { -webkit-appearance: none; background: #222; height: 4px; border-radius: 2px; outline: none; }
+#ui input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: #667; border-radius: 50%; cursor: pointer; }
+#drop-zone {
+  border: 2px dashed #444; border-radius: 6px; padding: 20px; text-align: center;
+  color: #666; cursor: pointer; margin: 10px 0; transition: border-color 0.2s;
+}
+#drop-zone:hover, #drop-zone.dragover { border-color: #88a; color: #aac; }
+#drop-zone input { display: none; }
+.key { color: #667; font-size: 11px; margin-top: 12px; }
+.key span { color: #aab; }
+#status { color: #556; font-size: 11px; margin-top: 8px; }
+#thumb { max-width: 100%; max-height: 80px; border-radius: 3px; margin: 8px 0; display: none; border: 1px solid #333; }
+</style>
+</head>
+<body>
+
+<div id="ui">
+  <h1>SYNESTHESIA MACHINE</h1>
+  <p>Drop an image. Hear what it looks like.</p>
+  <div id="drop-zone">
+    <span>drop image here or click</span>
+    <input type="file" id="file-input" accept="image/*">
+  </div>
+  <img id="thumb">
+  <div class="control">
+    <label>Scan speed</label>
+    <input type="range" id="speed" min="1" max="20" value="6">
+  </div>
+  <div class="control">
+    <label>Tonality</label>
+    <select id="scale">
+      <option value="pentatonic">Pentatonic</option>
+      <option value="dorian">Dorian</option>
+      <option value="lydian">Lydian</option>
+      <option value="phrygian">Phrygian</option>
+      <option value="chromatic">Chromatic</option>
+      <option value="wholetone">Whole Tone</option>
+    </select>
+  </div>
+  <div class="control">
+    <label>Volume</label>
+    <input type="range" id="volume" min="0" max="100" value="40">
+  </div>
+  <div class="key">
+    <span>SPACE</span> pause/play &nbsp; <span>R</span> reverse &nbsp; <span>S</span> shuffle columns<br>
+    <span>Click</span> image to scan from that point
+  </div>
+  <div id="status">waiting for image</div>
+</div>
+
+<canvas id="c"></canvas>
+
+<script>
+const canvas = document.getElementById('c');
+const ctx = canvas.getContext('2d');
+let W, H;
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+resize();
+window.addEventListener('resize', resize);
+
+// Audio
+let audioCtx = null;
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+// Scales (semitone offsets from root)
+const scales = {
+  pentatonic: [0, 2, 4, 7, 9],
+  dorian: [0, 2, 3, 5, 7, 9, 10],
+  lydian: [0, 2, 4, 6, 7, 9, 11],
+  phrygian: [0, 1, 3, 5, 7, 8, 10],
+  chromatic: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  wholetone: [0, 2, 4, 6, 8, 10]
+};
+
+function noteFreq(semitone) {
+  return 110 * Math.pow(2, semitone / 12); // A2 = 110Hz base
+}
+
+// Image data
+let imgData = null;
+let imgW = 0, imgH = 0;
+let imgCanvas = null;
+let scanX = 0;
+let playing = false;
+let direction = 1;
+let lastScanTime = 0;
+let particles = [];
+let activeVoices = [];
+
+// Column order (for shuffle)
+let columnOrder = null;
+
+function loadImage(src) {
+  const img = new Image();
+  img.onload = () => {
+    // Scale to reasonable size for scanning
+    const maxDim = 200;
+    const scale = Math.min(maxDim / img.width, maxDim / img.height, 1);
+    imgW = Math.floor(img.width * scale);
+    imgH = Math.floor(img.height * scale);
+
+    imgCanvas = document.createElement('canvas');
+    imgCanvas.width = imgW;
+    imgCanvas.height = imgH;
+    const ictx = imgCanvas.getContext('2d');
+    ictx.drawImage(img, 0, 0, imgW, imgH);
+    imgData = ictx.getImageData(0, 0, imgW, imgH);
+
+    scanX = 0;
+    columnOrder = null;
+    playing = true;
+    particles = [];
+    document.getElementById('status').textContent = `${imgW}×${imgH} · scanning`;
+
+    document.getElementById('thumb').src = src;
+    document.getElementById('thumb').style.display = 'block';
+  };
+  img.src = src;
+}
+
+// File handling
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const reader = new FileReader();
+    reader.onload = ev => loadImage(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+});
+fileInput.addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = ev => loadImage(ev.target.result);
+    reader.readAsDataURL(file);
+  }
+});
+
+// Keyboard
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space') { e.preventDefault(); playing = !playing; }
+  if (e.code === 'KeyR') { direction *= -1; }
+  if (e.code === 'KeyS' && imgData) {
+    // Shuffle column order
+    columnOrder = Array.from({length: imgW}, (_, i) => i);
+    for (let i = columnOrder.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [columnOrder[i], columnOrder[j]] = [columnOrder[j], columnOrder[i]];
+    }
+  }
+});
+
+// Click on canvas to jump scan position
+canvas.addEventListener('click', e => {
+  if (!imgData) return;
+  // Map click X to image column
+  const drawW = Math.min(W * 0.6, imgW * (H * 0.7 / imgH));
+  const drawH = imgH * (drawW / imgW);
+  const drawX = (W - drawW) / 2;
+  if (e.clientX >= drawX && e.clientX <= drawX + drawW) {
+    scanX = Math.floor(((e.clientX - drawX) / drawW) * imgW);
+    scanX = Math.max(0, Math.min(imgW - 1, scanX));
+  }
+});
+
+// Sound synthesis for a column
+function playColumn(col) {
+  ensureAudio();
+  const t = audioCtx.currentTime;
+  const vol = document.getElementById('volume').value / 100;
+  const scaleType = document.getElementById('scale').value;
+  const scaleNotes = scales[scaleType];
+
+  // Sample pixels from this column
+  const samples = 16;
+  const step = Math.max(1, Math.floor(imgH / samples));
+
+  let totalR = 0, totalG = 0, totalB = 0, totalL = 0;
+  let voices = [];
+
+  for (let i = 0; i < samples; i++) {
+    const y = Math.min(Math.floor(i * step), imgH - 1);
+    const idx = (y * imgW + col) * 4;
+    const r = imgData.data[idx];
+    const g = imgData.data[idx + 1];
+    const b = imgData.data[idx + 2];
+
+    totalR += r; totalG += g; totalB += b;
+
+    const lightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+    totalL += lightness;
+    const saturation = (Math.max(r, g, b) - Math.min(r, g, b)) / 255;
+
+    // Only sound pixels above a darkness/saturation threshold
+    if (lightness < 0.05 && saturation < 0.05) continue;
+
+    // Map vertical position to pitch (top = high, bottom = low)
+    const pitchRange = 36; // 3 octaves
+    const rawSemitone = Math.floor((1 - i / samples) * pitchRange);
+
+    // Quantize to scale
+    const octave = Math.floor(rawSemitone / 12);
+    const degree = rawSemitone % 12;
+    let closest = scaleNotes[0];
+    let minDist = 99;
+    for (const n of scaleNotes) {
+      const d = Math.abs(n - degree);
+      if (d < minDist) { minDist = d; closest = n; }
+    }
+    const semitone = octave * 12 + closest;
+    const freq = noteFreq(semitone);
+
+    // Timbre from color
+    // Red → saw-like (warm), Blue → sine-like (cool), Green → triangle-like (natural)
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    // Hue determines waveshape
+    if (r > g && r > b) {
+      osc.type = 'sawtooth'; // warm
+    } else if (b > r && b > g) {
+      osc.type = 'sine'; // cool
+    } else if (g > r && g > b) {
+      osc.type = 'triangle'; // natural
+    } else {
+      osc.type = 'square'; // mixed/neutral
+    }
+
+    // Amplitude from lightness and saturation
+    const amp = lightness * (0.3 + saturation * 0.7) * vol * 0.04;
+
+    // Envelope: saturation controls sustain
+    const attack = 0.01;
+    const sustain = 0.05 + saturation * 0.3;
+    const release = 0.1 + (1 - saturation) * 0.4;
+
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(amp, t + attack);
+    gain.gain.linearRampToValueAtTime(amp * 0.6, t + attack + sustain);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + attack + sustain + release);
+
+    // Slight detune from color temperature
+    osc.detune.value = (r - b) * 0.1;
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start(t);
+    osc.stop(t + attack + sustain + release + 0.05);
+
+    // Particle
+    const px = (col / imgW);
+    const py = (y / imgH);
+    particles.push({
+      x: px, y: py,
+      r: r, g: g, b: b,
+      life: 1,
+      decay: 0.015 + Math.random() * 0.01,
+      size: 2 + lightness * 6 + saturation * 4,
+      vx: (Math.random() - 0.5) * 0.003,
+      vy: (Math.random() - 0.5) * 0.003 - 0.001
+    });
+  }
+
+  // Ambient pad from column average color
+  const avgR = totalR / samples;
+  const avgG = totalG / samples;
+  const avgB = totalB / samples;
+  const avgL = totalL / samples;
+
+  if (avgL > 0.1) {
+    const padOsc = audioCtx.createOscillator();
+    const padGain = audioCtx.createGain();
+    const padFilter = audioCtx.createBiquadFilter();
+
+    padOsc.type = 'sine';
+    // Root note from average hue
+    const hue = Math.atan2(avgG - avgB, avgR - avgG);
+    const rootSemitone = Math.floor(((hue + Math.PI) / (2 * Math.PI)) * 12);
+    const quantizedRoot = scaleNotes[Math.floor((rootSemitone / 12) * scaleNotes.length) % scaleNotes.length];
+    padOsc.frequency.value = noteFreq(quantizedRoot) * 0.5;
+
+    padFilter.type = 'lowpass';
+    padFilter.frequency.value = 200 + avgL * 2000;
+    padFilter.Q.value = 1 + (1 - avgL) * 3;
+
+    const padAmp = avgL * vol * 0.015;
+    padGain.gain.setValueAtTime(0, t);
+    padGain.gain.linearRampToValueAtTime(padAmp, t + 0.05);
+    padGain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+
+    padOsc.connect(padFilter);
+    padFilter.connect(padGain);
+    padGain.connect(audioCtx.destination);
+    padOsc.start(t);
+    padOsc.stop(t + 0.9);
+  }
+}
+
+// Render
+function draw(time) {
+  requestAnimationFrame(draw);
+
+  // Fade
+  ctx.fillStyle = 'rgba(10, 10, 15, 0.15)';
+  ctx.fillRect(0, 0, W, H);
+
+  if (!imgData) {
+    // Waiting state
+    ctx.fillStyle = '#222';
+    ctx.font = '14px Courier New';
+    ctx.textAlign = 'center';
+    ctx.fillText('drop an image to begin', W/2, H/2);
+    return;
+  }
+
+  // Draw image centered
+  const drawScale = Math.min(W * 0.6 / imgW, H * 0.7 / imgH);
+  const drawW = imgW * drawScale;
+  const drawH = imgH * drawScale;
+  const drawX = (W - drawW) / 2;
+  const drawY = (H - drawH) / 2;
+
+  // Draw image with slight transparency
+  ctx.globalAlpha = 0.6;
+  ctx.drawImage(imgCanvas, drawX, drawY, drawW, drawH);
+  ctx.globalAlpha = 1;
+
+  // Scan line
+  const effectiveCol = columnOrder ? columnOrder[scanX] : scanX;
+  const lineX = drawX + (effectiveCol / imgW) * drawW;
+
+  ctx.strokeStyle = 'rgba(180, 200, 255, 0.5)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(lineX, drawY - 10);
+  ctx.lineTo(lineX, drawY + drawH + 10);
+  ctx.stroke();
+
+  // Scan line glow
+  const grad = ctx.createLinearGradient(lineX - 20, 0, lineX + 20, 0);
+  grad.addColorStop(0, 'rgba(100, 130, 255, 0)');
+  grad.addColorStop(0.5, 'rgba(100, 130, 255, 0.08)');
+  grad.addColorStop(1, 'rgba(100, 130, 255, 0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(lineX - 20, drawY, 40, drawH);
+
+  // Particles
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.life -= p.decay;
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy -= 0.0001; // slight float upward
+
+    if (p.life <= 0) {
+      particles.splice(i, 1);
+      continue;
+    }
+
+    const px = drawX + p.x * drawW;
+    const py = drawY + p.y * drawH;
+    const alpha = p.life * 0.8;
+    const size = p.size * p.life;
+
+    ctx.beginPath();
+    ctx.arc(px, py, size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${alpha})`;
+    ctx.fill();
+
+    // Glow
+    if (size > 3) {
+      ctx.beginPath();
+      ctx.arc(px, py, size * 2, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.r}, ${p.g}, ${p.b}, ${alpha * 0.15})`;
+      ctx.fill();
+    }
+  }
+
+  // Progress bar
+  const progress = scanX / imgW;
+  ctx.fillStyle = 'rgba(80, 100, 140, 0.3)';
+  ctx.fillRect(drawX, drawY + drawH + 20, drawW, 3);
+  ctx.fillStyle = 'rgba(130, 160, 220, 0.6)';
+  ctx.fillRect(drawX, drawY + drawH + 20, drawW * progress, 3);
+
+  // Column indicator text
+  ctx.fillStyle = '#445';
+  ctx.font = '11px Courier New';
+  ctx.textAlign = 'left';
+  ctx.fillText(`col ${scanX}/${imgW}  ${playing ? '▶' : '❚❚'}  ${direction > 0 ? '→' : '←'}${columnOrder ? ' shuffled' : ''}`, drawX, drawY + drawH + 38);
+
+  // Advance scan
+  if (playing) {
+    const speed = parseInt(document.getElementById('speed').value);
+    const interval = 1000 / speed;
+
+    if (time - lastScanTime >= interval) {
+      lastScanTime = time;
+
+      playColumn(columnOrder ? columnOrder[scanX] : scanX);
+
+      scanX += direction;
+      if (scanX >= imgW) { scanX = 0; }
+      if (scanX < 0) { scanX = imgW - 1; }
+    }
+  }
+}
+
+requestAnimationFrame(draw);
+
+// Load a default generative image
+function generateDefaultImage() {
+  const c = document.createElement('canvas');
+  c.width = 120; c.height = 80;
+  const cx = c.getContext('2d');
+
+  // Gradient sky
+  const sky = cx.createLinearGradient(0, 0, 0, 50);
+  sky.addColorStop(0, '#1a0533');
+  sky.addColorStop(0.5, '#2d1b69');
+  sky.addColorStop(1, '#e8523f');
+  cx.fillStyle = sky;
+  cx.fillRect(0, 0, 120, 55);
+
+  // Ground
+  const ground = cx.createLinearGradient(0, 50, 0, 80);
+  ground.addColorStop(0, '#1a3a1a');
+  ground.addColorStop(1, '#0a1a0a');
+  cx.fillStyle = ground;
+  cx.fillRect(0, 50, 120, 30);
+
+  // Stars
+  for (let i = 0; i < 40; i++) {
+    const sx = Math.random() * 120;
+    const sy = Math.random() * 40;
+    const brightness = 150 + Math.random() * 105;
+    cx.fillStyle = `rgb(${brightness}, ${brightness}, ${brightness + 30})`;
+    cx.fillRect(sx, sy, 1, 1);
+  }
+
+  // Moon
+  cx.beginPath();
+  cx.arc(90, 15, 8, 0, Math.PI * 2);
+  cx.fillStyle = '#e8e0c8';
+  cx.fill();
+
+  // Horizon glow
+  cx.fillStyle = 'rgba(232, 82, 63, 0.3)';
+  cx.fillRect(0, 45, 120, 10);
+
+  // Trees
+  for (let i = 0; i < 8; i++) {
+    const tx = 10 + i * 14 + Math.random() * 8;
+    const th = 12 + Math.random() * 10;
+    cx.fillStyle = `rgb(${10 + Math.random()*20}, ${30 + Math.random()*20}, ${10 + Math.random()*15})`;
+    cx.beginPath();
+    cx.moveTo(tx, 52);
+    cx.lineTo(tx - 4, 52 + th);
+    cx.lineTo(tx + 4, 52 + th);
+    cx.fill();
+  }
+
+  return c.toDataURL();
+}
+
+// Start with generated landscape
+loadImage(generateDefaultImage());
+</script>
+</body>
+</html>

@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Ethics — Ethical Principles Hotspot Prototype</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Instrument Sans', sans-serif;
+    background: #F6F3EE;
+    color: #1C1C28;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 1100px;
+    width: 100%;
+  }
+
+  .block-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    background: #1E3A5C;
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 30px;
+    font-weight: 700;
+    color: #1E3A5C;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .intro-text {
+    font-size: 17px;
+    line-height: 1.65;
+    color: #1C1C28;
+    margin-bottom: 32px;
+  }
+
+  .hotspot-layout {
+    display: flex;
+    gap: 32px;
+    align-items: stretch;
+  }
+
+  .constellation-wrapper {
+    position: relative;
+    flex: 1;
+    aspect-ratio: 1 / 1;
+    background: #fff;
+    border: 1.5px solid #1E3A5C;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .constellation-inner {
+    position: relative;
+    width: 88%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .constellation-svg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .constellation-inner .node {
+    /* nodes position relative to inner container */
+  }
+
+  .constellation-svg line {
+    stroke: #1E3A5C;
+    stroke-width: 1.5;
+    stroke-dasharray: 6 4;
+    opacity: 0.18;
+    transition: opacity 0.3s ease, stroke 0.3s ease, stroke-width 0.3s ease;
+  }
+
+  .constellation-svg line.highlight {
+    opacity: 1;
+    stroke: #4EADD5;
+    stroke-width: 3;
+    stroke-dasharray: none;
+  }
+
+  /* Dim non-connected nodes when something is active */
+  .node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    cursor: pointer;
+    text-align: center;
+    transition: transform 0.2s ease, opacity 0.25s ease;
+  }
+
+  .node:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  .node.dimmed {
+    opacity: 0.3;
+  }
+
+  .node-circle {
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2.5px solid #1E3A5C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 6px;
+    transition: all 0.25s ease;
+    box-shadow: 0 2px 8px rgba(30, 58, 92, 0.08);
+  }
+
+  .node.active .node-circle {
+    background: #1E3A5C;
+    border-color: #1E3A5C;
+    box-shadow: 0 4px 20px rgba(30, 58, 92, 0.3);
+  }
+
+  /* Connected nodes get the bright cyan ring */
+  .node.connected .node-circle {
+    border-color: #4EADD5;
+    border-width: 3px;
+    box-shadow: 0 0 0 4px rgba(78, 173, 213, 0.2), 0 2px 8px rgba(30, 58, 92, 0.08);
+  }
+
+  .node-circle svg {
+    width: 32px;
+    height: 32px;
+    stroke: #1E3A5C;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: stroke 0.25s ease;
+  }
+
+  .node.active .node-circle svg {
+    stroke: #fff;
+  }
+
+  /* Justice icon: filled circle with white bars */
+  .node-circle .justice-icon {
+    color: #1E3A5C;
+  }
+  .node.active .node-circle .justice-icon {
+    color: #fff;
+  }
+
+  .node-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1E3A5C;
+    letter-spacing: -0.1px;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  .node.connected .node-label {
+    color: #2D8DB5;
+    font-weight: 700;
+  }
+
+  .reveal-panel {
+    flex: 1;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .placeholder-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    color: #1E3A5C;
+    opacity: 0.3;
+    text-align: center;
+    padding: 40px 20px;
+    background: #fff;
+    border: 1.5px dashed #1E3A5C;
+    border-radius: 12px;
+  }
+
+  .placeholder-state svg {
+    width: 32px;
+    height: 32px;
+    stroke: #1E3A5C;
+    fill: none;
+    stroke-width: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .placeholder-state p {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  .reveal-card {
+    background: #fff;
+    border: 1.5px solid #1E3A5C;
+    border-radius: 12px;
+    padding: 28px 28px;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(8px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    display: none;
+  }
+
+  .reveal-card.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+    display: block;
+  }
+
+  .reveal-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .reveal-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #1E3A5C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .reveal-card-icon svg {
+    width: 22px;
+    height: 22px;
+    stroke: #fff;
+    fill: none;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .reveal-card h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1E3A5C;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+
+  .reveal-definition {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #1C1C28;
+    margin-bottom: 20px;
+  }
+
+  .reveal-tension {
+    background: #E8EFF5;
+    border-left: 3px solid #4EADD5;
+    padding: 16px 18px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .tension-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tension-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #2D5F8A;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .tension-pills {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .tension-pill {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    color: #fff;
+    background: #4EADD5;
+    padding: 2px 10px;
+    border-radius: 100px;
+    letter-spacing: 0.3px;
+  }
+
+  .reveal-tension p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #1C1C28;
+    font-weight: 450;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <span class="block-label">Ethics Module</span>
+  <h2>Ethical Principles in Behavioral Health</h2>
+  <p class="intro-text">These seven principles guide decision-making when the way forward is unclear. Select each principle to explore its definition and where it creates tension with other principles in practice.</p>
+
+  <div class="hotspot-layout">
+    <div class="constellation-wrapper" id="constellation">
+      <div class="constellation-inner">
+      <svg class="constellation-svg" id="lines-svg" viewBox="0 0 480 480" preserveAspectRatio="xMidYMid meet">
+        <line data-from="beneficence" data-to="autonomy" x1="168" y1="68" x2="312" y2="68" />
+        <line data-from="beneficence" data-to="nonmaleficence" x1="168" y1="68" x2="82" y2="204" />
+        <line data-from="autonomy" data-to="nonmaleficence" x1="312" y1="68" x2="82" y2="204" />
+        <line data-from="autonomy" data-to="fidelity" x1="312" y1="68" x2="398" y2="204" />
+        <line data-from="confidentiality" data-to="justice" x1="72" y1="350" x2="408" y2="350" />
+        <line data-from="confidentiality" data-to="nonmaleficence" x1="72" y1="350" x2="82" y2="204" />
+        <line data-from="confidentiality" data-to="veracity" x1="72" y1="350" x2="240" y2="440" />
+        <line data-from="veracity" data-to="fidelity" x1="240" y1="440" x2="398" y2="204" />
+        <line data-from="justice" data-to="autonomy" x1="408" y1="350" x2="312" y2="68" />
+        <line data-from="beneficence" data-to="veracity" x1="168" y1="68" x2="240" y2="440" />
+      </svg>
+
+      <div class="node" data-principle="beneficence" style="left: 35%; top: 14.2%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <div class="node-label">Beneficence</div>
+      </div>
+
+      <div class="node" data-principle="autonomy" style="left: 65%; top: 14.2%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        </div>
+        <div class="node-label">Autonomy</div>
+      </div>
+
+      <div class="node" data-principle="nonmaleficence" style="left: 17%; top: 42.5%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </div>
+        <div class="node-label">Nonmaleficence</div>
+      </div>
+
+      <div class="node" data-principle="fidelity" style="left: 83%; top: 42.5%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <div class="node-label">Fidelity</div>
+      </div>
+
+      <div class="node" data-principle="confidentiality" style="left: 15%; top: 73%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="node-label">Confidentiality</div>
+      </div>
+
+      <div class="node" data-principle="justice" style="left: 85%; top: 73%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24" class="justice-icon">
+            <circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/>
+            <line x1="7.5" y1="10" x2="16.5" y2="10" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="7.5" y1="14.5" x2="16.5" y2="14.5" stroke="#fff" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="node-label">Justice</div>
+      </div>
+
+      <div class="node" data-principle="veracity" style="left: 50%; top: 91.7%;">
+        <div class="node-circle">
+          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="node-label">Veracity</div>
+      </div>
+      </div>
+    </div>
+
+    <div class="reveal-panel">
+      <div class="placeholder-state" id="placeholder">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        <p>Select a principle to explore</p>
+      </div>
+      <div class="reveal-card" id="reveal-card">
+        <div class="reveal-card-header">
+          <div class="reveal-card-icon" id="reveal-icon"></div>
+          <h3 id="reveal-title"></h3>
+        </div>
+        <p class="reveal-definition" id="reveal-definition"></p>
+        <div class="reveal-tension" id="reveal-tension-box">
+          <div class="tension-header">
+            <span class="tension-label">Tension with</span>
+            <div class="tension-pills" id="tension-pills"></div>
+          </div>
+          <p id="reveal-tension"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const iconSVGs = {
+  beneficence: '<svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>',
+  nonmaleficence: '<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  autonomy: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>',
+  confidentiality: '<svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>',
+  veracity: '<svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>',
+  fidelity: '<svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>',
+  justice: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#fff" stroke="none"/><line x1="7.5" y1="10" x2="16.5" y2="10" stroke="#1E3A5C" stroke-width="2.5" stroke-linecap="round"/><line x1="7.5" y1="14.5" x2="16.5" y2="14.5" stroke="#1E3A5C" stroke-width="2.5" stroke-linecap="round"/></svg>'
+};
+
+const principles = {
+  beneficence: {
+    title: 'Beneficence',
+    definition: 'Acting in the best interest of the individual. Every clinical decision should be guided by what promotes the individual\'s wellbeing, growth, and recovery.',
+    tension: 'Pulls against Autonomy when what you believe is best for the individual is not what they want. A provider who thinks calming strategies are needed while a Native American teenager is working with a tribe member through physical work is weighing their clinical judgment against the individual\'s cultural practice and self-determination.',
+    connections: ['autonomy', 'nonmaleficence', 'veracity']
+  },
+  nonmaleficence: {
+    title: 'Nonmaleficence',
+    definition: 'At all times, and especially when the individual\'s best interests are unclear, avoid causing them harm. This is the metaphorical line in the sand.',
+    tension: 'Conflicts with established processes that re-traumatize. Structured intakes that make an individual report their full trauma history, only to repeat it with a new clinician during treatment planning, cause harm. Sometimes internal processes need to be adapted to protect the individual.',
+    connections: ['beneficence', 'autonomy', 'confidentiality']
+  },
+  autonomy: {
+    title: 'Autonomy',
+    definition: 'Respecting a person\'s right to make their own choices. After discharge, the individual will need to make decisions independently, so they should be allowed to practice that throughout the service.',
+    tension: 'Pulls against Beneficence and Nonmaleficence when individuals engage in risky behaviors that are not at the level of crisis, or when youth resist caregiver involvement. When providers exert too much control, clients are more likely to disengage. Consult your supervisor when in doubt.',
+    connections: ['beneficence', 'nonmaleficence', 'fidelity', 'justice']
+  },
+  confidentiality: {
+    title: 'Confidentiality',
+    definition: 'Protecting an individual\'s private information. In Virginia, failure to protect identifying information is a violation of law (12VAC35-115-80).',
+    tension: 'Breaks against mandatory reporting (child abuse/neglect), court subpoenas, emergency situations, and human rights investigations. Youth confidentiality adds complexity: individuals can consent to mental health treatment at age 14, and parental consent is not required by law after that point. A breach damages trust and can cause individuals to avoid future services entirely.',
+    connections: ['justice', 'nonmaleficence', 'veracity']
+  },
+  veracity: {
+    title: 'Veracity',
+    definition: 'Being honest and transparent with the individuals you serve. Transparency builds the foundation for trust in the therapeutic relationship.',
+    tension: 'Can conflict with Confidentiality when full transparency with one party (a caregiver, a referral source) would mean disclosing information another party has not consented to share. Also tensions with Beneficence when honest feedback about progress could feel discouraging if not delivered with care.',
+    connections: ['confidentiality', 'fidelity', 'beneficence']
+  },
+  fidelity: {
+    title: 'Fidelity',
+    definition: 'Being reliable, professional, and consistent. Trust is built over time through showing up on time, following through on plans, and honoring commitments.',
+    tension: 'Tensions with Autonomy when maintaining professional consistency means holding a boundary the individual pushes against. Not responding to texts outside work hours, or not spending extra time beyond the structured service delivery model. The "Do for, Do with, Cheer on" progression requires shifting your level of involvement, which can feel inconsistent to the individual.',
+    connections: ['autonomy', 'veracity']
+  },
+  justice: {
+    title: 'Justice',
+    definition: 'Treating individuals fairly and equitably, regardless of background, diagnosis, or personal characteristics.',
+    tension: 'Conflicts with Confidentiality in situations involving dual relationships, especially in rural communities where a school-based provider may be the only clinician available and already knows the child from church or the neighborhood. Fair treatment requires objectivity, but existing relationships create power imbalances that compromise it.',
+    connections: ['confidentiality', 'autonomy']
+  }
+};
+
+const nodes = document.querySelectorAll('.node');
+const lines = document.querySelectorAll('#lines-svg line');
+const revealCard = document.getElementById('reveal-card');
+const placeholder = document.getElementById('placeholder');
+const tensionPills = document.getElementById('tension-pills');
+let activeNode = null;
+
+nodes.forEach(node => {
+  node.addEventListener('click', () => {
+    const key = node.dataset.principle;
+
+    if (activeNode === key) {
+      deactivateAll();
+      return;
+    }
+
+    activeNode = key;
+    const data = principles[key];
+
+    // Reset all nodes, then set states
+    nodes.forEach(n => {
+      n.classList.remove('active', 'connected', 'dimmed');
+      const nKey = n.dataset.principle;
+      if (nKey === key) {
+        n.classList.add('active');
+      } else if (data.connections.includes(nKey)) {
+        n.classList.add('connected');
+      } else {
+        n.classList.add('dimmed');
+      }
+    });
+
+    // Highlight relevant lines, dim others
+    lines.forEach(line => {
+      const from = line.dataset.from;
+      const to = line.dataset.to;
+      if ((from === key && data.connections.includes(to)) ||
+          (to === key && data.connections.includes(from))) {
+        line.classList.add('highlight');
+      } else {
+        line.classList.remove('highlight');
+      }
+    });
+
+    // Build tension pills
+    tensionPills.innerHTML = data.connections
+      .map(c => `<span class="tension-pill">${principles[c].title}</span>`)
+      .join('');
+
+    placeholder.style.display = 'none';
+    document.getElementById('reveal-icon').innerHTML = iconSVGs[key];
+    document.getElementById('reveal-title').textContent = data.title;
+    document.getElementById('reveal-definition').textContent = data.definition;
+    document.getElementById('reveal-tension').textContent = data.tension;
+
+    revealCard.classList.add('visible');
+  });
+});
+
+function deactivateAll() {
+  activeNode = null;
+  nodes.forEach(n => n.classList.remove('active', 'connected', 'dimmed'));
+  lines.forEach(l => l.classList.remove('highlight'));
+  placeholder.style.display = 'flex';
+  revealCard.classList.remove('visible');
+}
+</script>
+
+</body>
+</html>

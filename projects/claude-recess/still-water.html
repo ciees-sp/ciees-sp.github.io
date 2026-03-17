@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Still Water</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #0a0e0d;
+  color: #bbb;
+  font-family: 'Georgia', serif;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  user-select: none;
+}
+canvas {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#ui {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+#prompt-bar {
+  text-align: center;
+  padding: 20px 40px 24px;
+  pointer-events: auto;
+}
+#prompt-text {
+  font-size: 15px;
+  color: #b0b0b0;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto 16px;
+  min-height: 48px;
+  transition: opacity 0.8s;
+}
+#add-btn {
+  display: inline-block;
+  padding: 8px 28px;
+  font-family: 'Georgia', serif;
+  font-size: 14px;
+  color: #ccc;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  letter-spacing: 0.5px;
+}
+#add-btn:hover { background: rgba(255,255,255,0.1); color: #eee; }
+#add-btn.hidden { opacity: 0; pointer-events: none; }
+#layer-bar {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 40px 20px;
+  flex-wrap: wrap;
+  pointer-events: auto;
+}
+.layer-pip {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  transition: all 0.6s;
+  cursor: default;
+}
+.layer-pip.active {
+  border-color: rgba(255,255,255,0.5);
+}
+#annotation {
+  position: absolute;
+  top: 28px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+  z-index: 10;
+}
+#annotation-text {
+  font-size: 13px;
+  color: #999;
+  font-style: italic;
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.6;
+  opacity: 0;
+  transition: opacity 1.2s;
+}
+#title-card {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  background: #0a0e0d;
+  transition: opacity 1.5s;
+  cursor: pointer;
+}
+#title-card h1 {
+  font-family: 'Georgia', serif;
+  font-size: 36px;
+  font-weight: 400;
+  color: #bbb;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+}
+#title-card p {
+  font-size: 14px;
+  color: #888;
+  letter-spacing: 1px;
+}
+#reflection {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 15;
+  background: rgba(10,14,13,0.85);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 2s;
+  padding: 40px;
+}
+#reflection.visible { opacity: 1; pointer-events: auto; }
+#reflection-text {
+  max-width: 520px;
+  text-align: center;
+  line-height: 1.8;
+  font-size: 15px;
+  color: #b0b0b0;
+}
+#reflection-text p { margin-bottom: 16px; }
+#reflection-text .closing {
+  margin-top: 24px;
+  font-style: italic;
+  color: #888;
+  font-size: 13px;
+}
+</style>
+</head>
+<body>
+
+<div id="title-card">
+  <h1>STILL WATER</h1>
+  <p>click to begin</p>
+</div>
+
+<canvas id="pond"></canvas>
+
+<div id="annotation">
+  <div id="annotation-text"></div>
+</div>
+
+<div id="ui">
+  <div id="prompt-bar">
+    <div id="prompt-text"></div>
+    <div id="add-btn" class="hidden">Add</div>
+  </div>
+  <div id="layer-bar"></div>
+</div>
+
+<div id="reflection">
+  <div id="reflection-text"></div>
+</div>
+
+<script>
+const canvas = document.getElementById('pond');
+const ctx = canvas.getContext('2d');
+let W, H;
+let time = 0;
+let currentLayer = -1;
+let transitioning = false;
+let transitionProgress = 0;
+let transitionSpeed = 0.008;
+
+const layers = [
+  {
+    name: 'neglect',
+    color: '#2a1f0f',
+    pip: '#4a3520',
+    prompt: 'A pond. Unattended. The water hasn\'t moved in months.',
+    annotation: '',
+    addLabel: '',
+  },
+  {
+    name: 'circulation',
+    color: '#1a3a2a',
+    pip: '#3a6a4a',
+    prompt: 'The surface is opaque. Nothing lives here that chose to.',
+    annotation: 'The water remembers how to move. It just needed something to ask.',
+    addLabel: 'Add circulation',
+  },
+  {
+    name: 'plants',
+    color: '#1a4a2a',
+    pip: '#4a8a3a',
+    prompt: 'Moving water. The cloudiness is starting to thin, but the pond is still just infrastructure.',
+    annotation: 'The plants don\'t just filter. They claim the space. The pond stops being broken and becomes inhabited.',
+    addLabel: 'Add plants',
+  },
+  {
+    name: 'fish',
+    color: '#1a4a3a',
+    pip: '#d4864a',
+    prompt: 'Green things growing. Clean water circulating. A functional system. Not yet a place.',
+    annotation: 'Something that comes to the surface when it sees you changes what the pond is for. Filtration doesn\'t need you. Fish do.',
+    addLabel: 'Add fish',
+  },
+  {
+    name: 'lights',
+    color: '#1a3a4a',
+    pip: '#5a8adf',
+    prompt: 'During the day, the pond has presence. After dark, it disappears.',
+    annotation: 'The lights don\'t illuminate the pond. They reveal that the pond was always there after dark — you just couldn\'t see it. Everything you added before this moment becomes a night thing too.',
+    addLabel: 'Add lights',
+  },
+  {
+    name: 'lanterns',
+    color: '#3a2a1a',
+    pip: '#daa050',
+    prompt: 'Glowing from below. The water is luminous. The plants are silhouettes. The fish catch the light.',
+    annotation: 'The lanterns float on the surface the lights shine through. Two layers of light with water between them. Neither was designed for the other. Together they make depth visible.',
+    addLabel: 'Add floating lanterns',
+  },
+  {
+    name: 'mist',
+    color: '#2a3a3a',
+    pip: '#a0b8c0',
+    prompt: 'Light above. Light below. Something is still missing, and you can\'t name it yet.',
+    annotation: '',
+    addLabel: 'Add mist',
+  },
+];
+
+const mistAnnotationLines = [
+  'The mist changes everything underneath it.',
+  'The lights aren\'t lights anymore. They\'re glowing through fog.',
+  'The plants aren\'t plants anymore. They\'re silhouettes in vapor.',
+  'The lanterns aren\'t floating on water. They\'re floating on cloud.',
+  'The fish appear and vanish.',
+  'The water isn\'t a surface. It\'s the place the fog rises from.',
+  '',
+  'Each layer was practical on its own. Circulation, filtration, oxygenation, visibility, atmosphere.',
+  'At some point the accumulation crossed a threshold into something that can\'t be reduced back to its parts.',
+  '',
+  'The word for that is home.',
+];
+
+// --- Particles, fish, plants, etc. ---
+let ripples = [];
+let plantStalks = [];
+let fishArr = [];
+let lightOrbs = [];
+let lanterns = [];
+let mistParticles = [];
+
+function resize() {
+  W = canvas.width = window.innerWidth;
+  H = canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resize);
+resize();
+
+function initPlants() {
+  plantStalks = [];
+  const count = 8 + Math.floor(Math.random() * 6);
+  for (let i = 0; i < count; i++) {
+    const side = Math.random() < 0.5 ? 'left' : 'right';
+    const baseX = side === 'left'
+      ? W * 0.08 + Math.random() * W * 0.2
+      : W * 0.72 + Math.random() * W * 0.2;
+    plantStalks.push({
+      x: baseX,
+      baseY: H * 0.55 + Math.random() * H * 0.08,
+      height: 30 + Math.random() * 60,
+      width: 2 + Math.random() * 3,
+      phase: Math.random() * Math.PI * 2,
+      speed: 0.3 + Math.random() * 0.4,
+      hue: 100 + Math.random() * 40,
+      sat: 30 + Math.random() * 30,
+      leaves: Math.floor(1 + Math.random() * 3),
+    });
+  }
+}
+
+function initFish() {
+  fishArr = [];
+  const count = 4;
+  for (let i = 0; i < count; i++) {
+    fishArr.push({
+      x: W * 0.2 + Math.random() * W * 0.6,
+      y: H * 0.55 + Math.random() * H * 0.15,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.2,
+      size: 6 + Math.random() * 6,
+      hue: Math.random() < 0.5 ? 20 + Math.random() * 20 : 40 + Math.random() * 10,
+      sat: 70 + Math.random() * 30,
+      light: 55 + Math.random() * 20,
+      turnTimer: 0,
+      surfacing: false,
+      surfaceTimer: 0,
+    });
+  }
+}
+
+function initLights() {
+  lightOrbs = [];
+  const positions = [
+    { x: 0.25, y: 0.68 },
+    { x: 0.5, y: 0.72 },
+    { x: 0.75, y: 0.65 },
+  ];
+  positions.forEach(p => {
+    lightOrbs.push({
+      x: p.x * W,
+      y: p.y * H,
+      radius: 60 + Math.random() * 30,
+      hue: 200 + Math.random() * 40,
+      phase: Math.random() * Math.PI * 2,
+      pulseSpeed: 0.5 + Math.random() * 0.5,
+    });
+  });
+}
+
+function initLanterns() {
+  lanterns = [];
+  const count = 3;
+  for (let i = 0; i < count; i++) {
+    lanterns.push({
+      x: W * 0.2 + (i / (count - 1)) * W * 0.6 + (Math.random() - 0.5) * W * 0.1,
+      y: H * 0.48 + Math.random() * H * 0.04,
+      driftX: (Math.random() - 0.5) * 0.15,
+      driftPhase: Math.random() * Math.PI * 2,
+      bobPhase: Math.random() * Math.PI * 2,
+      radius: 8 + Math.random() * 4,
+      warmth: 30 + Math.random() * 20,
+    });
+  }
+}
+
+function initMist() {
+  mistParticles = [];
+  const count = 80;
+  for (let i = 0; i < count; i++) {
+    mistParticles.push({
+      x: Math.random() * W,
+      y: H * 0.38 + Math.random() * H * 0.18,
+      radius: 40 + Math.random() * 80,
+      alpha: 0.01 + Math.random() * 0.04,
+      driftX: (Math.random() - 0.5) * 0.3,
+      driftY: (Math.random() - 0.5) * 0.08,
+      phase: Math.random() * Math.PI * 2,
+    });
+  }
+}
+
+// --- Drawing functions per layer ---
+function getLayerAlpha(layerIndex) {
+  if (layerIndex < currentLayer) return 1;
+  if (layerIndex === currentLayer && transitioning) return transitionProgress;
+  if (layerIndex === currentLayer) return 1;
+  return 0;
+}
+
+function drawWater() {
+  // Base water
+  const murk = currentLayer <= 0 ? 1 : Math.max(0, 1 - getLayerAlpha(1) * 0.8);
+  const waterTop = H * 0.45;
+
+  // Sky gradient
+  const skyAlpha = Math.min(1, Math.max(0, (currentLayer >= 4 ? 1 : currentLayer === 3 ? 0.3 : 0) * (currentLayer === 4 && transitioning ? transitionProgress : 1)));
+  const skyGrad = ctx.createLinearGradient(0, 0, 0, waterTop);
+  if (currentLayer >= 4) {
+    const nightAlpha = getLayerAlpha(4);
+    skyGrad.addColorStop(0, `rgba(8,12,24,${0.3 + nightAlpha * 0.7})`);
+    skyGrad.addColorStop(0.6, `rgba(12,18,32,${0.3 + nightAlpha * 0.7})`);
+    skyGrad.addColorStop(1, `rgba(15,22,20,${0.2 + nightAlpha * 0.6})`);
+  } else {
+    skyGrad.addColorStop(0, `rgba(18,24,20,1)`);
+    skyGrad.addColorStop(1, `rgba(15,20,18,1)`);
+  }
+  ctx.fillStyle = skyGrad;
+  ctx.fillRect(0, 0, W, waterTop + 10);
+
+  // Stars when lights are on
+  if (currentLayer >= 4) {
+    const starAlpha = getLayerAlpha(4) * 0.6;
+    ctx.fillStyle = `rgba(255,255,255,${starAlpha})`;
+    const starSeed = 42;
+    for (let i = 0; i < 40; i++) {
+      const sx = ((starSeed * (i + 1) * 7) % W);
+      const sy = ((starSeed * (i + 1) * 13) % (waterTop * 0.8));
+      const sr = 0.5 + ((i * 3) % 3) * 0.5;
+      const twinkle = Math.sin(time * 0.5 + i * 2) * 0.3 + 0.7;
+      ctx.globalAlpha = starAlpha * twinkle;
+      ctx.beginPath();
+      ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  // Water body
+  const waterGrad = ctx.createLinearGradient(0, waterTop, 0, H);
+  if (murk > 0.5) {
+    waterGrad.addColorStop(0, `rgba(42,35,18,${0.8 * murk + 0.2})`);
+    waterGrad.addColorStop(0.4, `rgba(35,28,12,${0.9 * murk + 0.1})`);
+    waterGrad.addColorStop(1, `rgba(20,15,8,1)`);
+  } else {
+    const clarity = 1 - murk;
+    const r = Math.floor(15 + clarity * 5);
+    const g = Math.floor(25 + clarity * 25);
+    const b = Math.floor(20 + clarity * 20);
+    waterGrad.addColorStop(0, `rgba(${r},${g+15},${b+10},0.85)`);
+    waterGrad.addColorStop(0.5, `rgba(${r-5},${g},${b},0.92)`);
+    waterGrad.addColorStop(1, `rgba(10,15,12,1)`);
+  }
+  ctx.fillStyle = waterGrad;
+  ctx.fillRect(0, waterTop, W, H - waterTop);
+
+  // Surface line
+  ctx.strokeStyle = `rgba(255,255,255,${0.04 + (1 - murk) * 0.04})`;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let x = 0; x < W; x += 3) {
+    const waveY = waterTop + Math.sin(x * 0.008 + time * 0.4) * 2 + Math.sin(x * 0.02 + time * 0.7) * 0.8;
+    if (x === 0) ctx.moveTo(x, waveY);
+    else ctx.lineTo(x, waveY);
+  }
+  ctx.stroke();
+
+  // Ripples from circulation
+  if (currentLayer >= 1) {
+    const circAlpha = getLayerAlpha(1);
+    // Gentle concentric ripples
+    for (let r = 0; r < 3; r++) {
+      const rx = W * (0.3 + r * 0.2);
+      const ry = waterTop + 8;
+      const rippleR = (20 + Math.sin(time * 0.3 + r * 2) * 10) * (1 + Math.sin(time * 0.5 + r) * 0.3);
+      ctx.strokeStyle = `rgba(255,255,255,${0.03 * circAlpha * (1 - Math.sin(time * 0.3 + r) * 0.5)})`;
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.ellipse(rx, ry, rippleR, rippleR * 0.3, 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(rx, ry, rippleR * 1.5, rippleR * 0.45, 0, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+  }
+}
+
+function drawPlants() {
+  if (currentLayer < 2) return;
+  const alpha = getLayerAlpha(2);
+  plantStalks.forEach(p => {
+    const sway = Math.sin(time * p.speed + p.phase) * 6;
+    const topX = p.x + sway;
+    const topY = p.baseY - p.height * alpha;
+
+    ctx.strokeStyle = `hsla(${p.hue},${p.sat}%,28%,${alpha * 0.7})`;
+    ctx.lineWidth = p.width;
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.baseY);
+    ctx.quadraticCurveTo(p.x + sway * 0.5, p.baseY - p.height * 0.5 * alpha, topX, topY);
+    ctx.stroke();
+
+    // Leaves
+    for (let l = 0; l < p.leaves; l++) {
+      const t = 0.4 + l * 0.25;
+      const lx = p.x + sway * t;
+      const ly = p.baseY - p.height * t * alpha;
+      const leafDir = (l % 2 === 0) ? 1 : -1;
+      const leafLen = 8 + Math.random() * 4;
+
+      ctx.fillStyle = `hsla(${p.hue + 10},${p.sat + 10}%,${24 + l * 4}%,${alpha * 0.6})`;
+      ctx.beginPath();
+      ctx.ellipse(lx + leafDir * leafLen * 0.5, ly, leafLen, 3, leafDir * 0.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  // Floating plant pads on surface
+  const padAlpha = alpha * 0.5;
+  const pads = [
+    { x: W * 0.15, y: H * 0.47, r: 14 },
+    { x: W * 0.8, y: H * 0.46, r: 11 },
+    { x: W * 0.6, y: H * 0.48, r: 16 },
+  ];
+  pads.forEach((pad, i) => {
+    const bx = pad.x + Math.sin(time * 0.2 + i) * 3;
+    const by = pad.y + Math.sin(time * 0.3 + i * 2) * 1;
+    ctx.fillStyle = `hsla(130,35%,22%,${padAlpha})`;
+    ctx.beginPath();
+    ctx.ellipse(bx, by, pad.r, pad.r * 0.4, Math.sin(time * 0.1 + i) * 0.2, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawFish() {
+  if (currentLayer < 3) return;
+  const alpha = getLayerAlpha(3);
+
+  fishArr.forEach(f => {
+    // Simple AI
+    f.turnTimer -= 0.016;
+    if (f.turnTimer <= 0) {
+      f.vx += (Math.random() - 0.5) * 0.4;
+      f.vy += (Math.random() - 0.5) * 0.15;
+      f.turnTimer = 1 + Math.random() * 3;
+    }
+    // Occasional surfacing
+    f.surfaceTimer -= 0.016;
+    if (f.surfaceTimer <= 0 && !f.surfacing && Math.random() < 0.002) {
+      f.surfacing = true;
+      f.surfaceTimer = 2 + Math.random() * 3;
+      f.vy = -0.3;
+    }
+    if (f.surfacing && f.y < H * 0.50) {
+      f.surfacing = false;
+      f.vy = 0.2;
+    }
+
+    f.vx = Math.max(-1.2, Math.min(1.2, f.vx));
+    f.vy = Math.max(-0.5, Math.min(0.5, f.vy));
+    f.x += f.vx;
+    f.y += f.vy;
+
+    // Bounds
+    if (f.x < W * 0.1) f.vx += 0.05;
+    if (f.x > W * 0.9) f.vx -= 0.05;
+    if (f.y < H * 0.50) f.vy += 0.03;
+    if (f.y > H * 0.75) f.vy -= 0.03;
+
+    // Draw fish
+    const dir = f.vx >= 0 ? 1 : -1;
+    ctx.save();
+    ctx.translate(f.x, f.y);
+    ctx.scale(dir, 1);
+
+    // Body
+    ctx.fillStyle = `hsla(${f.hue},${f.sat}%,${f.light}%,${alpha * 0.75})`;
+    ctx.beginPath();
+    ctx.ellipse(0, 0, f.size, f.size * 0.45, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Tail
+    ctx.beginPath();
+    ctx.moveTo(-f.size * 0.7, 0);
+    ctx.lineTo(-f.size * 1.4, -f.size * 0.4);
+    ctx.lineTo(-f.size * 1.4, f.size * 0.4);
+    ctx.closePath();
+    ctx.fillStyle = `hsla(${f.hue},${f.sat - 10}%,${f.light - 5}%,${alpha * 0.6})`;
+    ctx.fill();
+
+    // Eye
+    ctx.fillStyle = `rgba(0,0,0,${alpha * 0.5})`;
+    ctx.beginPath();
+    ctx.arc(f.size * 0.45, -f.size * 0.1, 1.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+
+    // Light catch when lights are on
+    if (currentLayer >= 4) {
+      const lightAlpha = getLayerAlpha(4) * 0.15;
+      ctx.fillStyle = `rgba(180,200,255,${lightAlpha})`;
+      ctx.beginPath();
+      ctx.ellipse(f.x + dir * f.size * 0.2, f.y - f.size * 0.15, f.size * 0.3, f.size * 0.15, 0, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+}
+
+function drawLights() {
+  if (currentLayer < 4) return;
+  const alpha = getLayerAlpha(4);
+
+  lightOrbs.forEach(orb => {
+    const pulse = Math.sin(time * orb.pulseSpeed + orb.phase) * 0.15 + 0.85;
+    const r = orb.radius * pulse;
+    const glow = ctx.createRadialGradient(orb.x, orb.y, 0, orb.x, orb.y, r);
+    glow.addColorStop(0, `hsla(${orb.hue},50%,60%,${alpha * 0.15 * pulse})`);
+    glow.addColorStop(0.3, `hsla(${orb.hue},40%,45%,${alpha * 0.08 * pulse})`);
+    glow.addColorStop(1, `hsla(${orb.hue},30%,30%,0)`);
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(orb.x, orb.y, r, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Core
+    ctx.fillStyle = `hsla(${orb.hue},60%,70%,${alpha * 0.3 * pulse})`;
+    ctx.beginPath();
+    ctx.arc(orb.x, orb.y, 3, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Upward light column
+    const colGrad = ctx.createLinearGradient(orb.x, orb.y, orb.x, orb.y - r * 1.5);
+    colGrad.addColorStop(0, `hsla(${orb.hue},40%,50%,${alpha * 0.06 * pulse})`);
+    colGrad.addColorStop(1, `hsla(${orb.hue},40%,50%,0)`);
+    ctx.fillStyle = colGrad;
+    ctx.beginPath();
+    ctx.moveTo(orb.x - 8, orb.y);
+    ctx.lineTo(orb.x - 20, orb.y - r * 1.5);
+    ctx.lineTo(orb.x + 20, orb.y - r * 1.5);
+    ctx.lineTo(orb.x + 8, orb.y);
+    ctx.closePath();
+    ctx.fill();
+  });
+}
+
+function drawLanterns() {
+  if (currentLayer < 5) return;
+  const alpha = getLayerAlpha(5);
+
+  lanterns.forEach((lan, i) => {
+    const bx = lan.x + Math.sin(time * 0.15 + lan.driftPhase) * 12;
+    const by = lan.y + Math.sin(time * 0.4 + lan.bobPhase) * 2;
+
+    // Glow on water
+    const glowR = 50 + Math.sin(time * 0.5 + i) * 10;
+    const glow = ctx.createRadialGradient(bx, by + 5, 0, bx, by + 5, glowR);
+    glow.addColorStop(0, `hsla(${lan.warmth},80%,60%,${alpha * 0.1})`);
+    glow.addColorStop(0.5, `hsla(${lan.warmth},60%,40%,${alpha * 0.04})`);
+    glow.addColorStop(1, `hsla(${lan.warmth},40%,30%,0)`);
+    ctx.fillStyle = glow;
+    ctx.beginPath();
+    ctx.arc(bx, by + 5, glowR, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Lantern body — lotus shape
+    ctx.fillStyle = `hsla(${lan.warmth},70%,65%,${alpha * 0.6})`;
+    // Center
+    ctx.beginPath();
+    ctx.ellipse(bx, by, lan.radius, lan.radius * 0.4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Petals
+    for (let p = 0; p < 5; p++) {
+      const angle = (p / 5) * Math.PI * 2 + time * 0.05;
+      const px = bx + Math.cos(angle) * lan.radius * 0.8;
+      const py = by + Math.sin(angle) * lan.radius * 0.3;
+      ctx.fillStyle = `hsla(${lan.warmth + 10},60%,60%,${alpha * 0.35})`;
+      ctx.beginPath();
+      ctx.ellipse(px, py, 5, 3, angle, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Inner light
+    const flicker = 0.7 + Math.sin(time * 2 + i * 3) * 0.15 + Math.sin(time * 5.7 + i * 7) * 0.1;
+    ctx.fillStyle = `hsla(${lan.warmth - 5},90%,75%,${alpha * 0.5 * flicker})`;
+    ctx.beginPath();
+    ctx.arc(bx, by, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawMist() {
+  if (currentLayer < 6) return;
+  const alpha = getLayerAlpha(6);
+
+  mistParticles.forEach(m => {
+    m.x += m.driftX + Math.sin(time * 0.1 + m.phase) * 0.2;
+    m.y += m.driftY + Math.sin(time * 0.15 + m.phase * 2) * 0.1;
+
+    // Wrap
+    if (m.x < -m.radius * 2) m.x = W + m.radius;
+    if (m.x > W + m.radius * 2) m.x = -m.radius;
+
+    const mistAlpha = m.alpha * alpha * (0.7 + Math.sin(time * 0.2 + m.phase) * 0.3);
+    const grad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.radius);
+
+    // If lights are on, mist catches light color
+    let mistHue = 0;
+    let mistSat = 0;
+    let mistLight = 85;
+    if (currentLayer >= 4) {
+      // Find nearest light orb
+      let minDist = Infinity;
+      let nearestOrb = lightOrbs[0];
+      lightOrbs.forEach(orb => {
+        const d = Math.sqrt((m.x - orb.x) ** 2 + (m.y - orb.y) ** 2);
+        if (d < minDist) { minDist = d; nearestOrb = orb; }
+      });
+      if (minDist < 250) {
+        const influence = 1 - minDist / 250;
+        mistHue = nearestOrb.hue;
+        mistSat = 20 * influence;
+        mistLight = 85 + 10 * influence;
+      }
+    }
+
+    grad.addColorStop(0, `hsla(${mistHue},${mistSat}%,${mistLight}%,${mistAlpha})`);
+    grad.addColorStop(0.6, `hsla(${mistHue},${mistSat * 0.5}%,${mistLight - 5}%,${mistAlpha * 0.4})`);
+    grad.addColorStop(1, `hsla(${mistHue},0%,80%,0)`);
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(m.x, m.y, m.radius, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function drawEdge() {
+  // Pond edge — stone border
+  const waterTop = H * 0.45;
+  const edgeGrad = ctx.createLinearGradient(0, waterTop - 15, 0, waterTop + 5);
+  edgeGrad.addColorStop(0, '#1a1a18');
+  edgeGrad.addColorStop(0.5, '#252320');
+  edgeGrad.addColorStop(1, '#1a1a18');
+
+  ctx.fillStyle = edgeGrad;
+  ctx.beginPath();
+  ctx.moveTo(W * 0.05, waterTop + 5);
+  for (let x = W * 0.05; x <= W * 0.95; x += 20) {
+    const stoneY = waterTop - 4 + Math.sin(x * 0.03) * 3 + Math.sin(x * 0.07) * 1.5;
+    ctx.lineTo(x, stoneY);
+  }
+  ctx.lineTo(W * 0.95, waterTop + 5);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 0.5;
+  ctx.stroke();
+}
+
+// --- Scene render ---
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  drawWater();
+  drawLights();
+  drawPlants();
+  drawFish();
+  drawLanterns();
+  drawEdge();
+  drawMist();
+}
+
+// --- UI ---
+const promptText = document.getElementById('prompt-text');
+const addBtn = document.getElementById('add-btn');
+const layerBar = document.getElementById('layer-bar');
+const annotationText = document.getElementById('annotation-text');
+const titleCard = document.getElementById('title-card');
+const reflection = document.getElementById('reflection');
+const reflectionText = document.getElementById('reflection-text');
+
+function buildPips() {
+  layerBar.innerHTML = '';
+  layers.forEach((l, i) => {
+    if (i === 0) return; // skip neglect pip
+    const pip = document.createElement('div');
+    pip.className = 'layer-pip' + (i <= currentLayer ? ' active' : '');
+    pip.style.background = i <= currentLayer ? l.pip : 'rgba(255,255,255,0.1)';
+    layerBar.appendChild(pip);
+  });
+}
+
+function showPrompt() {
+  if (currentLayer >= layers.length - 1) {
+    // Final state — show reflection after a pause
+    promptText.textContent = '';
+    addBtn.classList.add('hidden');
+    setTimeout(showReflection, 3000);
+    return;
+  }
+
+  const layer = layers[currentLayer];
+  const nextLayer = layers[currentLayer + 1];
+
+  promptText.style.opacity = '0';
+  setTimeout(() => {
+    promptText.textContent = layer.prompt;
+    promptText.style.opacity = '1';
+  }, 400);
+
+  if (currentLayer >= 0 && nextLayer.addLabel) {
+    addBtn.textContent = nextLayer.addLabel;
+    setTimeout(() => addBtn.classList.remove('hidden'), 1200);
+  }
+}
+
+function showAnnotation(text) {
+  annotationText.style.opacity = '0';
+  if (!text) return;
+  setTimeout(() => {
+    annotationText.textContent = text;
+    annotationText.style.opacity = '1';
+  }, 800);
+  // Fade annotation after time
+  setTimeout(() => {
+    annotationText.style.opacity = '0';
+  }, 8000);
+}
+
+function showReflection() {
+  let html = '';
+  mistAnnotationLines.forEach(line => {
+    if (line === '') {
+      html += '<p>&nbsp;</p>';
+    } else {
+      html += `<p>${line}</p>`;
+    }
+  });
+  html += '<p class="closing">Each layer changed what the previous layers meant.<br>None of them knew that when they arrived.</p>';
+  reflectionText.innerHTML = html;
+  reflection.classList.add('visible');
+}
+
+function advanceLayer() {
+  if (transitioning) return;
+  if (currentLayer >= layers.length - 1) return;
+
+  addBtn.classList.add('hidden');
+  annotationText.style.opacity = '0';
+
+  currentLayer++;
+  transitioning = true;
+  transitionProgress = 0;
+
+  // Initialize layer elements
+  if (currentLayer === 2) initPlants();
+  if (currentLayer === 3) initFish();
+  if (currentLayer === 4) initLights();
+  if (currentLayer === 5) initLanterns();
+  if (currentLayer === 6) initMist();
+
+  buildPips();
+}
+
+addBtn.addEventListener('click', advanceLayer);
+
+titleCard.addEventListener('click', () => {
+  titleCard.style.opacity = '0';
+  setTimeout(() => {
+    titleCard.style.display = 'none';
+    currentLayer = 0;
+    buildPips();
+    showPrompt();
+  }, 1500);
+});
+
+// --- Main loop ---
+function loop() {
+  time += 0.016;
+
+  if (transitioning) {
+    transitionProgress += transitionSpeed;
+    if (transitionProgress >= 1) {
+      transitionProgress = 1;
+      transitioning = false;
+
+      // Show annotation then prompt
+      const layer = layers[currentLayer];
+      showAnnotation(layer.annotation);
+      setTimeout(() => showPrompt(), layer.annotation ? 4000 : 800);
+    }
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+loop();
+</script>
+</body>
+</html>

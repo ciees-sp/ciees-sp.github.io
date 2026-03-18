@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy 40th, Andrea</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --deep: #0a0a1a;
+    --purple: #2d1b4e;
+    --violet: #6b3fa0;
+    --magenta: #c74b8f;
+    --cyan: #4ecdc4;
+    --gold: #d4a574;
+    --cream: #f5f0e8;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    color: var(--cream);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ══════════════════════════════
+     ENVELOPE / TAP-TO-OPEN INTRO
+     ══════════════════════════════ */
+  .envelope-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--deep);
+    cursor: pointer;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+
+  .envelope-screen.opened {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .envelope-svg {
+    width: clamp(180px, 45vw, 260px);
+    height: auto;
+    margin-bottom: 44px;
+    animation: envelopePulse 3s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(107, 63, 160, 0.3));
+  }
+
+  @keyframes envelopePulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 30px rgba(107, 63, 160, 0.3)); }
+    50% { transform: scale(1.03); filter: drop-shadow(0 0 40px rgba(107, 63, 160, 0.5)); }
+  }
+
+  .envelope-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(1.8rem, 6vw, 2.8rem);
+    color: var(--cream);
+    margin-bottom: 36px;
+  }
+
+  .envelope-prompt {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    animation: promptPulse 2.5s ease-in-out infinite;
+  }
+
+  @keyframes promptPulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .envelope-stars {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  /* ══════════════════════════
+     STARFIELD
+     ══════════════════════════ */
+  .starfield {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .star {
+    position: absolute;
+    border-radius: 50%;
+    background: white;
+    animation: twinkle var(--dur) ease-in-out infinite alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.1; transform: scale(0.8); }
+    100% { opacity: var(--max-opacity); transform: scale(1.2); }
+  }
+
+  /* ══════════════════════════
+     FLOATING ORBS
+     ══════════════════════════ */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.3;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, var(--violet), transparent 70%);
+    top: -100px; left: -100px;
+    animation: float1 20s ease-in-out infinite;
+  }
+  .orb-2 {
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--magenta), transparent 70%);
+    bottom: -50px; right: -50px;
+    animation: float2 25s ease-in-out infinite;
+  }
+  .orb-3 {
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, var(--cyan), transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: float3 18s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(80px, 60px); }
+    66% { transform: translate(-40px, 80px); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(-60px, -40px); }
+    66% { transform: translate(40px, -80px); }
+  }
+  @keyframes float3 {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
+  }
+
+  /* ══════════════════════════
+     CONTENT
+     ══════════════════════════ */
+  .content {
+    position: relative;
+    z-index: 1;
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 60px 30px 80px;
+    text-align: center;
+  }
+
+  /* ══════════════════════════
+     SCROLL-TRIGGERED REVEALS
+     ══════════════════════════ */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Hero group: appears together immediately */
+  .reveal.hero-instant { transition-delay: 0.2s; }
+
+  /* ══════════════════════════
+     TYPOGRAPHY
+     ══════════════════════════ */
+  .gift-label {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    letter-spacing: 0.05em;
+    color: var(--cyan);
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: clamp(2.8rem, 7vw, 4.5rem);
+    line-height: 1.1;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, var(--cream) 0%, var(--gold) 40%, var(--magenta) 70%, var(--violet) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--cream);
+    margin-bottom: 50px;
+  }
+
+  .divider {
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 40px auto;
+  }
+
+  /* ══════════════════════════
+     GIFT CARD
+     ══════════════════════════ */
+  .gift-card {
+    background: linear-gradient(145deg, rgba(45, 27, 78, 0.6), rgba(10, 10, 26, 0.8));
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    border-radius: 24px;
+    padding: 50px 40px;
+    margin: 40px 0;
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .gift-card::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(107, 63, 160, 0.1), transparent, rgba(199, 75, 143, 0.1), transparent);
+    animation: cardShimmer 8s linear infinite;
+  }
+
+  @keyframes cardShimmer { to { transform: rotate(360deg); } }
+
+  .gift-card-inner { position: relative; z-index: 1; }
+
+  .session-type {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 200;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+  }
+
+  .session-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 2rem;
+    margin-bottom: 24px;
+    color: var(--cream);
+  }
+
+  .includes-list {
+    list-style: none;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .includes-list li {
+    padding: 10px 0;
+    font-size: 0.95rem;
+    color: rgba(245, 240, 232, 0.8);
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    line-height: 1.5;
+  }
+
+  .includes-list li::before {
+    content: '';
+    flex-shrink: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--violet), var(--magenta));
+    margin-top: 8px;
+  }
+
+  /* ══════════════════════════
+     PHOTO GALLERY
+     ══════════════════════════ */
+  .gallery {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin: 50px 0;
+    flex-wrap: wrap;
+  }
+
+  .gallery-img {
+    width: 140px;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 1px solid rgba(107, 63, 160, 0.3);
+    opacity: 0.85;
+    transition: all 0.5s ease;
+    animation: floatPhoto var(--float-dur) ease-in-out infinite alternate;
+  }
+
+  .gallery-img:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    border-color: var(--magenta);
+    box-shadow: 0 0 30px rgba(199, 75, 143, 0.3);
+  }
+
+  @keyframes floatPhoto {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(var(--float-dist)); }
+  }
+
+  /* ══════════════════════════
+     POETIC EXPLAINER
+     ══════════════════════════ */
+  .explainer {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.15rem;
+    line-height: 2;
+    color: var(--cream);
+    text-align: center;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  .explainer em {
+    color: var(--cream);
+    font-style: italic;
+  }
+
+  /* ══════════════════════════
+     BUTTON
+     ══════════════════════════ */
+  .book-btn {
+    display: inline-block;
+    margin-top: 50px;
+    padding: 18px 48px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 300;
+    font-size: 0.9rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--cream);
+    background: linear-gradient(135deg, var(--violet), var(--magenta));
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+
+  .book-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 40px rgba(199, 75, 143, 0.4);
+  }
+
+  .book-btn::after {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 50%, transparent 60%);
+    animation: btnShine 3s ease-in-out infinite;
+  }
+
+  @keyframes btnShine {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+  }
+
+  /* ══════════════════════════
+     FOOTER
+     ══════════════════════════ */
+  .footer-note {
+    margin-top: 60px;
+    font-size: 0.8rem;
+    color: rgba(245, 240, 232, 0.3);
+    letter-spacing: 0.1em;
+  }
+
+  .footer-note a {
+    color: var(--gold);
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .footer-note a:hover { opacity: 1; }
+
+  /* ══════════════════════════
+     RESPONSIVE
+     ══════════════════════════ */
+  @media (max-width: 600px) {
+    .content { padding: 50px 24px 70px; }
+    .gift-label { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+    .title { font-size: clamp(2.4rem, 10vw, 3.5rem); margin-bottom: 14px; }
+    .subtitle { font-size: 1.1rem; margin-bottom: 36px; }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 0 10px;
+      margin: 40px 0;
+    }
+    .gallery-img { width: 100%; height: 200px; border-radius: 14px; }
+
+    .explainer { font-size: 1.05rem; line-height: 1.9; padding: 0 6px; }
+    .gift-card { padding: 36px 24px; border-radius: 20px; margin: 30px 0; }
+    .session-name { font-size: 1.7rem; }
+    .includes-list li { font-size: 0.9rem; padding: 8px 0; }
+
+    .book-btn {
+      padding: 18px 40px;
+      font-size: 0.85rem;
+      margin-top: 40px;
+      min-height: 56px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .orb-1 { width: 300px; height: 300px; filter: blur(60px); }
+    .orb-2 { width: 250px; height: 250px; filter: blur(60px); }
+    .orb-3 { width: 200px; height: 200px; filter: blur(50px); }
+
+    .divider { margin: 30px auto; }
+    .footer-note { margin-top: 40px; }
+  }
+
+  @media (max-width: 380px) {
+    .content { padding: 40px 18px 60px; }
+    .title { font-size: 2.2rem; }
+    .gallery-img { height: 170px; }
+    .gift-card { padding: 28px 18px; }
+    .session-name { font-size: 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star, .orb, .orb-1, .orb-2, .orb-3, .gallery-img, .gift-card::before {
+      animation: none !important;
+    }
+    .reveal { opacity: 1; transform: none; transition: none; }
+    .envelope-screen { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ ENVELOPE INTRO ═══ -->
+<div class="envelope-screen" id="envelope">
+  <div class="envelope-stars" id="envelopeStars"></div>
+
+  <!-- SVG: closed envelope with flap and star seal -->
+  <svg class="envelope-svg" viewBox="0 0 260 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Envelope body -->
+    <rect x="10" y="40" width="240" height="120" rx="8" fill="url(#envGrad)" stroke="rgba(107,63,160,0.5)" stroke-width="1.5"/>
+    <!-- Inner V lines for depth -->
+    <path d="M10 160 L130 95 L250 160" fill="none" stroke="rgba(107,63,160,0.15)" stroke-width="1"/>
+    <!-- Flap (closed, points down) -->
+    <path d="M10 40 L130 110 L250 40 Z" fill="url(#flapGrad)" stroke="rgba(107,63,160,0.5)" stroke-width="1.5" stroke-linejoin="round"/>
+    <!-- Star seal at flap closure -->
+    <circle cx="130" cy="104" r="16" fill="url(#sealGrad)"/>
+    <circle cx="130" cy="104" r="12" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="0.8"/>
+    <path d="M130 95 L131.8 100.5 L137.5 101.5 L133.2 105 L134.5 111 L130 107.8 L125.5 111 L126.8 105 L122.5 101.5 L128.2 100.5 Z" fill="rgba(255,255,255,0.45)"/>
+
+    <defs>
+      <linearGradient id="envGrad" x1="10" y1="40" x2="250" y2="160" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#2d1b4e"/>
+        <stop offset="100%" stop-color="#1a1030"/>
+      </linearGradient>
+      <linearGradient id="flapGrad" x1="130" y1="40" x2="130" y2="110" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#3d2668"/>
+        <stop offset="100%" stop-color="#2a1845"/>
+      </linearGradient>
+      <radialGradient id="sealGrad" cx="130" cy="104" r="16" gradientUnits="userSpaceOnUse">
+        <stop offset="0%" stop-color="#d4a574"/>
+        <stop offset="100%" stop-color="#c74b8f"/>
+      </radialGradient>
+    </defs>
+  </svg>
+
+  <p class="envelope-name">For Andrea</p>
+  <p class="envelope-prompt">tap to open</p>
+</div>
+
+<!-- ═══ STARFIELD ═══ -->
+<div class="starfield" id="starfield"></div>
+
+<!-- ═══ FLOATING ORBS ═══ -->
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<div class="content">
+
+  <!-- Opening: all appears together -->
+  <div class="reveal hero-instant">
+    <p class="gift-label">Happy Birthday Andrea</p>
+
+    <h1 class="title">See Yourself<br>in Color</h1>
+
+    <p class="subtitle">an aura photography experience just for you</p>
+
+    <div class="divider"></div>
+
+    <div class="gallery">
+      <img class="gallery-img" style="--float-dur:4s;--float-dist:-8px" src="https://images.squarespace-cdn.com/content/v1/65288bdcf71aa600a41ec2f3/1738029698747-2HZRXJ24VTTJ7PO5L4QX/IMG_20250104_0002.jpg" alt="Aura portrait example">
+      <img class="gallery-img" style="--float-dur:5s;--float-dist:-12px" src="https://images.squarespace-cdn.com/content/v1/65288bdcf71aa600a41ec2f3/1738029784390-X8NEBC511EJ68OFLBJVV/IMG_20250118_0013.jpg" alt="Aura portrait example">
+      <img class="gallery-img" style="--float-dur:4.5s;--float-dist:-6px" src="https://images.squarespace-cdn.com/content/v1/65288bdcf71aa600a41ec2f3/1738029871299-NHYYVAQKTWJ7P9SGL186/IMG_20250118_0019.jpg" alt="Aura portrait example">
+      <img class="gallery-img" style="--float-dur:5.5s;--float-dist:-10px" src="https://images.squarespace-cdn.com/content/v1/65288bdcf71aa600a41ec2f3/1738029938915-IC2RWUXHWMAXSDICZCW1/IMG_20240803_0002.jpg" alt="Aura portrait example">
+    </div>
+  </div><!-- end hero-instant -->
+
+  <!-- Poetic explainer -->
+  <div class="reveal">
+    <p class="explainer">
+      Aura photography captures your energy field as color — <em>a reflection of your inner world, offering insights into your current state of being and your potential for growth.</em> Think of it as a snapshot of your vibe, a mirror for your energy, and a unique lens into the human experience.
+    </p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- Gift card details -->
+  <div class="reveal">
+    <div class="gift-card">
+      <div class="gift-card-inner">
+        <p class="session-type">Aura Theory Studio</p>
+        <h2 class="session-name">Aura Session + Lunch</h2>
+        <ul class="includes-list">
+          <li>One aura portrait captured on an analog aura camera</li>
+          <li>A personalized interpretation of the colors closest to your body, mental field, and spiritual band</li>
+          <li>A take-home color guide to deepen your understanding long after the session</li>
+          <li>Lunch together at the oceanfront to celebrate</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- From line -->
+  <div class="reveal">
+    <h2 class="title" style="margin-top: 30px; font-size: clamp(2rem, 6vw, 3.2rem);">Celebrating 40 Years<br>of Sisterhood</h2>
+    <p class="subtitle" style="margin-top: 14px; margin-bottom: 0; color: var(--cyan);">With love, Kristen</p>
+
+    <div class="divider" style="margin: 30px auto;"></div>
+
+    <a class="book-btn" href="https://www.auratheory.com/book-appointment" target="_blank">
+      Explore Aura Theory
+    </a>
+
+    <p class="footer-note">
+      <a href="https://www.auratheory.com" target="_blank">auratheory.com</a>
+    </p>
+  </div>
+
+</div>
+
+<script>
+  // ═══ STARFIELD ═══
+  function buildStarfield(container, count) {
+    for (let i = 0; i < count; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      const size = Math.random() * 2.5 + 0.5;
+      star.style.width = size + 'px';
+      star.style.height = size + 'px';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      star.style.setProperty('--dur', (Math.random() * 3 + 2) + 's');
+      star.style.setProperty('--max-opacity', (Math.random() * 0.6 + 0.2));
+      star.style.animationDelay = Math.random() * 5 + 's';
+      container.appendChild(star);
+    }
+  }
+
+  buildStarfield(document.getElementById('starfield'), 150);
+  buildStarfield(document.getElementById('envelopeStars'), 80);
+
+  // ═══ ENVELOPE OPEN ═══
+  const envelope = document.getElementById('envelope');
+  let isOpened = false;
+
+  envelope.addEventListener('click', openEnvelope);
+  envelope.addEventListener('touchend', function(e) {
+    e.preventDefault();
+    openEnvelope();
+  });
+
+  function openEnvelope() {
+    if (isOpened) return;
+    isOpened = true;
+    envelope.classList.add('opened');
+
+    // Show the hero block (birthday, title, subtitle, photos) together
+    setTimeout(() => {
+      document.querySelectorAll('.hero-instant').forEach(el => {
+        el.classList.add('visible');
+      });
+    }, 400);
+  }
+
+  // ═══ SCROLL-TRIGGERED REVEALS ═══
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        if (entry.target.classList.contains('hero-instant')) return;
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15,
+    rootMargin: '0px 0px -40px 0px'
+  });
+
+  document.querySelectorAll('.reveal').forEach(el => {
+    if (!el.classList.contains('hero-instant')) {
+      observer.observe(el);
+    }
+  });
+</script>
+
+</body>
+</html>

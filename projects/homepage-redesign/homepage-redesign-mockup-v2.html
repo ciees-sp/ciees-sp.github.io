@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CIEES — Homepage Redesign Mockup v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     CIEES Homepage Redesign — Mockup v2
+     March 2026
+
+     REVISED LAYOUT:
+     1. Sticky nav (matching live site)
+     2. Hero — photo background + mission/vision overlay
+     3. Goals — moved up directly under hero
+     4. Four branches — TTAC, VTSS, CSEEP, SP
+     5. Footer
+
+     CHANGES FROM v1:
+     - Hero uses actual live site background photo
+     - 12-card initiatives grid replaced by 4 branch cards
+     - Goals section moved above branches
+     - Nav uses actual CIEES + ODU logo images
+     ======================================== */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #042a4b;
+    --navy-light: #0f3c61;
+    --navy-soft: #1a3d5c;
+    --navy-deep: #003057;
+    --link-blue: #002f5d;
+    --accent-blue: #5bc2e7;
+    --gray-bg: #f5f7fa;
+    --gray-border: #e2e6ea;
+    --gray-light: #f0f2f5;
+    --text-dark: #2d2d2d;
+    --text-muted: #444444;
+    --text-light: #8891a0;
+    --white: #ffffff;
+    --max-width: 1100px;
+  }
+
+  body {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text-dark);
+    background: var(--white);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- Mockup Banner ---- */
+  .mockup-banner {
+    background: #fff3cd;
+    color: #856404;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 0.3px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #ffc107;
+  }
+
+  /* ---- Navigation (matches live CIEES site) ---- */
+  .site-nav {
+    background: var(--navy);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    height: 114px;
+    position: sticky;
+    top: 33px;
+    z-index: 999;
+    font-family: 'Montserrat', sans-serif;
+  }
+  .nav-logo-img {
+    height: 55px;
+    flex-shrink: 0;
+  }
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-left: auto;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .nav-links a:hover { color: var(--accent-blue); }
+  .nav-links a.active { color: var(--accent-blue); }
+  .nav-links .dropdown-arrow {
+    font-size: 10px;
+    margin-left: 4px;
+    opacity: 0.7;
+  }
+  .nav-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    margin-left: 28px;
+    transition: border-color 0.2s;
+  }
+  .nav-search:hover { border-color: rgba(255,255,255,0.7); }
+  .nav-search svg { width: 16px; height: 16px; fill: var(--white); }
+  .nav-odu-img {
+    height: 70px;
+    margin-left: 24px;
+    flex-shrink: 0;
+  }
+
+  /* ---- Hero (photo background, matches live site) ---- */
+  .hero {
+    position: relative;
+    min-height: 520px;
+    display: flex;
+    align-items: center;
+    background: url('https://cieesodu.org/wp-content/uploads/2020/11/home-banner-1.jpg') center center / cover no-repeat;
+    color: var(--white);
+    padding: 80px 40px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 1;
+  }
+  .hero-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    width: 100%;
+  }
+  .hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 72px;
+    margin-bottom: 48px;
+    max-width: 800px;
+  }
+  .hero-statements {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    padding: 0;
+  }
+  .hero-statement-block {
+    flex: 1;
+  }
+  .hero-statement-label {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--white);
+    margin-bottom: 12px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  }
+  .hero-statement-text {
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 30px;
+    color: var(--white);
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .hero-divider {
+    width: 2px;
+    background: var(--accent-blue);
+    align-self: stretch;
+    flex-shrink: 0;
+  }
+
+  /* ---- Goals Section ---- */
+  .goals-section {
+    background: var(--gray-bg);
+    padding: 64px 40px;
+  }
+  .goals-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+  .goals-inner h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--navy);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .goals-inner .goals-sub {
+    font-size: 16px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+  .goals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+  }
+  .goal-item {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .goal-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    flex-shrink: 0;
+    border: 1px solid var(--gray-border);
+    background-color: var(--white);
+  }
+  .goal-icon-svg {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .goal-icon-svg svg {
+    width: 26px;
+    height: 26px;
+    stroke: var(--accent-blue);
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .goal-text {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-muted);
+  }
+
+  /* ---- Branches Section ---- */
+  .branches-section {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 64px 40px;
+  }
+  .branches-section .section-heading {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: var(--navy);
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .branches-section .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: var(--navy);
+  }
+  .branches-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+  .branch-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 32px 24px 28px;
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+  }
+  .branch-card:hover {
+    border-color: #b8cdd8;
+    box-shadow: 0 2px 12px rgba(4,42,75,0.06);
+  }
+  .branch-logo {
+    width: 140px;
+    height: 140px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .branch-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  /* Text placeholder for logos without images */
+  .branch-logo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: var(--gray-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: var(--navy);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: 1.3;
+    padding: 10px;
+  }
+  .branch-card h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--navy);
+    line-height: 1.4;
+    min-height: 40px;
+    display: flex;
+    align-items: center;
+  }
+  .branch-card a {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--navy);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .branch-card a:hover {
+    color: var(--navy-light);
+  }
+
+  /* ---- Footer ---- */
+  .site-footer {
+    background: var(--navy-deep);
+    color: var(--white);
+    padding: 64px 40px 32px;
+  }
+  .footer-inner {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    gap: 60px;
+  }
+  .footer-photo {
+    flex: 0 0 45%;
+    border-radius: 8px;
+    height: 240px;
+    overflow: hidden;
+    position: relative;
+  }
+  .footer-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+  }
+  .footer-contact {
+    flex: 1;
+  }
+  .footer-contact h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    line-height: 1.3;
+  }
+  .footer-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .footer-contact-item svg {
+    width: 18px;
+    height: 18px;
+    stroke: var(--accent-blue);
+    fill: none;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+  .footer-contact-item a {
+    color: var(--white);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .footer-contact-item a:hover { opacity: 0.8; }
+  .footer-bottom {
+    max-width: var(--max-width);
+    margin: 40px auto 0;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.4);
+  }
+  .footer-bottom-links {
+    display: flex;
+    gap: 20px;
+  }
+  .footer-bottom-links a {
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    font-size: 12px;
+  }
+  .footer-bottom-links a:hover { color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body>
+
+<!-- Mockup Banner -->
+<div class="mockup-banner">MOCKUP v2 — Homepage Redesign — Not Live — March 2026</div>
+
+<!-- Navigation (matches live CIEES site) -->
+<nav class="site-nav">
+  <a href="#">
+    <img src="https://cieesodu.org/wp-content/uploads/2021/01/ciees-logo.png" alt="CIEES" class="nav-logo-img">
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Our Work <span class="dropdown-arrow">▾</span></a></li>
+    <li><a href="#">Module Library</a></li>
+  </ul>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg>
+    Start Search
+  </div>
+  <img src="https://cieesodu.org/wp-content/uploads/2020/12/odu-white-11.png" alt="Old Dominion University" class="nav-odu-img">
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Center for<br>Implementation and Evaluation<br>of Education Systems</h1>
+    <div class="hero-statements">
+      <div class="hero-statement-block">
+        <div class="hero-statement-label">Mission</div>
+        <div class="hero-statement-text" style="font-weight:500;">Committed to using research and system innovation to solve complex education problems</div>
+      </div>
+      <div class="hero-divider"></div>
+      <div class="hero-statement-block">
+        <div class="hero-statement-label">Vision</div>
+        <div class="hero-statement-text">We envision a world in which every individual has access to education that is meaningful, productive, and maximizes their potential for success.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Goals (moved up from below initiatives) -->
+<section class="goals-section">
+  <div class="goals-inner">
+    <h2>Goals</h2>
+    <p class="goals-sub">CIEES will fulfill its vision and mission by</p>
+    <div class="goals-grid">
+      <div class="goal-item">
+        <div class="goal-icon-svg">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <div class="goal-text">Assisting school divisions and community agencies in training and supporting education personnel for high-need teaching areas, particularly special education</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-icon-svg">
+          <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="goal-text">Evaluating school division and community-based educational initiatives, programs, and services</div>
+      </div>
+      <div class="goal-item">
+        <div class="goal-icon-svg">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/><line x1="11" y1="8" x2="11" y2="14"/></svg>
+        </div>
+        <div class="goal-text">Creating a trajectory of research initiatives to improve outcomes in educational settings</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Four Branches -->
+<section class="branches-section">
+  <div class="section-heading">Our Work</div>
+  <div class="branches-grid">
+
+    <a class="branch-card" href="https://ttac.odu.edu" target="_blank">
+      <div class="branch-logo">
+        <img src="TTAC-Logo-Combo.png" alt="TTAC at ODU">
+      </div>
+      <h3>Training &amp; Technical Assistance at Old Dominion University</h3>
+    </a>
+
+    <a class="branch-card" href="https://cieesodu.org/virginia-tiered-systems-of-supports-vtss/" target="_blank">
+      <div class="branch-logo">
+        <img src="https://cieesodu.org/wp-content/uploads/2024/03/MTSS-VTSS-New.jpg" alt="VTSS">
+      </div>
+      <h3>Virginia Tiered Systems of Supports (Evaluation &amp; Leadership)</h3>
+    </a>
+
+    <a class="branch-card" href="https://www.odu.edu/cseep" target="_blank">
+      <div class="branch-logo">
+        <img src="https://cieesodu.org/wp-content/uploads/2024/03/ciees-logo2.png" alt="CSEEP">
+      </div>
+      <h3>Commonwealth Special Education Endorsement Program</h3>
+    </a>
+
+    <a class="branch-card" href="https://cieesdev.wpenginepowered.com/special-projects/" target="_blank">
+      <div class="branch-logo">
+        <img src="sp-logo-cropped.png" alt="Special Projects Team">
+      </div>
+      <h3>Special Projects Team</h3>
+    </a>
+
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-photo">
+      <img src="https://cieesodu.org/wp-content/uploads/2020/12/notes.jpg" alt="CIEES">
+    </div>
+    <div class="footer-contact">
+      <h3>Center For Implementation And<br>Evaluation Of Education Systems</h3>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div><a href="#">Lions Child Study Center, Room 217<br>4501 Hampton Boulevard<br>Norfolk, VA 23509</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <div>757-683-4129</div>
+      </div>
+      <div class="footer-contact-item">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <div><a href="mailto:CIEES@odu.edu">CIEES@odu.edu</a></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>Old Dominion University</div>
+    <div class="footer-bottom-links">
+      <a href="#">About CIEES</a>
+      <a href="#">Directory</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms &amp; Conditions</a>
+      <a href="#">Accessibility</a>
+      <a href="#">Consumer Information</a>
+    </div>
+    <div>Norfolk Website Design By TechArk</div>
+  </div>
+</footer>
+
+</body>
+</html>

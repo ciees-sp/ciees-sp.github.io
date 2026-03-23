@@ -51,6 +51,7 @@
   :root {
     --navy: #042a4b;
     --navy-light: #0f3c61;
+    --accent-blue: #5bc2e7;
     --teal: #00aea9;
     --teal-hover: #00817d;
     --blue-light: #eef7ff;
@@ -73,44 +74,65 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ---- Simulated Nav ---- */
-  .mock-nav {
+  /* ---- Navigation (matches live CIEES site) ---- */
+  .site-nav {
     background: var(--navy);
-    padding: 16px 40px;
+    padding: 0 40px;
     display: flex;
     align-items: center;
-    gap: 32px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--white);
+    height: 114px;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 999;
+    font-family: 'Montserrat', sans-serif;
   }
-  .mock-nav .logo {
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    margin-right: auto;
-    opacity: 0.95;
+  .nav-logo-img {
+    height: 55px;
+    flex-shrink: 0;
   }
-  .mock-nav a {
-    color: rgba(255,255,255,0.85);
-    text-decoration: none;
-    transition: color 0.2s;
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-left: auto;
+    list-style: none;
   }
-  .mock-nav a:hover { color: var(--white); text-decoration: underline; }
-  .mock-nav .nav-pill {
-    border: 1px solid rgba(255,255,255,0.6);
-    border-radius: 100px;
-    padding: 4px 14px;
+  .nav-links a {
     color: var(--white);
-    transition: border-color 0.2s ease;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
   }
-  .mock-nav .nav-pill:hover { border-color: rgb(91, 194, 231); text-decoration: underline; }
+  .nav-links a:hover { color: var(--accent-blue); }
+  .nav-links a.active { color: var(--accent-blue); }
+  .nav-links .dropdown-arrow {
+    font-size: 10px;
+    margin-left: 4px;
+    opacity: 0.7;
+  }
+  .nav-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255,255,255,0.4);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    margin-left: 28px;
+    transition: border-color 0.2s;
+  }
+  .nav-search:hover { border-color: rgba(255,255,255,0.7); }
+  .nav-search svg { width: 16px; height: 16px; fill: var(--white); }
+  .nav-odu-img {
+    height: 70px;
+    margin-left: 24px;
+    flex-shrink: 0;
+  }
 
   /* ---- Breadcrumb ---- */
   .breadcrumb {
@@ -703,7 +725,7 @@
 <!-- Mockup artifacts — outside page landmarks -->
 <aside aria-label="Mockup notes — not part of the page design">
   <div class="mockup-banner">
-    <strong>MOCKUP v4a — March 2026</strong> &nbsp;|&nbsp; Logos as card footer marks — readable size, tag/title parity preserved. Multi-tag on CLC. Internal review only.
+    <strong>MOCKUP v4a — March 2026</strong> &nbsp;|&nbsp; Internal review only.
   </div>
 
   <div class="dev-notes">
@@ -711,22 +733,30 @@
       <p class="dev-notes-heading">Notes</p>
 
       <p class="dev-notes-subheading">Accessible "Read More" Links</p>
-      <p>Given our need for WCAG AA compliance, the "Read more" links on this page will need screen reader text added so that each button announces the project name (e.g., "Read more about [Project Name]" rather than nine identical "Read more" links). The theme already defines <code>.screen-reader-text</code> in CSS, and the ACF title field can populate the hidden text automatically. Proposed pattern:</p>
-      <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+      <p>Given our need for WCAG AA compliance, the "Read more" links on this page will need screen reader text added so that each button announces the project name (e.g., "Read more about [Project Name]" rather than nine identical "Read more" links). The theme already defines <code>.screen-reader-text</code> in CSS. The project title is stored in the ACF field <code>initiative_list_title</code> — use <code>get_field()</code> to populate the hidden span automatically. Proposed pattern:</p>
+      <pre><code>Read more&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_field('initiative_list_title'); ?&gt;&lt;/span&gt;</code></pre>
       <p>Same idea for the toggled state:</p>
-      <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_the_title(); ?&gt;&lt;/span&gt;</code></pre>
+      <pre><code>Show less&lt;span class="screen-reader-text"&gt; about &lt;?php echo get_field('initiative_list_title'); ?&gt;&lt;/span&gt;</code></pre>
     </div>
   </div>
 </aside>
 
 <!-- Site Header -->
 <header role="banner">
-  <nav class="mock-nav" aria-label="Main navigation">
-    <div class="logo">CIEES</div>
-    <div class="nav-links"><a href="#">About</a></div>
-    <div class="nav-links"><a href="#">Directory</a></div>
-    <div class="nav-links"><a href="#">Programs</a></div>
-    <a href="#" class="nav-pill">Module Library</a>
+  <nav class="site-nav" aria-label="Main navigation">
+    <a href="#">
+      <img src="https://cieesodu.org/wp-content/uploads/2021/01/ciees-logo.png" alt="CIEES" class="nav-logo-img">
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">About</a></li>
+      <li><a href="#">Our Work <span class="dropdown-arrow">▾</span></a></li>
+      <li><a href="#">Module Library</a></li>
+    </ul>
+    <div class="nav-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" fill="none" stroke="currentColor" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="currentColor" stroke-width="2"/></svg>
+      Start Search
+    </div>
+    <img src="https://cieesodu.org/wp-content/uploads/2020/12/odu-white-11.png" alt="Old Dominion University" class="nav-odu-img">
   </nav>
 </header>
 

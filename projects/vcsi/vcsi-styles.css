@@ -160,3 +160,33 @@ img[data-align="80%"] { object-position: center 80%; }
 img[data-align="85%"] { object-position: center 85%; }
 img[data-align="90%"] { object-position: center 90%; }
 img[data-align="95%"] { object-position: center 95%; }
+
+/* Coordinator's Note block */
+.coordinator-note {
+  background: #f5b524;
+  border-radius: 10px;
+  padding: 22px 24px;
+  margin: 24px 0;
+  font-family: inherit;
+}
+.coordinator-note h3 {
+  color: #2a2a2a;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  font-size: 1.15em;
+}
+.coordinator-note-body {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  color: #2a2a2a;
+}
+.coordinator-note-icon {
+  flex-shrink: 0;
+  font-size: 1.4em;
+  line-height: 1;
+}
+.coordinator-note-body p {
+  margin: 0;
+  line-height: 1.5;
+}

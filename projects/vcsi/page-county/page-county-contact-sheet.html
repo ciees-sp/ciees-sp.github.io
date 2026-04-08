@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Page County</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#2 Family and Community Engagement</dd>
+    <dt>Treatment:</dt><dd>Elementary/Secondary (8 schools)</dd>
+  </dl>
+</div>
+<h1>Page County</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 4</em></p>
+<p>Page County's chronic absenteeism rates told a consistent story across the division's eight schools. One in five students were chronically absent, and the division recognized the need for a coordinated approach. All eight schools share one framework, one community partner, and one goal. Rather than hiring new staff, the division pays stipends to existing teachers to serve as coordinators at each building, putting the work in the hands of people who already know the students and families.</p>
+
+<p>Seven of the eight schools operate clothing closets, food pantries, laundry rooms, and school supply programs to make sure students arrive not just present, but ready to learn. Through a series of events, the division engaged thousands of attendees, from community read-alouds at the elementary level to a college campus visit for middle schoolers. The programming spans the full K–12 range, demonstrating how a single goal can drive division-wide commitment.</p>
+
+<!-- ============================================ -->
+<h2>Elementary Schools</h2>
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+<img src="vcsi-page-shenandoah-es-community-read-aloud.jpg" alt="Community read-aloud at Shenandoah Elementary: adult reading to children on a porch swing under string lights">
+<img src="vcsi-page-stanley-es-title1-family-engagement-night.jpg" alt="Packed cafeteria at Stanley Elementary Title I family engagement night">
+<img src="vcsi-page-springfield-es-student-performance.jpg" alt="Students performing on stage to a full auditorium at Springfield Elementary">
+<img src="vcsi-page-luray-es-trunk-or-treat-crowd.jpg" alt="Long line of families at dusk with Shenandoah mountain backdrop at Luray Elementary Trunk-or-Treat">
+</div>
+
+<p>At Shenandoah Elementary, a community read-aloud on the front porch captures what family engagement looks like when it's unhurried — children gathered on a porch swing, listening intently while an adult reads aloud under string lights. Stanley Elementary filled every seat in the cafeteria for Title I family engagement night. At Springfield, students performed to a full auditorium. Luray Elementary's Trunk-or-Treat drew a long line of families at dusk against the Shenandoah mountain backdrop — in a rural community where students can't always go door to door, the school parking lot becomes the neighborhood.</p>
+
+<!-- ============================================ -->
+<h2>Secondary Schools</h2>
+
+<div class="block-label">2-Photo Block</div>
+<div class="photo-pair">
+<img src="vcsi-page-county-middle-jmu-college-visit.jpg" alt="Approximately 40 middle schoolers at James Madison University campus visit">
+<img src="vcsi-page-luray-middle-trunk-or-treat-staff.jpg" alt="Thirteen staff members in coordinated Halloween costumes at Luray Middle Trunk-or-Treat">
+</div>
+
+<p>Page County's middle schoolers visited James Madison University for a campus tour — early college exposure that builds aspiration and gives students a reason to stay engaged now. At Luray Middle, staff led the way during the annual Trunk-or-Treat, showing up in coordinated costumes to model the participation they ask of families.</p>
+
+<!-- ============================================ -->
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>Page County exemplifies VCSI Stage 2.2: Develop and Action Plan. The division is focused on measurable goals that support the shared vision.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+
+  </div>
+</div>
+
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>302</strong> attended community engagement events this fall across both Luray and Page County High this year.</p>
+</div>
+
+</body>
+</html>

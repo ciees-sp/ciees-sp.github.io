@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Rockbridge County</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#3 Basic Needs</dd>
+    <dt>Treatment:</dt><dd>Division-Wide</dd>
+  </dl>
+</div>
+<h1>Rockbridge County</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 5</em></p>
+<p>Rockbridge County is working to reduce chronic absenteeism by three to seven percentage points across all six of its schools. The division invested its Community Schools grant in two positions. A Family Engagement Coordinator has spent over a year providing resources, food, and connection to families across the county. An Attendance Clerk checks in with students and families when they are absent to understand what they need and provide a path back before missing days become a pattern. The division describes the two positions as its strongest investments.</p>
+
+<p>In-school clinic access now brings physical and mental health services into the buildings where students already are. Food pantries operate in every school across the county, alongside clothing closets and school supply programs. The division hosts campfire nights, tailgates, and culture nights throughout its schools, drawing 432 attendees in the first quarter to events designed to build the kind of connection between families and schools.</p>
+
+<!-- ============================================ -->
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"We have seen great outcomes from both of the positions that we have added. Our Family Engagement Coordinator and our attendance clerk have both paid dividends for our division and our community. Our Family Engagement Coordinator has been providing resources, suggestions, food, etc. for families across our division for over a year now. Our attendance clerk has done an excellent job with checking in with students and families when they are out or if they need anything to make coming to school easier. We have also been able to host events like campfire nights, tailgates, and culture nights throughout the division. Our supports of food pantries in our schools across the county has also had a very positive impact on students and families."
+<br><br>— <strong>Jason Kirby, Chief Business Officer</strong>
+</blockquote>
+
+<!-- ============================================ -->
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>Rockbridge County exemplifies VCSI Stage 3.1: Align to the Four Branches of Student Support. Through food pantries, clothing closets, and school supply programs, Rockbridge County has removed barriers for students so that they can be successful in school.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Community Partners</h2>
+
+<ul>
+<li>Rockbridge Community Services Board</li>
+<li>Rockbridge Area Relief Association</li>
+<li>Boxerwood Gardens</li>
+</ul>
+
+</body>
+</html>

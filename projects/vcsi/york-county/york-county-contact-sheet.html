@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>York County</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#1 Engagement and Motivation</dd>
+    <dt>Treatment:</dt><dd>School-Level</dd>
+  </dl>
+</div>
+<h1>York County</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 2</em></p>
+<p>York County designed its Community Schools program around the idea that belonging drives attendance. All three schools — Queens Lake Middle, Yorktown Middle, and Magruder Elementary — paid stipends to staff to build programming that gives students a reason to come to school, supported by dedicated coordinators, implementation teams, and professional development on community school strategies. The division is working toward a 10% increase in student attendance and a 5% increase in family engagement by the end of the grant period.</p>
+
+<p>Each school shapes what belonging looks like for its community. At Yorktown Middle, student-versus-staff dodgeball is earned through attendance, behavior, and grades. At Queens Lake, after-school clubs drew standing-room-only attendance at their very first meeting. Magruder Elementary, the newest addition and the division's first elementary community school, is where that belonging starts.</p>
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>York County exemplifies VCSI Stage 3.1: Align to the Four Branches of Student Support. York County offers programming that sustains student motivation and engagement and authentically engages school-based staff, families, and community stakeholders as empowered partners.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Magruder Elementary School</h2>
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+  <img src="vcsi-york-magruder-wm-cheer-squad-welcome.jpg" alt="W&M Cheer Squad Welcome">
+  <img src="vcsi-york-magruder-cw-fife-drum-parade-closeup.jpg" alt="CW Fife & Drum Parade">
+  <img src="vcsi-york-magruder-cw-fife-drum-parade-closeup.jpg" alt="CW Fife & Drum Parade — Close-Up">
+  <img src="vcsi-york-magruder-bhs-intern-tutoring.jpg" alt="BHS Intern Tutoring">
+</div>
+
+<p>William &amp; Mary gymnasts and volleyball players lined the school entrance on the first day of school, cheering students as they walked in. On Yorktown Victory Day, kindergarteners paraded with the Colonial Williamsburg Fife and Drum Corps. A Magruder teacher (Mr. Bennett) and parent (Mr. Wilson) are corps members. A former Magruder student, known to the students as "Miss Summer," returned as a Bruton High School career intern to tutor elementary students.</p>
+
+<!-- ============================================ -->
+<h3>Voices From the Community</h3>
+<blockquote>
+"The impact of the award will allow our partnerships to continue to grow in meaningful ways. High school students regularly volunteer to provide mentorship and support, fostering leadership and connection across grade levels. Family engagement through the PTA strengthens collaboration between home and school, while community members actively participate in school events and activities, creating a network of support that enhances student success and a sense of belonging for all."
+<br><br>— <strong>Sharay Cotman, School Social Work Lead</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Queens Lake Middle School</h2>
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+  <img src="vcsi-york-queens-lake-what-community-means-board.jpg" alt="What Community Means to Me Board">
+  <img src="vcsi-york-queens-lake-wm-eco-club.jpg" alt="W&M Eco Club">
+  <img src="vcsi-york-queens-lake-artist-residency-jamestown-boardwalk.jpg" alt="Artist Residency — Jamestown Field Trip">
+  <img src="vcsi-york-queens-lake-artist-residency-jamestown-boardwalk.jpg" alt="Artist Residency — Jamestown Field Trip (Boardwalk)">
+</div>
+
+<p>A bulletin board covered in 50+ student sticky notes answered "What CommUNITY Means to Me" as part of Topic Tuesday during Bullying Prevention Month. The William &amp; Mary Eco Club, facilitated by Mrs. Hubbard and W&amp;M students, brought hands-on plant identification into the school. Local artist Bob Oller spent a month in residence, beginning with a field trip to Jamestown Settlement for historical sketches and ending with a collaborative tape art mural in the school.</p>
+
+<!-- ============================================ -->
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+  <img src="vcsi-york-queens-lake-first-clubs-meeting.jpg" alt="First Clubs Meeting — Standing Room Only">
+  <p>The first clubs meeting of the year turned out to be standing room only as students packed the Queens Lake cafeteria. Approximately 150 to 200 students showed up for a chance to sign up. On social media, the school posted "standing room only at our first clubs meeting day!" They publicly credited the community schools grant for making the clubs possible, "we are able to provide so many engaging club opportunities thanks to our Community Schools Grant through the Virginia Department of Education".</p>
+</div>
+
+<!-- ============================================ -->
+<div class="block-label">Document Preview Block</div>
+<div class="doc-preview">
+<img src="vcsi-york-queens-lake-accent-on-academics-thumb.jpg" alt="Accent on Academics video thumbnail">
+<p><strong>Accent on Academics: Reimagining School through Community Schools Programming</strong></p>
+<p>Queens Lake's principal and students describe how the Community Schools Grant has changed their experience of school. Spirit club members talk about planning pep rallies and posters, jewelry club members talk about making jewelry with friends after school, and the principal shares how a new student who was struggling academically connected to school through robotics club, improved his attendance, and pulled his younger brother into the school community along with him. The principal also reflects on the partnerships built through the grant, including a K-9 club run with the local sheriff's office and SPCA.</p>
+<p><a href="https://www.youtube.com/watch?v=A9-tt61WlSo">Watch on YouTube</a></p>
+</div>
+
+<!-- ============================================ -->
+<h3>Voices From the Community</h3>
+<blockquote>
+"The Community Schools Grant has supported the growth of student clubs that foster belonging, leadership, and collaboration. Increased participation in clubs, influenced by student voice and choice, has strengthened student connectedness and inspired greater community involvement through events and volunteer engagement. Staff mentoring initiatives have deepened relationships and provided consistent support for students' social and emotional growth."
+<br><br>— <strong>Sharay Cotman, School Social Work Lead</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Yorktown Middle School</h2>
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+  <img src="vcsi-yorktown-student-vs-staff-dodgeball.jpg" alt="Student vs Staff Dodgeball" data-align="90%">
+  <img src="vcsi-yorktown-soar-store.jpg" alt="SOAR Store">
+  <img src="vcsi-yorktown-family-engagement-event-1.jpeg" alt="Family Engagement Event 1">
+  <img src="vcsi-yorktown-family-engagement-event-2.jpeg" alt="Family Engagement Event 2">
+</div>
+
+<p>At Yorktown Middle, the student-versus-staff dodgeball game spells out behavioral expectations for students who want to earn the right to play: no behavior referrals, no F's, no unexcused absences during a two-week window, and 20 Falcon Bucks earned through positive behavior. The SOAR Store runs on the same points system, giving students a reason to stay on track throughout the semester. At a family engagement night, a cheerleader staffs a table with silver pom-poms while student art fills the trophy cases behind her. Families browse and sign up for one of the many student clubs offered at the school.</p>
+
+<!-- ============================================ -->
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>14</strong> — Student Clubs are available at Yorktown Middle, from Young Men of Significance to Falcons to 5K.</p>
+</div>
+
+<!-- ============================================ -->
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+  <img src="vcsi-yorktown-fall-fest-open-nest.jpg" alt="Fall Fest Open Nest">
+  <p>Yorktown Middle's Fall Fest Open Nest encouraged family members to attend with their students. The flyer's messaging of "no drop offs" and "everyone in the family is welcome to attend" made messaging clear and intentional. Each school department planned activities and food trucks were on site to make the Falcon's Open Nest truly welcoming.</p>
+</div>
+
+<!-- ============================================ -->
+<h3>Voices From the Community</h3>
+<blockquote>
+"Our school has been able to create innovative programs and engaging events that strengthen connections between students, families, and staff while promoting school pride and community involvement. Through initiatives such as the Student SOAR store, student vs. staff dodgeball game, family engagement night, and PTSA events, the grant has helped increase family engagement, strengthen student motivation, and build a more supportive school culture."
+<br><br>— <strong>Sharay Cotman, School Social Work Lead</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Community Partners</h2>
+
+<ul>
+  <li>William &amp; Mary (logo)</li>
+  <li>New Horizons Family Counseling Program (logo)</li>
+  <li>PTA/PTSA (logo)</li>
+  <li>Care Solace (logo)</li>
+</ul>
+
+</body>
+</html>

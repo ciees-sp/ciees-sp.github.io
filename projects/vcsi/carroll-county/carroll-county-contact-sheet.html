@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Carroll County</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#1 Emotional and Mental Health</dd>
+    <dt>Treatment:</dt><dd>Division-wide</dd>
+  </dl>
+</div>
+<h1>Carroll County</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 7</em></p>
+<p>Carroll County brought twenty years of experience partnering with its local community to the Community Schools work. The Schools and Pools program with Carroll Wellness Center has been bringing water safety education to students since 2004. Through the Community Schools grant, the division formalized that work, adding a dedicated coordinator hired from the local community and expanding existing partnerships.</p>
+
+<p>A community advisory board with parent voice guides the work across eight schools, which centers on expanding mental health interventions and reducing disciplinary referrals. The division is already building beyond the grant period, applying for additional 21st Century Community Learning Centers funding to sustain programming across the division.</p>
+
+<!-- ============================================ -->
+<h3>By the Numbers</h3>
+<div class="data-block">
+<p><strong>Division-wide Mental Health and Behavior Goals</strong></p>
+<p><strong>15%+</strong> Mental Health Interventions &nbsp;|&nbsp; <strong>-5%</strong> Discipline Referrals</p>
+</div>
+
+<!-- ============================================ -->
+<!-- ============================================ -->
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>Carroll County exemplifies VCSI Stage 2.1: Organize a Community School Team. Carroll County has designated a coordinator to oversee its Community Schools' action plans and activities.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+
+  </div>
+</div>
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"Our Community Schools initiative has strengthened partnerships between schools, families, and local organizations, resulting in improved student attendance and engagement. We have increased the resources and targeted interventions provided to students, staff and the community. Through family events, resource connections, and expanded enrichment opportunities, we've seen increased parent participation and stronger home–school relationships."
+<br><br>— <strong>Emily Underwood, Community Schools Coordinator</strong>
+</blockquote>
+
+<!-- ============================================ -->
+
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+  <img src="vcsi-carroll-nemt-automotive-learning.jpg" alt="Students performing automotive repairs and maintenance on a Non-Emergency Medical Transportation vehicle">
+  <p>Students are gaining hands-on automotive learning by completing manageable repairs and maintenance on the vehicles used for a new Non-Emergency Medical Transportation program, run in partnership with Tri-Area Community Health. The program transports uninsured and Medicaid-enrolled patients to medical and behavioral health appointments at the Cana and Laurel Fork clinics.</p>
+</div>
+
+<!-- ============================================ -->
+<div class="block-label">Document Preview Block</div>
+<div class="doc-preview">
+  <img src="vcsi-carroll-farm-to-family-event.jpg" alt="CAVS After-School Program — Farm to Family newsletter">
+  <p>The Cohort After-school and Vocational Services (CAVS) Program at Carroll County Middle, funded through 21st Century Community Learning Centers, runs experiential learning and family events throughout the year. The Farm to Family event brought students and families together with Virginia Department of Agriculture staff to make veggie pizzas from locally grown food and learn about available nutrition programs including Farm Market Fresh. CAVS also runs academic field trips, including a surface collection and gem panning trip to Emerald Hollow Mine for earth science instruction.</p>
+  <p><a href="vcsi-carroll-farm-to-family-event.jpg">View the Farm to Family Newsletter</a></p>
+</div>
+
+<!-- ============================================ -->
+<div class="block-label">Document Preview Block</div>
+<div class="doc-preview">
+  <img src="vcsi-carroll-back-to-school-bash.jpg" alt="Back to School Bash — 60+ Community Vendors newsletter">
+  <p>The annual Back to School Bash welcomed students and families with more than 60 community vendors in a single gathering. The event serves as a district-wide celebration of the start of school, connecting families to service providers, local businesses, and health organizations before the first day of classes.</p>
+  <p><a href="vcsi-carroll-back-to-school-bash.jpg">View the Back to School Bash Newsletter</a></p>
+</div>
+
+<!-- ============================================ -->
+<div class="block-label">Document Preview Block</div>
+<div class="doc-preview">
+  <img src="vcsi-carroll-agriculture-days-and-care-closets.jpg" alt="Agriculture Days and Care Closets newsletter">
+  <p>Agriculture Days connected students with local farmers and agricultural professionals through County AG Day, where second, third, and fifth graders attended stations on farming, livestock, forestry, and farm equipment. The same newsletter features the division's Care Closets initiative, which allows students to access school supplies and clothing discreetly at each school. Community partners supporting the Care Closets include The River House, Meadows of Dan Maxcess Women's Network, and Rotometrics.</p>
+  <p><a href="vcsi-carroll-agriculture-days-and-care-closets.jpg">View the Agriculture Days and Care Closets Newsletter</a></p>
+</div>
+
+<!-- ============================================ -->
+<h2>Community Partners</h2>
+
+<ul>
+  <li>Mount Rogers Community Services Board</li>
+  <li>Tri Area Community Health</li>
+  <li>Carroll Wellness Center</li>
+  <li>Carroll County Library</li>
+  <li>Educational Opportunities (EO)</li>
+  <li>Town of Hillsville</li>
+  <li>Virginia Department of Agriculture and Consumer Services</li>
+  <li>The River House and Home Company</li>
+  <li>Meadows of Dan Maxcess Women's Network</li>
+  <li>Rotometrics</li>
+  <li>Carroll County High School JROTC</li>
+  <li>Carroll County Fire and Rescue</li>
+</ul>
+
+</body>
+</html>

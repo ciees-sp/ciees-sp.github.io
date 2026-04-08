@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Norton City</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#3 Emotional and Mental Health</dd>
+    <dt>CIS Affiliate:</dt><dd>CIS-AH</dd>
+  </dl>
+</div>
+<h1>Norton City</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 7</em></p>
+<p>Both of Norton City's schools — Norton Elementary and J.I. Burton High School — reached 100 percent progress on their social-emotional learning goals in the first quarter, the result of a Community Schools investment in calming spaces, expanded counseling, and access to community-based mental health providers at both buildings. Seventy-nine students receive targeted support, 47 of them through intensive case management.</p>
+
+<p>At J.I. Burton High, the Brighter Paths program brings substance use awareness and healthy decision-making programming into the school. At Norton Elementary, an in-school clinic serves students individually while a schoolwide social-emotional learning curriculum reaches every classroom. The Raiders After-School Program extends that reach, serving approximately 100 students every day with academic tutoring, STEM activities, social-emotional learning, and arts enrichment at no cost to families.</p>
+
+<!-- ============================================ -->
+<h2>Norton Elementary and Middle School</h2>
+
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>520+</strong> attended community engagement events at Norton Elementary and Middle School this fall.</p>
+</div>
+
+<!-- ============================================ -->
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+<img src="vcsi-norton-elementary-family-dinner.jpg" alt="Norton Elementary family dinner event">
+<img src="vcsi-norton-elementary-perler-bead-art.jpg" alt="Norton Elementary perler bead art enrichment activity">
+<img src="vcsi-norton-elementary-stem-straw-activity.jpg" alt="Norton Elementary STEM straw activity">
+<img src="vcsi-norton-elementary-fire-dept-event.jpg" alt="Norton Elementary fire department community event">
+</div>
+
+<p>At a Norton Elementary and Middle School community event, families connected with each other over dinner provided by the school. In the after-school program, students have access to enrichment time, like working with perler beads and geometric straw art. An evening visit from the Norton Fire Department brought one of the school's community partners onto school grounds.</p>
+
+<!-- ============================================ -->
+
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>208</strong> students at Norton Elementary and Middle School received basic needs assistance during the first quarter.</p>
+</div>
+
+<!-- ============================================ -->
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>Norton City exemplifies VCSI 3.1: Align to the Four Branches of Support. Norton City brings families and the community into the schools in authentic and meaningful ways, turning their schools into a neighborhood hub of support.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>J.I. Burton High School</h2>
+
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>170+</strong> attended community engagement events at J.I. Burton High School this fall.</p>
+</div>
+
+<!-- ============================================ -->
+
+<div class="block-label">2-Photo Block</div>
+<div class="photo-pair">
+<img src="vcsi-norton-ji-burton-community-partner-tabling.jpg" alt="Multi-partner tabling event outside">
+<img src="vcsi-norton-ji-burton-bonfire-gathering.jpg" alt="Nighttime bonfire gathering with students">
+</div>
+
+<p>J.I. Burton has established eight formal partnerships with local organizations that provide resources to help meet students' basic needs and collaborate with the school at community events. One event, a nighttime bonfire, brought approximately 20 students together for community building outside of the classroom.</p>
+
+<!-- ============================================ -->
+
+<div class="block-label">Data Sentence Block</div>
+<div class="data-block">
+<p><strong>145</strong> students at J.I. Burton High School received basic needs assistance during the first quarter.</p>
+</div>
+
+<!-- ============================================ -->
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"The Community Schools model has deepened partnerships across the community."
+<br><br>— <strong>EO Partner</strong>
+</blockquote>
+
+<!-- ============================================ -->
+
+<h2>Community Partners</h2>
+
+<ul>
+<li>EO</li>
+<li>CIS of Appalachian Highlands</li>
+<li>Wise County Sheriff's Office</li>
+<li>Norton Police Department</li>
+<li>Ballad Health</li>
+<li>Mountain Empire Community College</li>
+<li>University of Virginia's College at Wise</li>
+<li>William King Art Museum</li>
+<li>Frontier Health</li>
+<li>Pine Mountain Music</li>
+<li>Wise County Library</li>
+<li>Norton Department of Social Services</li>
+</ul>
+
+</body>
+</html>

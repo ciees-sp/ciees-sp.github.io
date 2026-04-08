@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Washington County</title>
+<style>
+body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto; padding: 0 20px; background: #fafafa; color: #222; line-height: 1.6; }
+h1 { font-size: 1.8em; border-bottom: 3px solid #333; padding-bottom: 10px; }
+h2 { font-size: 1.4em; margin-top: 50px; border-bottom: 2px solid #999; padding-bottom: 6px; color: #333; }
+h3 { font-size: 1.15em; margin-top: 35px; color: #555; }
+blockquote { background: #f5f0eb; border-left: 4px solid #999; padding: 12px 16px; margin: 15px 0; font-style: italic; }
+p + .data-block, p + .photo-grid, p + .photo-pair, p + .photo-single, p + .doc-preview, p + blockquote { margin-top: 35px; border-top: 1px solid #ddd; padding-top: 20px; }
+.photo-grid { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-grid img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-pair { display: flex; flex-wrap: wrap; gap: 10px; margin: 30px 0; }
+.photo-pair img { width: 48%; max-height: 250px; object-fit: cover; border: 1px solid #ddd; }
+.photo-single { overflow: auto; margin: 15px 0; }
+.photo-single img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ddd; margin: 0 20px 10px 0; }
+.doc-preview { overflow: auto; margin: 15px 0; background: #f2f2f0; padding: 16px; border-radius: 4px; }
+.doc-preview img { float: left; max-width: 45%; max-height: 400px; object-fit: cover; border: 1px solid #ccc; margin: 0 20px 10px 0; }
+.data-block { background: #e8f0fe; text-align: center; padding: 20px; margin: 15px 0; border-radius: 4px; }
+.data-block p:first-child:not(:last-child) { font-weight: bold; margin-bottom: 2px; }
+.data-block p:last-child:not(:first-child) { margin-top: 0; }
+img[data-align="top"] { object-position: top; }
+img[data-align="bottom"] { object-position: bottom; }
+img[data-align="left"] { object-position: left; }
+img[data-align="right"] { object-position: right; }
+img[data-align="5%"]  { object-position: center 5%; }
+img[data-align="10%"] { object-position: center 10%; }
+img[data-align="15%"] { object-position: center 15%; }
+img[data-align="20%"] { object-position: center 20%; }
+img[data-align="25%"] { object-position: center 25%; }
+img[data-align="30%"] { object-position: center 30%; }
+img[data-align="35%"] { object-position: center 35%; }
+img[data-align="40%"] { object-position: center 40%; }
+img[data-align="45%"] { object-position: center 45%; }
+img[data-align="50%"] { object-position: center 50%; }
+img[data-align="55%"] { object-position: center 55%; }
+img[data-align="60%"] { object-position: center 60%; }
+img[data-align="65%"] { object-position: center 65%; }
+img[data-align="70%"] { object-position: center 70%; }
+img[data-align="75%"] { object-position: center 75%; }
+img[data-align="80%"] { object-position: center 80%; }
+img[data-align="85%"] { object-position: center 85%; }
+img[data-align="90%"] { object-position: center 90%; }
+img[data-align="95%"] { object-position: center 95%; }
+.coordinator-note { background: #f5b524; border-radius: 10px; padding: 22px 24px; margin: 24px 0; font-family: inherit; }
+.coordinator-note h3 { color: #2a2a2a; font-weight: 700; margin: 0 0 12px 0; font-size: 1.15em; }
+.coordinator-note-body { display: grid; grid-template-columns: max-content 1fr; column-gap: 12px; row-gap: 10px; align-items: start; color: #2a2a2a; }
+.coordinator-note-icon { font-size: 1.4em; line-height: 1.5; }
+.coordinator-note-body p { margin: 0; line-height: 1.5; }
+.coordinator-note-cta { grid-column: 2; margin: 0 !important; font-weight: 700; }
+.coordinator-note-cta a { color: #2a2a2a; }
+.block-label { display: inline-block; font-family: -apple-system, system-ui, sans-serif; font-size: 0.7em; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #666; background: #ececec; border: 1px solid #d0d0d0; border-radius: 999px; padding: 3px 10px; margin: 30px 0 6px 0; }
+.internal-note { font-family: -apple-system, system-ui, sans-serif; background: #fff8e1; border: 2px dashed #c47f00; border-radius: 6px; padding: 14px 18px; margin: 0 0 24px 0; font-size: 0.9em; color: #5a4400; }
+.internal-note .note-label { display: inline-block; font-size: 0.75em; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #b00020; background: #fff; border: 1px solid #b00020; border-radius: 3px; padding: 2px 8px; margin-bottom: 8px; }
+.internal-note dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; }
+.internal-note dt { font-weight: 700; }
+.internal-note dd { margin: 0; }
+</style>
+</head>
+<body>
+
+<div class="internal-note">
+  <dl>
+    <dt>Branch:</dt><dd>#5 Engagement and Motivation</dd>
+    <dt>Treatment:</dt><dd>School-Level</dd>
+  </dl>
+</div>
+<h1>Washington County</h1>
+<p><em>Cohort 1 &nbsp;📍 Region 7</em></p>
+<p>Across 15 schools, Washington County centered its Community Schools work on attendance to drive improvements in student engagement and family involvement. The division built a visible attendance culture through branded campaigns at every building, from "Step into September" shoe drawings to "Bases Loaded" classroom competitions to "World Changer of the Week" recognition. The approach is already showing results: six schools exceeded their 94% attendance target in the first quarter, and the division averaged 95% across all 15 schools.</p>
+
+<p>That attendance culture is reinforced through student-led service projects, peer leadership programs, multigenerational family events, and programming for multilingual families that bring students, families, and community partners together in every building. When Hurricane Helene hit, Damascus Middle became a community hub for families during and after the storm, providing a proof point for the very connections the division had been building every day in every school.</p>
+
+<div class="coordinator-note">
+  <h3>Coordinator's Note</h3>
+  <div class="coordinator-note-body">
+    <span class="coordinator-note-icon" aria-hidden="true">📝</span>
+    <p>Washington County exemplifies VCSI Stage 3.1: Align to the Four Branches of Student Support. Washington County has formed partnerships that bring families and the community into the schools in authentic and meaningful ways, turning their schools into neighborhood hubs of support.</p>
+    <p class="coordinator-note-cta"><a href="https://vastudentservices-clc.org/learning-center/?course_term=virginia-community-school-implementation-toolkit">Explore the VCSI Toolkit and learn more &raquo;</a></p>
+
+  </div>
+</div>
+
+<!-- ============================================ -->
+<h2>Damascus Middle</h2>
+
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+<img src="vcsi-washington-damascus-middle-bike-build-bash-group.jpg" alt="Bike Build Bash — approximately 12 students and 1 adult standing behind newly built bicycles in school gym">
+<p>The Bike Build Bash brought 15 students and 10 parents together to build and prepare bicycles donated by the Outride Foundation, working alongside local bike mechanics from Blue Blaze Bike Shop and Virginia Creeper Trail Bike Shop. Damascus Middle also took 64 seventh graders on a field trip along the Appalachian Trail, where students learned to pack a backpack, build a fire, and maintain trails alongside community presenters.</p>
+</div>
+
+<!-- ============================================ -->
+<h2>Wallace Middle</h2>
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"While they were searching for stable housing, I was able to assist by covering the rental application fee, allowing their application to be processed without delay. With this support, the father was soon able to secure both employment and approval for a new housing unit. I was able to secure a proper bed for the student and covered the cost. Our school principal kindly stepped in to help with transportation and personally delivered the bed to the family's home. On top of that, a generous teacher who wanted to contribute asked for the bed size and then allowed the student to choose their own new bedding, which was also delivered. This small chain of acts—sparked by community support and staff collaboration—has made a meaningful difference. This student now has a home and a bed of her own—a true foundation for rest, growth, and success."
+<br><br>— <strong>Skye Waller, Communities in Schools – Appalachian Highlands Student Support Coordinator</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Patrick Henry High</h2>
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"At Patrick Henry High School, a simple idea—bringing students together during breakfast and lunch twice a week—has created real change. …. In the first nine weeks, new friendships formed, and the group became a highlight of the week for many. Parents have noticed big improvements, too. Several shared that their children are more excited to come to school, have more confidence, and are making new friends. What started as a small effort to bring students together has grown into something special—a daily reminder that everyone belongs and friendship can start with just a seat at the table."
+<br><br>— <strong>Erin Johnson, Communities in Schools – Appalachian Highlands Student Support Coordinator</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Valley Institute Elementary</h2>
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"One of our first initiatives, Bulldogs Against Bullying, encouraged students to take a stand for kindness and respect. After signing a schoolwide pledge, students traced and cut out their hands to symbolize their commitment to creating a safe, inclusive school environment. The Bulldog Buddies program has quickly become a source of pride and inspiration—developing leadership skills in our upper-grade students while spreading positivity and kindness throughout our entire school community."
+<br><br>— <strong>Kirby Hardin, Communities in Schools – Appalachian Highlands Student Support Coordinator</strong>
+</blockquote>
+
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+<img src="vcsi-washington-valley-institute-grandparents-day.jpg" alt="Valley Institute Elementary — coordinator in school gym with grandparents and students eating together">
+<p>Valley Institute's Grandparents' Breakfast drew 264 attendees in September, filling the school gym with grandparents and students eating together. The Bulldog Buddies peer mentoring program runs monthly kindness and character-building initiatives across the school, and 240 students signed the Bulldogs Against Bullying pledge. A "Top Dog Hero" quarterly recognition extends the school's culture work beyond single events.</p>
+</div>
+
+<!-- ============================================ -->
+<h2>Watauga Elementary</h2>
+
+<h3>Voices From the Community</h3>
+<blockquote>
+"Through their collective effort, Paws for a Cause organized and assembled 221 'Bags of Sunshine'—each filled with snacks, coloring books, fuzzy socks, stuffed animals, and other small items designed to brighten the day of children who are sick and in local hospitals. These bags were delivered to Niswonger's Children's Hospital to encourage children who are patients, as well as siblings who may be spending long hours away from home. What made this project so special was that it was completely student-led. From brainstorming ideas to delivering the information to their homeroom and buddy homeroom to sorting donations and packing each bag with care, students took ownership every step of the way. The Paws for a Cause club continues to remind us that when students lead with empathy and purpose, they not only change their school—they impact the world beyond it."
+<br><br>— <strong>Maegan Brown, Communities in Schools – Appalachian Highlands Student Support Coordinator</strong>
+</blockquote>
+
+<!-- ============================================ -->
+<h2>Abingdon High School</h2>
+
+<div class="block-label">4-Photo Block</div>
+<div class="photo-grid">
+<img src="vcsi-washington-abingdon-high-frc-kickoff-partner-tables.jpg" alt="FRC Kickoff — partner tables, New Peoples Bank signage, DARS table visible">
+<img src="vcsi-washington-abingdon-high-frc-kickoff-dars-table.jpg" alt="FRC Kickoff — DARS table with banner, DRS table">
+<img src="vcsi-washington-abingdon-high-frc-kickoff-etsu-venue.jpg" alt="FRC Kickoff — ETSU Access table, dealership showroom floor with vehicle">
+<img src="vcsi-washington-abingdon-high-frc-kickoff-vdot-families.jpg" alt="FRC Kickoff — VDOT banner, families with children">
+</div>
+
+<p>The Family Resource Center (FRC) at Abingdon High held its inaugural kickoff in September with more than 25 community partners. The FRC began as a resource for families of students with disabilities and is intended to expand division-wide. The event took place inside Blue Ridge Auto Group's dealership showroom, a private business space donated for the evening. Partner tables from across the community lined the showroom floor alongside the vehicles.</p>
+
+<div class="block-label">Single Photo Block</div>
+<div class="photo-single">
+<img src="vcsi-washington-abingdon-high-esl-tailgate-students.jpg" alt="ESL Tailgate — diverse girls posed outside brick school building at golden hour">
+<p>The ESL Tailgate was a joint event between Abingdon High and E.B. Stanley Middle. The cross-school model recognizes that multilingual families benefit from programming that spans grade levels and is one of several events for English language learner families across the division.</p>
+</div>
+
+</body>
+</html>

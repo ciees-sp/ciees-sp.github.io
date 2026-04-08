@@ -177,6 +177,7 @@ img[data-align="95%"] { object-position: center 95%; }
 }
 .coordinator-note-body {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: 12px;
   color: #2a2a2a;

@@ -174,7 +174,18 @@
     padding: 20px 28px;
     background: #003057;
     border-radius: 12px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .supervisor-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid #20AEC5;
   }
 
   .supervisor p {
@@ -295,6 +306,7 @@
   </div>
 
   <div class="supervisor">
+    <img class="supervisor-photo" src="Design/Personas/lydia.png" alt="Lydia Chen, a Vietnamese American woman in her mid-40s with a shoulder-length bob and wire-frame glasses, sitting at a desk in her office.">
     <p><strong>Their supervisor: Lydia Chen, LPC, LMHP</strong> — assesses, writes the treatment plan, selects interventions, and supervises both Marcus and Adrienne weekly.</p>
   </div>
 

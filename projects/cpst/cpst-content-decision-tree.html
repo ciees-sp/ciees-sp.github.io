@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Module Content Decision Tree</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f8f9fa;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 36px;
+    text-align: center;
+  }
+
+  .tree {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .gate {
+    background: #ffffff;
+    border: 2px solid #94a3b8;
+    border-radius: 10px;
+    padding: 16px 22px;
+    text-align: center;
+    max-width: 420px;
+    position: relative;
+  }
+
+  .gate-label {
+    font-size: 15px;
+    font-weight: 700;
+    color: #334155;
+  }
+
+  .sub-gate {
+    background: #ffffff;
+    border: 2px solid #94a3b8;
+    border-radius: 8px;
+    padding: 12px 18px;
+    text-align: center;
+    max-width: 340px;
+    width: 100%;
+  }
+
+  .sub-gate .gate-label {
+    font-size: 14px;
+    color: #334155;
+  }
+
+  .guide-text {
+    font-size: 12px;
+    color: #4b5563;
+    line-height: 1.5;
+    text-align: left;
+    max-width: 440px;
+    margin: 6px auto 0;
+  }
+
+  .vline {
+    width: 2px;
+    height: 22px;
+    background: #c9cdd4;
+    margin: 0 auto;
+  }
+
+  .fork {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    width: 100%;
+    position: relative;
+  }
+
+  .fork-arm {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    min-width: 0;
+  }
+
+  .fork-arm.shaded {
+    background: #f1f3f5;
+    border-radius: 10px;
+    padding: 14px 10px;
+  }
+
+  .pill {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 3px 14px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 8px;
+    background: #e2e8f0;
+    color: #334155;
+  }
+
+  .zone-heading {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 10px 22px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    text-align: center;
+    line-height: 1.6;
+    background: #dbeafe;
+    color: #1e40af;
+    border: 2px solid #93c5fd;
+  }
+
+  .zone-heading .zone-sub {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+    display: block;
+    color: #1e40af;
+  }
+
+  .dest {
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-size: 13px;
+    line-height: 1.5;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    background: #eff6ff;
+  }
+
+  .dest-title {
+    font-weight: 700;
+    font-size: 13px;
+    color: #1e40af;
+  }
+
+  .summary {
+    margin-top: 44px;
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 13px;
+  }
+
+  .summary th {
+    background: #334155;
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .summary th:first-child { border-radius: 6px 0 0 0; }
+  .summary th:last-child  { border-radius: 0 6px 0 0; }
+
+  .summary td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .summary tr:nth-child(even) td { background: #f9fafb; }
+
+  .swatch {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  @media print {
+    body { padding: 20px; background: #fff; }
+    .page { max-width: 100%; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>CPST Module Content Decision Tree</h1>
+
+  <div class="tree">
+
+    <!-- ════ ROOT: TASK ════ -->
+    <div class="gate">
+      <div class="gate-label">Does the learner need to do this on the job?</div>
+    </div>
+    <p class="guide-text">Connected to a BHT/QMHP statutory function: something they do in a session, document afterward, or get supervised on?</p>
+
+    <!-- FORK: Task Yes / No -->
+    <div class="fork" style="max-width: 940px; gap: 12px;">
+
+      <!-- ═══ LEFT BRANCH: Task = YES ═══ -->
+      <div class="fork-arm shaded" style="padding: 14px 10px;">
+        <div class="pill">Yes</div>
+        <div class="vline"></div>
+
+        <div class="zone-heading">Need to Know<span class="zone-sub">Include it in the module</span></div>
+
+        <!-- A/B side by side -->
+        <div class="fork" style="width: 100%; gap: 8px;">
+          <div class="fork-arm" style="padding: 0;">
+            <div class="sub-gate">
+              <div class="gate-label">A) Can a learner without clinical training follow this content as written?</div>
+            </div>
+          </div>
+          <div class="fork-arm" style="padding: 0;">
+            <div class="sub-gate">
+              <div class="gate-label">B) Is the writing accessible at the associate's degree level?</div>
+            </div>
+          </div>
+        </div>
+        <p class="guide-text">If the content assumes prerequisite knowledge the learner may not have, or the writing itself isn't accessible at the associate's degree level (approximately 10th grade), it needs to be revised for the module.</p>
+
+        <!-- FK fork — equal-height arms -->
+        <div class="fork" style="width: 100%;">
+          <div class="fork-arm" style="padding: 0 6px;">
+            <div class="pill">Yes</div>
+            <div class="vline" style="height: 100%;"></div>
+          </div>
+          <div class="fork-arm" style="padding: 0 6px;">
+            <div class="pill">No</div>
+            <div class="vline" style="height: 10px;"></div>
+            <div class="dest">
+              <div class="dest-title">1) Distill and reintegrate</div>
+            </div>
+            <div class="vline" style="height: 10px;"></div>
+            <div class="dest">
+              <div class="dest-title">2) Revise or remove learning objective to match new content depth</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Youth/Adult — spans both FK paths -->
+        <div class="sub-gate">
+          <div class="gate-label">Is this content differentiated for youth and adult populations?</div>
+        </div>
+
+        <div class="vline"></div>
+
+        <div class="fork" style="width: 100%;">
+          <div class="fork-arm" style="padding: 0 4px;">
+            <div class="pill">Yes</div>
+            <div class="vline" style="height: 10px;"></div>
+            <div class="dest">
+              <div class="dest-title">Add age-specific callout</div>
+            </div>
+          </div>
+          <div class="fork-arm" style="padding: 0 4px;">
+            <div class="pill">No</div>
+            <div class="vline" style="height: 10px;"></div>
+            <div class="dest">
+              <div class="dest-title">No callout needed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ RIGHT BRANCH: Task = NO ═══ -->
+      <div class="fork-arm shaded" style="padding: 14px 10px;">
+        <div class="pill">No</div>
+        <div class="vline"></div>
+
+        <!-- CONTEXT check -->
+        <div class="sub-gate">
+          <div class="gate-label">Does it provide context the learner needs?</div>
+        </div>
+        <p class="guide-text">Does the learner need this to understand their role, how they fit within the care system, or when to refer up the chain? Not to master the content, but to have enough awareness to do their job in context.</p>
+
+        <!-- Context fork -->
+        <div class="fork" style="width: 100%; gap: 8px;">
+
+          <!-- Context YES → Nice to Know -->
+          <div class="fork-arm" style="padding: 0 6px;">
+            <div class="pill">Yes</div>
+            <div class="vline"></div>
+
+            <div class="zone-heading">Nice to Know<span class="zone-sub">Add to the resource doc</span></div>
+
+            <!-- FK check -->
+            <div class="sub-gate">
+              <div class="gate-label">Is the writing accessible at the associate's degree level?</div>
+            </div>
+
+            <div class="vline"></div>
+
+            <div class="fork" style="width: 100%;">
+              <div class="fork-arm" style="padding: 0 4px;">
+                <div class="pill">Yes</div>
+                <div class="vline" style="height: 10px;"></div>
+                <div class="dest">
+                  <div class="dest-title">Add to document</div>
+                </div>
+              </div>
+              <div class="fork-arm" style="padding: 0 4px;">
+                <div class="pill">No</div>
+                <div class="vline" style="height: 10px;"></div>
+                <div class="dest">
+                  <div class="dest-title">Rewrite and add as time allows</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Context NO → Cut for Time -->
+          <div class="fork-arm" style="padding: 0 6px;">
+            <div class="pill">No</div>
+            <div class="vline"></div>
+            <div class="zone-heading">Cut for Time<span class="zone-sub">Content not applicable to role</span></div>
+          </div>
+
+        </div><!-- end Context fork -->
+      </div>
+
+    </div><!-- end root fork -->
+
+  </div><!-- end tree -->
+
+  <!-- ════ WORKED EXAMPLES ════ -->
+  <h2 style="font-size: 17px; font-weight: 700; color: #334155; margin-top: 44px; margin-bottom: 6px; text-align: center;">Worked Examples</h2>
+  <p style="font-size: 13px; color: #4b5563; text-align: center; margin-bottom: 20px; line-height: 1.5;">Trace a single content topic from the SME outline through the tree. Each zone shows what lands there and why.</p>
+
+  <table class="summary">
+    <thead>
+      <tr>
+        <th style="width: 15%;">Zone</th>
+        <th style="width: 42.5%;">Mood Disorders: Theoretical Frameworks</th>
+        <th style="width: 42.5%;">Relaxation: Why Relaxation Works</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="swatch" style="background:#3b82f6;"></span><strong>Need to Know</strong></td>
+        <td>
+          <strong>CBT mood-rating before/after activity.</strong> The QMHP uses this in session: ask the client to rate mood 1–10, do a pleasant activity, rate again. It is the one CBT detail that carries practical weight for this role. Attaches directly to a task, accessible as written.<br><br>
+          <em>Age-specific callout:</em> Negative thinking patterns present differently by age. Youth interpret a bad test score as personal failure; adults interpret a missed job interview the same way. Same cognitive schema, different anchors. Flag for a toggled element in the module.
+        </td>
+        <td>
+          <strong>Neuromuscular tension, stress response, and the mind-body connection.</strong> The QMHP teaches relaxation techniques in session and the BHT reinforces them between sessions. Both need a plain-language "why this works" to explain to clients: your body holds stress as muscle tension; relaxation techniques release it; practicing regularly trains your nervous system to calm down faster. Attaches directly to the teaching task. Jargon like "reciprocal inhibition" and "Generalized Stress Activation Response" needs distillation, but the operational content is sound.<br><br>
+          <em>Age-specific callout:</em> Youth triggers section is paired with adult sidebars, but the parallels are uneven. PMR adaptations, imagery resistance, and facilitating-with-adults sidebars have no youth equivalents. The "Script for Youth" has no adult parallel. Flag both directions for balanced callout elements.
+        </td>
+      </tr>
+      <tr>
+        <td><span class="swatch" style="background:#3b82f6;"></span><strong>Nice to Know</strong></td>
+        <td>
+          <strong>The four-theory integrated model.</strong> The learner does not apply neurobiological, cognitive-behavioral, information processing, or interpersonal theory directly. But they need enough context to understand why a treatment plan includes what it includes and when to refer up the chain.<br><br>
+          <em>Add to document:</em> The interpersonal cycle example (withdrawn coworker → colleague stops initiating → isolation deepens depression) is readable at the audience level as written. Goes straight to the resource doc.<br><br>
+          <em>Rewrite and add as time allows:</em> The neurobiology overview assumes graduate-level prerequisite knowledge (HPA axis, hormonal risk windows, atypical brain development). The learner needs the orienting concept ("mood disorders have a biological basis; family history matters") but not the mechanism.        </td>
+        <td>
+          <strong>Majority of module content is included.</strong> Relaxation is a skill-based module where most content is practical application and already role-specific. The scripts, teaching examples, and step-by-step techniques all attach directly to tasks the learner performs.        </td>
+      </tr>
+      <tr>
+        <td><span class="swatch" style="background:#3b82f6;"></span><strong>Cut for Time</strong></td>
+        <td>
+          <strong>Detailed neurobiology subsections.</strong> Vascular changes in older adults, sex differences in adolescent depression rates linked to puberty hormones, specific atypical brain development structures (PFC, amygdala, hippocampus). This content doesn't connect to something the learner does on the job, and it goes beyond the context they need to understand their role.        </td>
+        <td>
+          <strong>Autonomic nervous system detail.</strong> Pupil dilation, digestion redirection, vagus nerve anatomy, sympathetic and parasympathetic system mechanics. The module already covers the key message (relaxation shifts the body from stress activation to calm) in plain language. This level of detail goes beyond what the learner needs to teach and reinforce the skill effectively.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+</div>
+</body>
+</html>

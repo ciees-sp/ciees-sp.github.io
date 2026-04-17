@@ -16,14 +16,14 @@
   }
 
   .page {
-    max-width: 900px;
+    max-width: 1100px;
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 40px 24px;
   }
 
   .header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 44px;
   }
 
   .header h1 {
@@ -39,56 +39,79 @@
     font-style: italic;
   }
 
-  .personas {
-    display: flex;
-    gap: 24px;
-  }
-
   .card {
-    flex: 1;
+    display: flex;
+    gap: 0;
     border-radius: 16px;
     overflow: hidden;
     background: #f8f9fa;
+    margin-bottom: 24px;
   }
 
   .card-photo {
-    width: 100%;
-    height: 280px;
+    width: 320px;
+    min-height: 100%;
     object-fit: cover;
     object-position: center 20%;
     display: block;
+    flex-shrink: 0;
   }
 
-  .card-body {
-    padding: 24px 24px 28px;
+  .card-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-intro {
+    padding: 28px 28px 20px;
+    background: #003057;
+    color: #ffffff;
   }
 
   .card-name {
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 800;
-    color: #003057;
+    color: #ffffff;
     margin-bottom: 2px;
   }
 
   .card-role {
     font-size: 13px;
     font-weight: 600;
-    color: #64748b;
+    color: #20AEC5;
     text-transform: uppercase;
     letter-spacing: 0.04em;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
 
   .card-quote {
     font-size: 14px;
     font-style: italic;
-    color: #334155;
+    color: #cbd5e1;
     line-height: 1.6;
-    padding: 12px 16px;
-    background: #ffffff;
+    padding-left: 14px;
     border-left: 3px solid #20AEC5;
-    border-radius: 0 8px 8px 0;
-    margin-bottom: 20px;
+  }
+
+  .card-edu {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-top: 10px;
+  }
+
+  .card-body {
+    padding: 22px 28px 28px;
+    flex: 1;
+  }
+
+  .card-about-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: #003057;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
   }
 
   .card-detail {
@@ -98,8 +121,14 @@
     margin-bottom: 10px;
   }
 
-  .card-detail strong {
-    color: #003057;
+  .card-columns {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+  }
+
+  .card-col {
+    flex: 1;
   }
 
   .card-section {
@@ -108,7 +137,6 @@
     color: #003057;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    margin-top: 18px;
     margin-bottom: 8px;
   }
 
@@ -142,8 +170,8 @@
   }
 
   .supervisor {
-    margin-top: 32px;
-    padding: 20px 24px;
+    margin-top: 8px;
+    padding: 20px 28px;
     background: #003057;
     border-radius: 12px;
     text-align: center;
@@ -183,69 +211,83 @@
     <p>Who is this training for?</p>
   </div>
 
-  <div class="personas">
-
-    <div class="card">
-      <img class="card-photo" src="Design/Personas/marcus.png" alt="Marcus Rivera, a Latino man in his late 20s wearing a navy henley, sitting at a table in a community room break area with a travel mug, looking off to the side with a relaxed smile.">
-      <div class="card-body">
+  <!-- MARCUS -->
+  <div class="card">
+    <img class="card-photo" src="Design/Personas/marcus.png" alt="Marcus Rivera, a Latino man in his late 20s wearing a navy henley, sitting at a table in a community room break area with a travel mug, looking off to the side with a relaxed smile.">
+    <div class="card-right">
+      <div class="card-intro">
         <div class="card-name">Marcus Rivera</div>
         <div class="card-role">Behavioral Health Technician (BHT)</div>
-
         <div class="card-quote">"Just tell me what to do and why it matters. I'll figure out the rest in the room."</div>
+        <div class="card-edu">Associate degree in human services</div>
+      </div>
+      <div class="card-body">
+        <div class="card-about-heading">About Marcus</div>
+        <div class="card-detail">Started in the field after a family member's experience with mental health services. Practical learner. Picks things up fast when he can connect content to something real, and engages well with clinical concepts when they're explained in plain language first.</div>
 
-        <div class="card-detail"><strong>Education:</strong> Associate degree in human services</div>
-        <div class="card-detail">Started in the field after a family member's experience with mental health services. Practical learner. Picks things up fast when he can connect them to something real.</div>
-        <div class="card-detail">Reads at roughly a 10th-grade level. Clinical terminology slows him down, but he'll engage with it if it's explained in plain language first.</div>
-
-        <div class="card-section">On the job, Marcus:</div>
-        <ul class="card-list">
-          <li>Reinforces skills between sessions using established scripts</li>
-          <li>Encourages clients to practice what the QMHP introduced</li>
-          <li>Documents observations and reports to the team</li>
-          <li>Screens, coordinates care, orients new clients</li>
-        </ul>
-
-        <div class="card-section">Not Marcus's role:</div>
-        <ul class="card-list not-role">
-          <li>Diagnosing or selecting interventions</li>
-          <li>Teaching new clinical content to clients</li>
-          <li>Designing or modifying treatment plans</li>
-          <li>Applying theoretical frameworks</li>
-        </ul>
+        <div class="card-columns">
+          <div class="card-col">
+            <div class="card-section">On the job, Marcus:</div>
+            <ul class="card-list">
+              <li>Reinforces skills between sessions using established scripts</li>
+              <li>Encourages clients to practice what the QMHP introduced</li>
+              <li>Documents observations and reports to the team</li>
+              <li>Screens, coordinates care, orients new clients</li>
+            </ul>
+          </div>
+          <div class="card-col">
+            <div class="card-section">Not Marcus's role:</div>
+            <ul class="card-list not-role">
+              <li>Diagnosing or selecting interventions</li>
+              <li>Teaching new clinical content to clients</li>
+              <li>Designing or modifying treatment plans</li>
+              <li>Applying theoretical frameworks</li>
+              <li>Content that assumes a clinical degree</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
 
-    <div class="card">
-      <img class="card-photo" src="Design/Personas/adrienne.png" alt="Adrienne Cole, a Black woman in her late 30s with shoulder-length locs and glasses on her head, wearing a burgundy cardigan over a white tee with a canvas tote, standing in a community services board lobby with a bulletin board behind her.">
-      <div class="card-body">
+  <!-- ADRIENNE -->
+  <div class="card">
+    <img class="card-photo" src="Design/Personas/adrienne.png" alt="Adrienne Cole, a Black woman in her late 30s with shoulder-length locs and glasses on her head, wearing a burgundy cardigan over a white tee with a canvas tote, standing in a community services board lobby with a bulletin board behind her.">
+    <div class="card-right">
+      <div class="card-intro">
         <div class="card-name">Adrienne Cole</div>
         <div class="card-role">Qualified Mental Health Professional (QMHP)</div>
-
         <div class="card-quote">"I want to understand why the plan says what it says, even if I'm not the one who wrote it."</div>
+        <div class="card-edu">Bachelor's degree in business administration</div>
+      </div>
+      <div class="card-body">
+        <div class="card-about-heading">About Adrienne</div>
+        <div class="card-detail">Career-changed into behavioral health after working in retail management. Two years of experience. Comfortable with clients but still building confidence with clinical concepts. Learns well when content is grounded in what she'll actually do on the job.</div>
 
-        <div class="card-detail"><strong>Education:</strong> Bachelor's degree in business administration</div>
-        <div class="card-detail">Career-changed into behavioral health after working in retail management. Two years of experience. Comfortable with clients but still building confidence with clinical concepts.</div>
-        <div class="card-detail">Can follow clinical material when it's grounded in what she'll actually do. Gets bogged down when content assumes prerequisite knowledge from a clinical degree she doesn't have.</div>
-
-        <div class="card-section">On the job, Adrienne:</div>
-        <ul class="card-list">
-          <li>Teaches psychoeducation and coping skills directly to clients</li>
-          <li>Implements interventions from the LMHP's treatment plan</li>
-          <li>Introduces treatment rationale in plain language</li>
-          <li>Gathers histories, initiates crisis de-escalation</li>
-          <li>Documents and coordinates with the team</li>
-        </ul>
-
-        <div class="card-section">Not Adrienne's role:</div>
-        <ul class="card-list not-role">
-          <li>Diagnosing or conducting clinical assessments</li>
-          <li>Designing treatment plans or selecting interventions</li>
-          <li>Providing psychotherapy</li>
-          <li>Supervising other providers</li>
-        </ul>
+        <div class="card-columns">
+          <div class="card-col">
+            <div class="card-section">On the job, Adrienne:</div>
+            <ul class="card-list">
+              <li>Teaches psychoeducation and coping skills directly to clients</li>
+              <li>Implements interventions from the LMHP's treatment plan</li>
+              <li>Introduces treatment rationale in plain language</li>
+              <li>Gathers histories, initiates crisis de-escalation</li>
+              <li>Documents and coordinates with the team</li>
+            </ul>
+          </div>
+          <div class="card-col">
+            <div class="card-section">Not Adrienne's role:</div>
+            <ul class="card-list not-role">
+              <li>Diagnosing or conducting clinical assessments</li>
+              <li>Designing treatment plans or selecting interventions</li>
+              <li>Providing psychotherapy</li>
+              <li>Supervising other providers</li>
+              <li>Content that assumes graduate-level clinical training</li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
-
   </div>
 
   <div class="supervisor">

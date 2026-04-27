@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Interactive branching scenario for the CPST training series. Learners practice clinical decision-making through a four-decision dialogue with feedback and coaching at every step." />
+<meta name="description" content="CPST scenario — Empathy and Validation. Destiny, 16. Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions." />
 <link rel="icon" href="data:," />
 <title>Empathy and Validation — CPST branching scenario</title>
 
@@ -336,9 +336,17 @@
     line-height: 1.35;
     text-wrap: pretty;
   }
-  .choices { display: flex; flex-direction: column; gap: 12px; }
+  /* Choices use WCAG technique H71: native <fieldset>/<legend> + hidden
+     radio inputs with the visible card UI on the <label>. Browser handles
+     all keyboard semantics (arrow keys, Space-to-select, focus order)
+     natively. The selected state ties to :checked, the focus state ties
+     to :focus-visible on the input. */
+  .choices-fieldset {
+    border: 0; padding: 0; margin: 0;
+    min-width: 0;
+  }
+  .choice-input { /* visually-hidden via class on the element */ }
   .choice {
-    appearance: none;
     background: var(--canvas);
     border: 1.5px solid var(--hairline);
     border-radius: 8px;
@@ -350,48 +358,52 @@
     grid-template-columns: 36px 1fr auto;
     align-items: center; gap: 16px;
     transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    margin-bottom: 12px;
   }
+  .choice:last-of-type { margin-bottom: 0; }
   .choice:hover {
     border-color: var(--interactive);
     background: var(--tint);
   }
-  .choice:focus-visible {
+  /* Visible focus ring tracks the hidden radio input's focus state. */
+  .choice-input:focus-visible + .choice {
     outline: 3px solid var(--interactive);
     outline-offset: 2px;
   }
   .choice:active { transform: translateY(1px); }
-  /* Already-attempted state: aria-disabled keeps the button focusable
-     for screen reader users (they hear "already attempted") while
-     visually demoting it. Click-guard in JS prevents re-selection. */
-  .choice[aria-disabled="true"] {
+  /* Already-tried state. We use the input's `disabled` attribute (native;
+     skipped by Tab and arrow keys). The visually-hidden "(already tried)"
+     span keeps the announcement available to screen readers that read
+     dimmed options when arrow-walking past them. */
+  .choice.is-tried {
     opacity: 0.45;
     cursor: not-allowed;
     background: var(--page-bg);
   }
-  .choice[aria-disabled="true"]:hover {
+  .choice.is-tried:hover {
     border-color: var(--hairline);
     background: var(--page-bg);
   }
-  .choice[aria-disabled="true"]:hover .choice-letter {
+  .choice.is-tried:hover .choice-letter {
     background: var(--tint);
     color: var(--structure);
   }
-  .choice[aria-disabled="true"]:hover .choice-arrow {
+  .choice.is-tried:hover .choice-arrow {
     color: var(--accent);
     transform: none;
   }
-  /* Selected (committed) state — clearly differentiated from hover. */
-  .choice.is-selected {
+  /* Selected state via :checked — no JS needed for visual sync. */
+  .choice-input:checked + .choice {
     border-color: var(--interactive);
     border-width: 2px;
     background: var(--tint);
     padding: 17px 19px;   /* compensate for 0.5px extra border on each side */
   }
-  .choice.is-selected .choice-letter {
+  .choice-input:checked + .choice .choice-letter {
     background: var(--interactive);
     color: white;
   }
-  .choice.is-selected .choice-arrow {
+  .choice-input:checked + .choice .choice-arrow {
     color: var(--interactive);
     transform: none;
   }
@@ -966,49 +978,48 @@ function screenChoices() {
   const idx = state.decisionIdx;
   const d = SCENARIO.decisions[idx];
 
+  // WCAG H71: native <fieldset>/<legend> + hidden radio inputs with the
+  // visible card UI on labels. Browser handles arrow-key navigation,
+  // Space-to-select, roving tabindex semantics natively. Already-tried
+  // choices use the input's `disabled` attribute (skipped by Tab and
+  // arrow keys); a visually-hidden "(already tried)" span preserves
+  // screen reader context if the user navigates past them.
   setScreen(`
-    <section class="screen scr-question" aria-labelledby="question-${idx}">
-      <h2 id="question-${idx}" class="question" data-focus>${d.question}</h2>
-      <div class="choices" role="group" aria-labelledby="question-${idx}">
+    <section class="screen scr-question">
+      <fieldset class="choices-fieldset">
+        <legend id="question-${idx}" class="question" data-focus tabindex="-1">${d.question}</legend>
         ${d.choices.map((c, i) => {
           const tried = state.attemptedChoices.indexOf(i) !== -1;
-          const ariaLabel = tried ? ` aria-label="${c.text.replace(/"/g, '&quot;')} (already attempted)"` : "";
+          const inputId = `choice-${idx}-${i}`;
           return `
-            <button class="choice" type="button" data-choice="${i}" aria-pressed="false"${tried ? ' aria-disabled="true" data-attempted="true"' : ''}${ariaLabel}>
+            <input
+              type="radio"
+              name="choice-${idx}"
+              id="${inputId}"
+              value="${i}"
+              class="visually-hidden choice-input"${tried ? ' disabled' : ''}>
+            <label for="${inputId}" class="choice${tried ? ' is-tried' : ''}">
               <span class="choice-letter" aria-hidden="true">${c.letter}</span>
-              <span class="choice-text">${c.text}</span>
+              <span class="choice-text">${c.text}${tried ? '<span class="visually-hidden"> (already tried)</span>' : ''}</span>
               <span class="choice-arrow" aria-hidden="true">→</span>
-            </button>
+            </label>
           `;
         }).join("")}
-      </div>
+      </fieldset>
     </section>
   `, {
     afterMount: () => {
-      screenWrap.querySelectorAll(".choice").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          // Click-guard for already-attempted choices (we use aria-disabled
-          // instead of `disabled` so screen reader users can still focus
-          // and hear the "already attempted" label).
-          if (btn.getAttribute("aria-disabled") === "true") {
-            e.preventDefault();
-            return;
-          }
-          // Clear prior selection
-          screenWrap.querySelectorAll(".choice").forEach(b => {
-            b.classList.remove("is-selected");
-            b.setAttribute("aria-pressed", "false");
-          });
-          // Apply new selection
-          btn.classList.add("is-selected");
-          btn.setAttribute("aria-pressed", "true");
-          // Activate the Continue button
-          const continueBtn = document.getElementById("btn-continue");
-          if (continueBtn) {
-            continueBtn.disabled = false;
-            continueBtn.removeAttribute("aria-disabled");
-          }
-        });
+      const fieldset = screenWrap.querySelector(".choices-fieldset");
+      if (!fieldset) return;
+      // Enable Continue when any radio is checked. Native :checked state
+      // drives the visual selection via CSS — no class manipulation needed.
+      fieldset.addEventListener("change", () => {
+        const checked = fieldset.querySelector(`input[name="choice-${idx}"]:checked`);
+        const continueBtn = document.getElementById("btn-continue");
+        if (continueBtn && checked) {
+          continueBtn.disabled = false;
+          continueBtn.removeAttribute("aria-disabled");
+        }
       });
     }
   });
@@ -1021,9 +1032,9 @@ function screenChoices() {
   `);
   document.getElementById("btn-back").addEventListener("click", () => screenDialogue());
   document.getElementById("btn-continue").addEventListener("click", () => {
-    const selected = screenWrap.querySelector(".choice.is-selected");
-    if (!selected) return;
-    state.chosenChoiceIdx = Number(selected.getAttribute("data-choice"));
+    const checked = screenWrap.querySelector(`input[name="choice-${idx}"]:checked`);
+    if (!checked) return;
+    state.chosenChoiceIdx = Number(checked.value);
     screenFeedback();
   });
 }

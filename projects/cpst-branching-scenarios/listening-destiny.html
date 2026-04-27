@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="Interactive branching scenario for the CPST training series. Learners practice clinical decision-making through a four-decision dialogue with feedback and coaching at every step." />
 <link rel="icon" href="data:," />
-<title>CPST branching scenario</title>
+<title>Empathy and Validation — CPST branching scenario</title>
 
 <!--
   CPST Scenario Engine v2
@@ -360,10 +360,25 @@
     outline-offset: 2px;
   }
   .choice:active { transform: translateY(1px); }
-  .choice[disabled] {
+  /* Already-attempted state: aria-disabled keeps the button focusable
+     for screen reader users (they hear "already attempted") while
+     visually demoting it. Click-guard in JS prevents re-selection. */
+  .choice[aria-disabled="true"] {
     opacity: 0.45;
     cursor: not-allowed;
     background: var(--page-bg);
+  }
+  .choice[aria-disabled="true"]:hover {
+    border-color: var(--hairline);
+    background: var(--page-bg);
+  }
+  .choice[aria-disabled="true"]:hover .choice-letter {
+    background: var(--tint);
+    color: var(--structure);
+  }
+  .choice[aria-disabled="true"]:hover .choice-arrow {
+    color: var(--accent);
+    transform: none;
   }
   /* Selected (committed) state — clearly differentiated from hover. */
   .choice.is-selected {
@@ -576,7 +591,7 @@
     <nav class="topbar" aria-label="Decision progress">
       <ol class="progress" id="progress" role="list"></ol>
     </nav>
-    <div class="screen-wrap" id="screenWrap"></div>
+    <div class="screen-wrap" id="screenWrap" tabindex="0" aria-label="Scenario content"></div>
     <div class="footer" id="footer"></div>
   </div>
 </main>
@@ -807,8 +822,10 @@ document.title = SCENARIO.title ? `${SCENARIO.title} — branching scenario` : "
  * ============================================================ */
 function announce(msg) {
   // Force change so screen readers always re-announce.
+  // 220ms delay lets the focus-driven heading announcement land first
+  // so screen readers don't collide focus content with the live region.
   announcer.textContent = "";
-  setTimeout(() => { announcer.textContent = msg; }, 50);
+  setTimeout(() => { announcer.textContent = msg; }, 220);
 }
 
 function formatBeats(html) {
@@ -952,11 +969,12 @@ function screenChoices() {
   setScreen(`
     <section class="screen scr-question" aria-labelledby="question-${idx}">
       <h2 id="question-${idx}" class="question" data-focus>${d.question}</h2>
-      <div class="choices" role="radiogroup" aria-labelledby="question-${idx}">
+      <div class="choices" role="group" aria-labelledby="question-${idx}">
         ${d.choices.map((c, i) => {
           const tried = state.attemptedChoices.indexOf(i) !== -1;
+          const ariaLabel = tried ? ` aria-label="${c.text.replace(/"/g, '&quot;')} (already attempted)"` : "";
           return `
-            <button class="choice" type="button" data-choice="${i}" role="radio" aria-checked="false"${tried ? " disabled aria-disabled=\"true\"" : ""}>
+            <button class="choice" type="button" data-choice="${i}" aria-pressed="false"${tried ? ' aria-disabled="true" data-attempted="true"' : ''}${ariaLabel}>
               <span class="choice-letter" aria-hidden="true">${c.letter}</span>
               <span class="choice-text">${c.text}</span>
               <span class="choice-arrow" aria-hidden="true">→</span>
@@ -967,16 +985,23 @@ function screenChoices() {
     </section>
   `, {
     afterMount: () => {
-      screenWrap.querySelectorAll(".choice:not([disabled])").forEach(btn => {
-        btn.addEventListener("click", () => {
+      screenWrap.querySelectorAll(".choice").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          // Click-guard for already-attempted choices (we use aria-disabled
+          // instead of `disabled` so screen reader users can still focus
+          // and hear the "already attempted" label).
+          if (btn.getAttribute("aria-disabled") === "true") {
+            e.preventDefault();
+            return;
+          }
           // Clear prior selection
           screenWrap.querySelectorAll(".choice").forEach(b => {
             b.classList.remove("is-selected");
-            b.setAttribute("aria-checked", "false");
+            b.setAttribute("aria-pressed", "false");
           });
           // Apply new selection
           btn.classList.add("is-selected");
-          btn.setAttribute("aria-checked", "true");
+          btn.setAttribute("aria-pressed", "true");
           // Activate the Continue button
           const continueBtn = document.getElementById("btn-continue");
           if (continueBtn) {

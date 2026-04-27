@@ -3,6 +3,8 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Interactive branching scenario for the CPST training series. Learners practice clinical decision-making through a four-decision dialogue with feedback and coaching at every step." />
+<link rel="icon" href="data:," />
 <title>CPST branching scenario</title>
 
 <!--
@@ -85,6 +87,17 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
+  }
+
+  /* Suppress the visual focus ring on programmatically-focused content
+     elements. These have tabindex="-1" so they are NOT keyboard-tabbable,
+     but the engine moves focus to them on screen change so screen
+     readers announce the new content. Visual users don't need a ring on
+     non-interactive headings/text. Real interactive elements (.btn,
+     .choice) keep their focus rings via :focus-visible. */
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible {
+    outline: none;
   }
 
   /* Visually hide content while keeping it accessible to screen readers. */

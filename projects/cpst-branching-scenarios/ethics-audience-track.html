@@ -1047,7 +1047,11 @@ function stateGlyph(s) {
   return s === "best" ? "✓" : s === "reconsider" ? "↻" : "!";
 }
 function stateLabel(s) {
-  return s === "best" ? "Strong move" : s === "reconsider" ? "Reconsider" : "Pause";
+  // Knowledge-check vocabulary for this engine variant: these scenarios
+  // are about correctly applying principles, not about choosing among
+  // defensible practitioner moves. Coaching language ("Strong move /
+  // Reconsider") is replaced with a clean correct/incorrect frame.
+  return s === "best" ? "Correct" : s === "reconsider" ? "Not quite" : "Significant concern";
 }
 
 /* ============================================================
@@ -1377,7 +1381,7 @@ function screenFeedback() {
 
   const announceMsg = isCorrect
     ? `${stateLabel(activeState)}. ${bodyParas.join(" ")}`
-    : `${stateLabel(activeState)}. ${bodyParas.join(" ")} Try a different response.`;
+    : `${stateLabel(activeState)}. ${bodyParas.join(" ")} Try again.`;
 
   setScreen(`
     <section class="screen scr-feedback is-${activeState}" aria-labelledby="feedback-heading-${idx}">
@@ -1422,7 +1426,7 @@ function screenFeedback() {
   } else {
     setFooter(`
       <div class="footer-actions">
-        <button class="btn btn-primary" type="button" id="btn-retry">Try a different response <span class="arrow" aria-hidden="true">→</span></button>
+        <button class="btn btn-primary" type="button" id="btn-retry">Try again <span class="arrow" aria-hidden="true">→</span></button>
       </div>
     `);
     document.getElementById("btn-retry").addEventListener("click", () => {

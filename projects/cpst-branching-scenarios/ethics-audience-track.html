@@ -806,7 +806,8 @@ const SCENARIOS = {
     character: {
       name: "Jordan",
       age: 15,
-      context: "Anxiety, limited peer connections. Has been leaning on you for support that falls outside your service role."
+      context: "You are working with Jordan, a 15-year-old with anxiety and limited peer connections. Over time, Jordan begins asking you for help with things outside your service role — messaging you on social media to share how their day went, asking you to attend their school event, or staying longer than scheduled because they feel like you're the only adult who really listens.",
+      pickerContext: "Anxiety, limited peer connections. Has been leaning on you for support that falls outside your service role."
     },
     decisions: [
       {
@@ -861,7 +862,8 @@ const SCENARIOS = {
     character: {
       name: "Destiny",
       age: 20,
-      context: "Mood disorder, few natural supports. Has been reaching out to you in ways that fall outside your service role."
+      context: "You are working with Destiny, a 20-year-old navigating early adulthood with a mood disorder and few natural supports. Over time, Destiny begins leaning on you beyond your service role — texting you on weekends to process difficult moments, asking you to help draft personal emails, or extending sessions to talk through decisions unrelated to her service goals.",
+      pickerContext: "Mood disorder, few natural supports. Has been reaching out to you in ways that fall outside your service role."
     },
     decisions: [
       {
@@ -914,7 +916,8 @@ const SCENARIOS = {
     character: {
       name: "Malik",
       age: 46,
-      context: "Serious mental illness, limited social supports. Has been asking you for help with tasks that fall outside your service role."
+      context: "You are working with Malik, a 46-year-old adult with a serious mental illness and limited social supports. Over time, Malik begins asking for help with tasks outside your service role — filling out unrelated paperwork, providing rides to non-service appointments, or staying longer than scheduled because he \"doesn't really have anyone else.\"",
+      pickerContext: "Serious mental illness, limited social supports. Has been asking you for help with tasks that fall outside your service role."
     },
     decisions: [
       {
@@ -1135,14 +1138,16 @@ function screenPicker() {
   renderProgress();
 
   const cards = Object.entries(SCENARIOS).map(([slug, s]) => {
-    // Single coherent aria-label so screen readers hear one logical label
-    // per button instead of stepping through the inner spans.
-    const label = `${s.pickerLabel}: ${s.character.name}, age ${s.character.age}. ${s.character.context}`;
+    // Picker uses the short `pickerContext` so each card is a quick preview;
+    // the full character.context (Kim's verbatim setup) appears on the
+    // setup screen once a scenario is chosen.
+    const preview = s.character.pickerContext || s.character.context;
+    const label = `${s.pickerLabel}: ${s.character.name}, age ${s.character.age}. ${preview}`;
     return `
     <button type="button" class="picker-card" data-slug="${slug}" aria-label="${label.replace(/"/g, '&quot;')}">
       <div class="picker-card-info" aria-hidden="true">
         <span class="picker-name">${s.character.name}, <span class="age">age ${s.character.age}</span></span>
-        <span class="picker-context">${s.character.context}</span>
+        <span class="picker-context">${preview}</span>
       </div>
       <span class="picker-arrow" aria-hidden="true">→</span>
     </button>

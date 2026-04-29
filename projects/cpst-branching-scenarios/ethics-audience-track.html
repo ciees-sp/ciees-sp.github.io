@@ -580,13 +580,19 @@
     flex-direction: column;
     justify-content: center;
   }
-  .picker-eyebrow {
-    font-size: 13px;
+  /* Picker scenario pill — section-pill aesthetic from CPST Mighty.
+     Identifies the scenario activity, separate from the directive below. */
+  .picker-scenario-pill {
+    display: inline-block;
+    font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     color: var(--interactive);
-    margin: 0 0 12px;
+    background: rgba(11, 106, 138, 0.08);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin: 0 0 18px;
   }
   .picker-heading {
     font-size: 22px;
@@ -786,13 +792,13 @@
    To swap: add or replace entries in SCENARIOS, keep the
    pickerHeading/pickerInstruction at the top. */
 const PICKER = {
-  eyebrow: "Audience-track scenario",
-  heading: "Choose the population you primarily serve.",
-  instruction: "Open the scenario that matches your audience and work through it before continuing."
+  pill: "Apply the principles",
+  heading: "Holding professional boundaries",
+  instruction: "Open the scenario that matches the population you primarily serve and complete it before moving on."
 };
 const SCENARIOS = {
   "youth": {
-    pickerLabel: "Youth · Adolescents",
+    pickerLabel: "Adolescent",
     title: "Holding boundaries with Jordan",
     character: {
       name: "Jordan",
@@ -847,7 +853,7 @@ const SCENARIOS = {
     }
   },
   "transition": {
-    pickerLabel: "Transition Age",
+    pickerLabel: "Transition-Age",
     title: "Holding boundaries with Destiny",
     character: {
       name: "Destiny",
@@ -900,7 +906,7 @@ const SCENARIOS = {
     }
   },
   "adult": {
-    pickerLabel: "Adults",
+    pickerLabel: "Adult",
     title: "Holding boundaries with Malik",
     character: {
       name: "Malik",
@@ -1134,7 +1140,7 @@ function screenPicker() {
 
   setScreen(`
     <section class="screen scr-picker" aria-labelledby="picker-heading">
-      <p class="picker-eyebrow">${PICKER.eyebrow}</p>
+      <span class="picker-scenario-pill">${PICKER.pill}</span>
       <h2 id="picker-heading" class="picker-heading" data-focus tabindex="-1">${PICKER.heading}</h2>
       <p class="picker-instruction">${PICKER.instruction}</p>
       <div class="picker-options" role="group" aria-label="Population options">

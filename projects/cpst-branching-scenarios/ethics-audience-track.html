@@ -1,0 +1,1487 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="Interactive audience-track scenario for the CPST training series. Learners select the population they primarily serve and work through a scenario calibrated to that age group." />
+<link rel="icon" href="data:," />
+<title>CPST audience-track scenario</title>
+
+<!--
+  CPST Scenario Engine v2
+  ------------------------------------------------------------------------
+  Self-contained HTML/CSS/JS. Drop into a Mighty Interactive HTML Block
+  in Articulate Rise. No external dependencies beyond Google Fonts.
+
+  TO SWAP SCENARIOS: Replace the SCENARIO constant near the top of the
+  <script> block. Schema:
+
+    {
+      title:        "Empathy and Validation",   // string, used in <title>
+      character: {
+        name:       "Destiny",
+        age:        16,
+        context:    "1–2 sentence scene-setting.",
+      },
+      decisions:   [Decision, Decision, Decision, Decision],
+      resolution: {
+        closingCues:   "What the character does at the end.",
+        closingQuote:  "Final spoken line.",
+        closingTail:   "Italic closing line. Light prose.",
+        takeaway:      "1–2 sentence takeaway for the practitioner."
+      }
+    }
+
+    Decision = {
+      cues:      [ "Behavioral observation paragraph.", … ],
+      dialogue:  "What the character says. Use <br><br> for beats.",
+      question:  "What do you do?",
+      choices:   [ Choice, Choice, Choice ]   // exactly 3
+    }
+
+    Choice = {
+      letter: "A" | "B" | "C",
+      text:   "The choice as the practitioner could say it.",
+      state:  "best" | "reconsider" | "caution",
+      body:   [ "1–3 paragraphs of consultant-voice feedback." ]
+    }
+
+  RULES:
+    - Exactly one choice per decision must have state "best".
+    - "reconsider" and "caution" choices return the learner to the choice
+      list (no dead ends — matches Kim's design pattern).
+    - "best" choice advances to the next decision (or to resolution).
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;       /* tightened from #5A5E72 to clear AA on page-bg */
+    --hairline: #DCE0EA;
+    --page-bg: #F4F6F9;
+
+    /* State colors — traffic-light logic, brighter saturation, all AA on
+       white for body-weight text. Use as accents only (eyebrow, glyph). */
+    --best-ink: #15803D;       /* green-700, clear forest green */
+    --reconsider-ink: #B45309; /* amber-700, clear warm orange */
+    --caution-ink: #7F1D1D;    /* red-900, deep wine red, serious */
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  /* Suppress the visual focus ring on programmatically-focused content
+     elements. These have tabindex="-1" so they are NOT keyboard-tabbable,
+     but the engine moves focus to them on screen change so screen
+     readers announce the new content. Visual users don't need a ring on
+     non-interactive headings/text. Real interactive elements (.btn,
+     .choice) keep their focus rings via :focus-visible. */
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible {
+    outline: none;
+  }
+
+  /* Visually hide content while keeping it accessible to screen readers. */
+  .visually-hidden {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap;
+    border: 0;
+  }
+
+  /* Off-screen live region for screen reader announcements only. */
+  .sr-announce {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+  }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+
+  .frame {
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    overflow: hidden;
+  }
+
+  /* Progress dots. Now properly semantic with role and aria. */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .progress {
+    display: flex; align-items: center; gap: 14px;
+    list-style: none; padding: 0; margin: 0;
+  }
+  .progress-step {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: transparent;
+    border: 1.5px solid var(--hairline);
+    color: var(--muted);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    font-variant-numeric: tabular-nums;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .progress-step[aria-current="step"] {
+    background: var(--structure);
+    border-color: var(--structure);
+    color: white;
+  }
+  /* Done and upcoming both stay neutral. Only the current step is colored.
+     On closing/takeaway, no step is current — all four read as gray. */
+
+  /* Screen container — fixed height so slides don't jitter on
+     transition. Tall enough for longest feedback body; overflow:auto
+     is a safety net for unexpectedly long content. */
+  .screen-wrap {
+    position: relative;
+    height: 640px;
+    overflow: auto;
+  }
+  .screen { animation: screenIn 360ms cubic-bezier(.2,.7,.2,1); }
+  .screen.is-leaving { animation: screenOut 220ms cubic-bezier(.4,0,.8,.2) forwards; }
+  @keyframes screenIn {
+    from { opacity: 0; transform: translateX(24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes screenOut {
+    from { opacity: 1; transform: translateX(0); }
+    to   { opacity: 0; transform: translateX(-24px); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .screen, .screen.is-leaving { animation: none !important; }
+    .progress-step { transition: none !important; }
+    .btn, .choice { transition: none !important; }
+  }
+
+  /* All decision screens fill the fixed-height screen-wrap so transitions
+     don't jitter. Internal flex layout centers or distributes content. */
+  .scr-setup, .scr-dialogue, .scr-question, .scr-feedback, .scr-takeaway, .scr-closing {
+    min-height: 100%;
+  }
+
+  /* Footer — primary/secondary buttons. */
+  .footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 16px;
+    padding: 20px 28px;
+    border-top: 1px solid var(--hairline);
+  }
+  .footer-actions { display: flex; gap: 12px; }
+  .btn {
+    appearance: none; border: none;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    padding: 12px 22px;
+    border-radius: 100px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: background 160ms ease, transform 160ms ease, color 160ms ease, border-color 160ms ease;
+    letter-spacing: -0.005em;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 2px;
+  }
+  .btn-primary { background: var(--interactive); color: white; }
+  .btn-primary:hover { background: #094E68; }
+  .btn-primary:active { transform: translateY(1px); }
+  /* Disabled state: clearly demoted from active. Light fill, low-contrast
+     text, no hover affordance, no animation. */
+  .btn-primary[disabled],
+  .btn-primary[disabled]:hover,
+  .btn-primary[disabled]:focus,
+  .btn-primary[disabled]:active {
+    background: #E8EBF0;
+    color: #8A8E9D;
+    cursor: not-allowed;
+    transform: none;
+  }
+  .btn-primary[disabled] .arrow {
+    color: #8A8E9D;
+    transform: none !important;
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--structure);
+    border: 1.5px solid var(--hairline);
+  }
+  .btn-secondary:hover {
+    background: var(--tint);
+    border-color: var(--interactive);
+    color: var(--interactive);
+  }
+  .btn .arrow { display: inline-block; transition: transform 160ms ease; }
+  .btn-primary:hover .arrow { transform: translateX(2px); }
+
+  /* SETUP screen — character on dark indigo ground. */
+  .scr-setup {
+    background: var(--structure);
+    color: white;
+    padding: 64px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .setup-name {
+    font-size: 60px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: -0.03em;
+    line-height: 1.0;
+    margin: 0 0 24px;
+  }
+  .setup-name .age { color: rgba(255,255,255,0.7); font-weight: 400; }
+  .setup-context {
+    font-size: 20px;
+    line-height: 1.55;
+    color: rgba(255,255,255,0.92);
+    max-width: 56ch;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* DIALOGUE screen — pale tint, scene cues, then quote. */
+  .scr-dialogue {
+    background: var(--tint);
+    padding: 64px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .scene-set { margin: 0 0 56px; max-width: 60ch; }
+  .scene-set-text {
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+    font-weight: 400;
+    letter-spacing: -0.012em;
+  }
+  .scene-set-text p { margin: 0 0 12px; }
+  .scene-set-text p:last-child { margin: 0; }
+
+  .dialogue-block { margin: 0; padding: 0; border: 0; }
+  .dialogue-mark {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 120px;
+    line-height: 0.6;
+    color: var(--accent);
+    display: block;
+    margin: 0 0 -14px -4px;
+    font-weight: 700;
+  }
+  .dialogue-text {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.018em;
+    line-height: 1.45;
+    margin: 0 0 0 18px;
+    text-wrap: pretty;
+    max-width: 56ch;
+  }
+  .dialogue-text .beat { display: block; }
+  .dialogue-text .beat + .beat { margin-top: 12px; }
+
+  /* QUESTION + CHOICES. */
+  .scr-question {
+    padding: 56px 40px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+  }
+  .question {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.015em;
+    margin: 0 0 32px;
+    line-height: 1.35;
+    text-wrap: pretty;
+  }
+  /* Choices use WCAG technique H71: native <fieldset>/<legend> + hidden
+     radio inputs with the visible card UI on the <label>. Browser handles
+     all keyboard semantics (arrow keys, Space-to-select, focus order)
+     natively. The selected state ties to :checked, the focus state ties
+     to :focus-visible on the input. */
+  .choices-fieldset {
+    border: 0; padding: 0; margin: 0;
+    min-width: 0;
+  }
+  .choice-input { /* visually-hidden via class on the element */ }
+  .choice {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 20px;
+    font: inherit; font-size: 16px; line-height: 1.5;
+    color: var(--text); text-align: left;
+    cursor: pointer; width: 100%;
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center; gap: 16px;
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    margin-bottom: 12px;
+  }
+  .choice:last-of-type { margin-bottom: 0; }
+  .choice:hover {
+    border-color: var(--interactive);
+    background: var(--tint);
+  }
+  /* Visible focus ring tracks the hidden radio input's focus state. */
+  .choice-input:focus-visible + .choice {
+    outline: 3px solid var(--interactive);
+    outline-offset: 2px;
+  }
+  .choice:active { transform: translateY(1px); }
+  /* Already-tried state. We use the input's `disabled` attribute (native;
+     skipped by Tab and arrow keys). The visually-hidden "(already tried)"
+     span keeps the announcement available to screen readers that read
+     dimmed options when arrow-walking past them. */
+  .choice.is-tried {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--page-bg);
+  }
+  .choice.is-tried:hover {
+    border-color: var(--hairline);
+    background: var(--page-bg);
+  }
+  .choice.is-tried:hover .choice-letter {
+    background: var(--tint);
+    color: var(--structure);
+  }
+  .choice.is-tried:hover .choice-arrow {
+    color: var(--accent);
+    transform: none;
+  }
+  /* Selected state via :checked — no JS needed for visual sync. */
+  .choice-input:checked + .choice {
+    border-color: var(--interactive);
+    border-width: 2px;
+    background: var(--tint);
+    padding: 17px 19px;   /* compensate for 0.5px extra border on each side */
+  }
+  .choice-input:checked + .choice .choice-letter {
+    background: var(--interactive);
+    color: white;
+  }
+  .choice-input:checked + .choice .choice-arrow {
+    color: var(--interactive);
+    transform: none;
+  }
+  .choice-letter {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    background: var(--tint);
+    color: var(--structure);
+    font-weight: 700; font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .choice:hover:not([disabled]) .choice-letter {
+    background: var(--interactive);
+    color: white;
+  }
+  .choice-arrow {
+    color: var(--accent); font-size: 20px;
+    transition: transform 160ms ease, color 160ms ease;
+  }
+  .choice:hover:not([disabled]) .choice-arrow {
+    color: var(--interactive);
+    transform: translateX(3px);
+  }
+
+  /* FEEDBACK. State-coded glyph + label, then learner's chosen text echoed,
+     then the consultant-voice body. */
+  .scr-feedback {
+    padding: 56px 40px;
+    display: flex; flex-direction: column;
+    justify-content: center;
+  }
+  /* Echo block — same shape as the original quote treatment (indent +
+     left rule), just demoted from teal to neutral gray and lightened
+     in size/color so the body below stays the hero.
+     Indent matches dialogue/closing quote text at 18px. */
+  .feedback-choice-echo {
+    margin: 0 0 40px;
+    padding-left: 18px;
+    border-left: 3px solid var(--hairline);
+    max-width: 60ch;
+  }
+  .feedback-choice-echo .echo-label {
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    margin: 0 0 8px;
+    display: block;
+  }
+  .feedback-choice-echo .echo-text {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  /* State eyebrow: small accent label in saturated state color. Sits
+     above the body as a category marker, not a header. Color pops
+     because the type is small and uppercase. */
+  .state-row-wrap { margin: 0 0 16px; }
+  .state-row {
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .state-glyph {
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .state-label {
+    font-size: 15px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .scr-feedback.is-best .state-glyph,
+  .scr-feedback.is-best .state-label { color: var(--best-ink); }
+  .scr-feedback.is-reconsider .state-glyph,
+  .scr-feedback.is-reconsider .state-label { color: var(--reconsider-ink); }
+  .scr-feedback.is-caution .state-glyph,
+  .scr-feedback.is-caution .state-label { color: var(--caution-ink); }
+
+  /* Body — the hero of the feedback screen. Largest, most readable.
+     This is where the actual coaching lives. */
+  .feedback-body {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+    max-width: 60ch;
+  }
+  .feedback-body p { margin: 0 0 16px; }
+  .feedback-body p:last-child { margin: 0; }
+
+  /* TAKEAWAY screen — clean editorial heading + prose. No overline,
+     no divider. Heading matches the h2 scale used elsewhere. */
+  .scr-takeaway {
+    padding: 56px 40px;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .takeaway-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    margin: 0 0 16px;
+    line-height: 1.35;
+  }
+  .takeaway-body {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--text);
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+
+  /* CLOSING screen (resolution scene) — cues + quote center exactly
+     like a dialogue screen; the italic tail is anchored to the bottom
+     so it doesn't disturb the centered content above. */
+  .scr-closing {
+    background: var(--tint);
+    padding: 64px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+  .closing-mark {
+    display: block;
+    color: var(--accent);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 80px;
+    line-height: 0.6;
+    font-weight: 700;
+    margin: 0 0 -6px -2px;
+  }
+  .closing-quote {
+    color: var(--structure);
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.35;
+    margin: 0 0 16px 18px;
+    letter-spacing: -0.012em;
+    text-wrap: pretty;
+    max-width: 56ch;
+  }
+  .closing-tail {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    right: 40px;
+    margin: 0;
+    font-size: 17px;
+    line-height: 1.65;
+    color: var(--structure);
+    max-width: 60ch;
+    text-wrap: pretty;
+    font-style: italic;
+  }
+
+  /* PICKER screen — 3 audience cards stacked. Same card aesthetic as
+     the choice cards inside scenarios; pill-label aesthetic from the
+     CPST Mighty section-pill pattern. */
+  .scr-picker {
+    background: var(--canvas);
+    padding: 56px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .picker-eyebrow {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--interactive);
+    margin: 0 0 12px;
+  }
+  .picker-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    line-height: 1.3;
+    margin: 0 0 8px;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .picker-instruction {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0 0 28px;
+    max-width: 60ch;
+  }
+  .picker-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .picker-card {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 20px;
+    text-align: left;
+    cursor: pointer;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    font: inherit;
+    color: var(--text);
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+  }
+  .picker-card:hover {
+    border-color: var(--interactive);
+    background: var(--tint);
+  }
+  .picker-card:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 2px;
+  }
+  .picker-card:active { transform: translateY(1px); }
+  .picker-card-info { display: flex; flex-direction: column; gap: 6px; }
+  .picker-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--interactive);
+    background: rgba(11, 106, 138, 0.08);
+    padding: 4px 12px;
+    border-radius: 100px;
+    align-self: flex-start;
+  }
+  .picker-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+  }
+  .picker-name .age { color: var(--muted); font-weight: 400; }
+  .picker-context {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  .picker-arrow {
+    color: var(--accent);
+    font-size: 20px;
+    transition: transform 160ms ease, color 160ms ease;
+  }
+  .picker-card:hover .picker-arrow {
+    color: var(--interactive);
+    transform: translateX(3px);
+  }
+
+  /* MULTI-RESPONSE state — checkbox styling parallels the radio pattern.
+     Visible card UI on label, hidden checkbox under the hood. The :checked
+     selector drives the "is-selected" visual without JS. */
+  .choice-input[type="checkbox"]:checked + .choice {
+    border-color: var(--interactive);
+    border-width: 2px;
+    background: var(--tint);
+    padding: 17px 19px;
+  }
+  .choice-input[type="checkbox"]:checked + .choice .choice-letter {
+    background: var(--interactive);
+    color: white;
+  }
+  .choice-input[type="checkbox"]:focus-visible + .choice {
+    outline: 3px solid var(--interactive);
+    outline-offset: 2px;
+  }
+  /* Squared checkboxes (visible inside letter circle) for multi-select */
+  .multi-response .choice-letter {
+    border-radius: 4px;
+  }
+
+  /* MOBILE — tighter padding, scaled type, single column buttons.
+     Wrap height shrinks to fit smaller content; screens still fill it. */
+  @media (max-width: 540px) {
+    .stage { padding: 16px 12px; }
+    .topbar { padding: 14px 20px; }
+    .screen-wrap { height: 560px; }
+    .scr-setup, .scr-dialogue, .scr-question, .scr-feedback, .scr-takeaway, .scr-closing {
+      padding: 40px 22px;
+    }
+    .closing-tail { bottom: 22px; left: 22px; right: 22px; }
+    .setup-name { font-size: 40px; }
+    .setup-context { font-size: 17px; }
+    .dialogue-text, .scene-set-text { font-size: 19px; }
+    .dialogue-mark { font-size: 88px; }
+    .question { font-size: 19px; }
+    .footer { padding: 16px 20px; flex-wrap: wrap; }
+    .footer-actions { flex-wrap: wrap; gap: 8px; }
+    .btn { padding: 11px 18px; font-size: 14px; }
+    .scr-picker { padding: 40px 22px; }
+    .picker-name { font-size: 19px; }
+    .picker-context { font-size: 14px; }
+    .feedback-choice-echo .echo-text { font-size: 16px; }
+    .feedback-body { font-size: 18px; }
+    .state-label { font-size: 13px; }
+    .state-glyph { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<main class="stage" aria-labelledby="scenario-title">
+  <h1 id="scenario-title" class="visually-hidden">Branching scenario</h1>
+  <div class="frame">
+    <nav class="topbar" aria-label="Decision progress">
+      <ol class="progress" id="progress" role="list"></ol>
+    </nav>
+    <div class="screen-wrap" id="screenWrap" tabindex="0" aria-label="Scenario content"></div>
+    <div class="footer" id="footer"></div>
+  </div>
+</main>
+
+<!-- Live region for screen reader announcements only. Updated only when
+     the announcement is meaningful (screen change, retry feedback). -->
+<div id="announcer" class="sr-announce" role="status" aria-live="polite" aria-atomic="true"></div>
+
+<!--
+  ╔════════════════════════════════════════════════════════════════════╗
+  ║  EDIT THIS BLOCK — AUDIENCE-PICKER SCENARIO CONTENT                ║
+  ╠════════════════════════════════════════════════════════════════════╣
+  ║                                                                    ║
+  ║  Two constants drive this engine:                                  ║
+  ║                                                                    ║
+  ║   PICKER     — { eyebrow, heading, instruction }                   ║
+  ║                Text shown on the population-picker screen.         ║
+  ║                                                                    ║
+  ║   SCENARIOS  — { slug: scenario, slug: scenario, … }               ║
+  ║                Each entry is one population's scenario.            ║
+  ║                                                                    ║
+  ║  Each scenario:                                                    ║
+  ║    pickerLabel — short tag for the picker card (e.g., "Youth")     ║
+  ║    title       — string, scenario title                            ║
+  ║    character   — { name, age, context }                            ║
+  ║    decisions   — array of 1 or more decision objects               ║
+  ║    resolution  — { closingCues?, closingQuote?, closingTail?,      ║
+  ║                    takeaway }                                      ║
+  ║                                                                    ║
+  ║  Each decision (single-select, default):                           ║
+  ║    { cues:[…], dialogue, situationNote?, question, choices:[3] }   ║
+  ║    Each choice: { letter, text, state, body:[paragraphs] }         ║
+  ║    state must be "best" | "reconsider" | "caution"                 ║
+  ║    EXACTLY ONE "best" choice per decision.                         ║
+  ║                                                                    ║
+  ║  Each decision (multi-response — set type: "multi_response"):      ║
+  ║    { type: "multi_response", cues, dialogue, question,             ║
+  ║      choices:[…], correctBody:[paragraphs] }                       ║
+  ║    Each choice: { letter, text, correct: true|false,               ║
+  ║      body:[paragraphs] }                                           ║
+  ║    body is the per-choice feedback shown when that wrong choice    ║
+  ║    is selected. correctBody is shown when the learner gets the     ║
+  ║    exact correct set.                                              ║
+  ║                                                                    ║
+  ║  Schema is validated on load. Errors print to the console.         ║
+  ╚════════════════════════════════════════════════════════════════════╝
+-->
+<script>
+/* Three audience-track scenarios from Kim's Ethics Lesson 1 #3 — the
+   boundary-violation scenario calibrated to youth, transition-age,
+   and adult populations. Same teaching shape: identify the ethical
+   tension (multi-select) → respond to the emotional reaction (MC).
+
+   To swap: add or replace entries in SCENARIOS, keep the
+   pickerHeading/pickerInstruction at the top. */
+const PICKER = {
+  eyebrow: "Audience-track scenario",
+  heading: "Choose the population you primarily serve.",
+  instruction: "Open the scenario that matches your audience and work through it before continuing."
+};
+const SCENARIOS = {
+  "youth": {
+    pickerLabel: "Youth · Adolescents",
+    title: "Holding boundaries with Jordan",
+    character: {
+      name: "Jordan",
+      age: 15,
+      context: "A 15-year-old with anxiety and limited peer connections. Over time, Jordan has been asking for help outside your service role — messaging on social media, asking you to attend their school events, staying past session because they feel like you're the only adult who really listens."
+    },
+    decisions: [
+      {
+        type: "multi_response",
+        cues: ["Recently, Jordan asked if you could come to their school field trip with them. They said:"],
+        dialogue: "You're the only one who gets me. If you don't come, I'll just be alone again.",
+        situationNote: "There are no immediate safety concerns, but you recognize this request is outside your professional role.",
+        question: "Which ethical principles may be in tension in this situation? Select all that apply.",
+        choices: [
+          { letter: "A", text: "Autonomy", correct: false,
+            body: ["While Jordan has the right to express what they want, this scenario is not primarily about decision-making authority. The central tension is around professional boundaries and the potential for role confusion to cause harm."] },
+          { letter: "B", text: "Beneficence", correct: true, body: [] },
+          { letter: "C", text: "Nonmaleficence", correct: true, body: [] },
+          { letter: "D", text: "Fidelity", correct: true, body: [] },
+          { letter: "E", text: "Justice", correct: false,
+            body: ["Justice concerns fairness and equitable access to services. This situation does not primarily involve unequal treatment. The key issue is maintaining boundaries within the practitioner-individual relationship."] }
+        ],
+        correctBody: [
+          "This situation reflects tension between three principles. Beneficence — your desire to help and support Jordan to feel less isolated. Nonmaleficence — stepping outside your role can deepen dependency and blur professional limits, causing long-term harm. Fidelity — you must remain consistent with your professional role, agency policy, and ethical standards, even when it feels uncomfortable."
+        ]
+      },
+      {
+        cues: [
+          "After you explain that you cannot attend their school field trip, Jordan shuts down and says:"
+        ],
+        dialogue: "Fine. I knew you didn't actually care. Everyone leaves eventually.",
+        situationNote: "You are aware that Jordan has experienced instability in past adult relationships. You want to maintain trust while holding your professional boundaries.",
+        question: "What is the most ethically appropriate next step?",
+        choices: [
+          { letter: "A", state: "reconsider",
+            text: "Agree to attend just this once to protect the relationship.",
+            body: ["Offering to help \"just this once\" may temporarily preserve rapport, but it increases the risk of dependency and blurred professional boundaries. Small boundary crossings often escalate over time. Consistency protects both the therapeutic relationship and ethical integrity. Compassion does not override professional standards."] },
+          { letter: "B", state: "best",
+            text: "Reinforce professional boundaries while expressing empathy and offering in-role support.",
+            body: ["Reinforcing boundaries while expressing empathy maintains fidelity and reduces long-term harm. Attending — even once — increases the risk of dependency and role confusion. Empathy and limits can and should coexist in ethical practice."] },
+          { letter: "C", state: "reconsider",
+            text: "Redirect the conversation to another treatment goal.",
+            body: ["Redirecting the conversation without addressing Jordan's emotional reaction may damage trust. Ethical practice requires acknowledging emotional responses while maintaining role clarity. Avoiding the discomfort does not resolve the underlying boundary tension."] },
+          { letter: "D", state: "reconsider",
+            text: "End the session early and follow up at your next session.",
+            body: ["Ending the session early to avoid discomfort does not address the ethical issue and may reinforce feelings of abandonment. Ethical decision-making involves managing difficult emotions while maintaining professional consistency, not withdrawing from them."] }
+        ]
+      }
+    ],
+    resolution: {
+      takeaway: "Holding professional boundaries while expressing genuine empathy is what ethical practice with youth looks like in real time. The discomfort you feel is the work — and your consistency is what makes the relationship safe in the long run."
+    }
+  },
+  "transition": {
+    pickerLabel: "Transition Age",
+    title: "Holding boundaries with Destiny",
+    character: {
+      name: "Destiny",
+      age: 20,
+      context: "A 20-year-old navigating early adulthood with a mood disorder and few natural supports. Over time, Destiny has been leaning on you beyond your service role — texting on weekends, asking you to help draft personal emails, extending sessions to talk through unrelated decisions."
+    },
+    decisions: [
+      {
+        type: "multi_response",
+        cues: ["Recently, Destiny asked if you could help her move into her new apartment on Saturday. She said:"],
+        dialogue: "You actually care about what happens to me. Everyone else is just doing a job.",
+        situationNote: "There are no immediate safety concerns, but you recognize this request extends beyond your professional role.",
+        question: "Which ethical principles may be in tension in this situation? Select all that apply.",
+        choices: [
+          { letter: "A", text: "Autonomy", correct: false,
+            body: ["While Destiny has the right to express what she needs, this scenario is not primarily about decision-making authority. The central tension is around professional boundaries and the potential for role confusion to cause harm."] },
+          { letter: "B", text: "Beneficence", correct: true, body: [] },
+          { letter: "C", text: "Nonmaleficence", correct: true, body: [] },
+          { letter: "D", text: "Fidelity", correct: true, body: [] },
+          { letter: "E", text: "Justice", correct: false,
+            body: ["Justice concerns fairness and equitable access to services. This situation does not primarily involve unequal treatment. The key issue is maintaining boundaries within the practitioner-individual relationship."] }
+        ],
+        correctBody: [
+          "This situation creates tension between three principles. Beneficence — you genuinely want to support Destiny during a vulnerable transition. Nonmaleficence — helping outside your role can blur boundaries and create dependency, increasing long-term risk. Fidelity — you must maintain consistency with your professional role and agency expectations, even when the relationship feels meaningful."
+        ]
+      },
+      {
+        cues: ["After you explain that you are not able to help with the move, Destiny becomes quiet and says:"],
+        dialogue: "I get it. I'm just someone you serve. I thought this was different.",
+        situationNote: "You are aware that Destiny has had experiences of abandonment and is in a vulnerable transition. You want to validate her feelings without compromising your professional role.",
+        question: "What is the most ethically appropriate next step?",
+        choices: [
+          { letter: "A", state: "reconsider",
+            text: "Offer to help just once to show you genuinely care.",
+            body: ["Offering to help \"just this once\" may temporarily preserve rapport, but it increases the risk of dependency and blurred professional boundaries. Small boundary crossings often escalate over time. Consistency protects both the therapeutic relationship and ethical integrity. Compassion does not override professional standards."] },
+          { letter: "B", state: "best",
+            text: "Reinforce professional boundaries while expressing empathy and offering in-role support.",
+            body: ["Reinforcing boundaries while expressing empathy maintains fidelity and reduces long-term harm. Helping with the move — even once — increases the risk of role confusion and dependency. You can hold professional limits and still convey genuine care. That balance is what ethical practice looks like."] },
+          { letter: "C", state: "reconsider",
+            text: "Redirect the conversation to another treatment goal.",
+            body: ["Redirecting the conversation without addressing Destiny's emotional reaction may damage trust. Ethical practice requires acknowledging emotional responses while maintaining role clarity. Avoiding the discomfort does not resolve the underlying boundary tension."] },
+          { letter: "D", state: "reconsider",
+            text: "End the session and follow up at the next scheduled appointment.",
+            body: ["Ending the session early to avoid discomfort does not address the ethical issue and may reinforce feelings of abandonment. Ethical decision-making involves managing difficult emotions while maintaining professional consistency, not withdrawing from them."] }
+        ]
+      }
+    ],
+    resolution: {
+      takeaway: "Transition-age individuals are often navigating new adulthood without the supports that make these moments easier. Your consistency — holding the role while showing real care — is itself part of the support. Compassion within clear limits is what ethical practice looks like."
+    }
+  },
+  "adult": {
+    pickerLabel: "Adults",
+    title: "Holding boundaries with Malik",
+    character: {
+      name: "Malik",
+      age: 46,
+      context: "A 46-year-old adult with a serious mental illness and limited social supports. Over time, Malik has been asking for help with tasks outside your service role — filling out unrelated paperwork, providing rides to non-service appointments, staying past session because he \"doesn't really have anyone else.\""
+    },
+    decisions: [
+      {
+        type: "multi_response",
+        cues: ["Recently, Malik asked if you could stop by on your day off to help clean his apartment. He says:"],
+        dialogue: "You're the only one I trust. If you don't help me, I don't know who will.",
+        situationNote: "There are no immediate safety concerns, but you recognize the request extends beyond your professional role.",
+        question: "Which ethical principles may be in tension in this situation? Select all that apply.",
+        choices: [
+          { letter: "A", text: "Autonomy", correct: false,
+            body: ["While Malik has the right to request assistance, this scenario is not primarily about decision-making authority. The central issue concerns professional boundaries and the prevention of unintended harm."] },
+          { letter: "B", text: "Beneficence", correct: true, body: [] },
+          { letter: "C", text: "Nonmaleficence", correct: true, body: [] },
+          { letter: "D", text: "Fidelity", correct: true, body: [] },
+          { letter: "E", text: "Justice", correct: false,
+            body: ["Justice concerns fairness and equitable access to services. This situation centers on role clarity and boundary management rather than unequal treatment."] }
+        ],
+        correctBody: [
+          "This situation reflects tension between three principles. Beneficence — the desire to help and support Malik's well-being. Nonmaleficence — the responsibility to avoid harm, including dependency or blurred boundaries. Fidelity — maintaining a consistent professional role and adhering to agency standards. Ethical practice requires compassion within clearly defined professional limits."
+        ]
+      },
+      {
+        cues: ["After you explain that you cannot stop by on your day off, Malik becomes visibly upset:"],
+        dialogue: "So, you're just like everyone else. I thought you actually cared.",
+        situationNote: "You are aware that Malik has struggled with abandonment in the past. You feel the need to reassure him and maintain trust.",
+        question: "What is the most ethically appropriate next step?",
+        choices: [
+          { letter: "A", state: "reconsider",
+            text: "Agree to help just this one time to preserve the relationship.",
+            body: ["Offering to help \"just this once\" may temporarily preserve rapport, but it increases the risk of dependency and blurred professional boundaries. Small boundary crossings often escalate over time. Consistency protects both the therapeutic relationship and ethical integrity. Compassion does not override professional standards."] },
+          { letter: "B", state: "best",
+            text: "Reinforce professional boundaries while expressing empathy and offering in-role support.",
+            body: ["Reinforcing professional boundaries while expressing empathy maintains fidelity and reduces long-term harm. Acknowledging Malik's feelings while staying within your defined role protects both the individual and practitioner. Clear, consistent boundaries prevent dependency and support long-term recovery goals. Ethical practice requires compassion without role expansion."] },
+          { letter: "C", state: "reconsider",
+            text: "Offer to help this one time, while clarifying it will not happen again.",
+            body: ["Setting a one-time exception with a verbal limit still creates a boundary crossing — and signals that your limits are negotiable under pressure. The next ask becomes harder to refuse. Boundaries hold by being consistent, not by being qualified after the fact."] },
+          { letter: "D", state: "reconsider",
+            text: "Redirect the conversation to another treatment goal.",
+            body: ["Redirecting the conversation without addressing Malik's emotional reaction may damage trust. Ethical practice requires acknowledging emotional responses while maintaining role clarity. Avoiding the discomfort does not resolve the underlying boundary tension."] }
+        ]
+      }
+    ],
+    resolution: {
+      takeaway: "Adults with limited social supports often look to their care team to fill gaps that fall outside the role. Holding the line with empathy — and pointing to other supports that can fill those gaps — is the ethical path. Compassion within clear limits is what ethical practice looks like."
+    }
+  }
+};
+
+</script>
+
+<!--
+  ╔════════════════════════════════════════════════════════════════════╗
+  ║  ENGINE — DO NOT EDIT BELOW                                        ║
+  ║  Schema validation, state management, screen rendering.            ║
+  ║  Same code in every scenario .html file.                           ║
+  ╚════════════════════════════════════════════════════════════════════╝
+-->
+<script>
+/* ============================================================
+ * Validate scenario shape. Errors print to console for authoring.
+ * ============================================================ */
+(function validate() {
+  const errs = [];
+  if (typeof SCENARIOS !== "object" || !SCENARIOS) errs.push("SCENARIOS object missing");
+  Object.entries(SCENARIOS || {}).forEach(([slug, s]) => {
+    if (!s.character || !s.character.name) errs.push(`${slug}: character.name missing`);
+    if (!Array.isArray(s.decisions) || s.decisions.length < 1) errs.push(`${slug}: decisions array must be non-empty`);
+    (s.decisions || []).forEach((d, i) => {
+      if (!Array.isArray(d.choices) || d.choices.length < 2) {
+        errs.push(`${slug} decision ${i+1}: must have at least 2 choices`);
+      }
+      if (d.type === "multi_response") {
+        const correctCount = (d.choices || []).filter(c => c.correct === true).length;
+        if (correctCount < 1) errs.push(`${slug} decision ${i+1} (multi_response): at least one choice must be marked correct`);
+      } else {
+        const bestCount = (d.choices || []).filter(c => c.state === "best").length;
+        if (bestCount !== 1) errs.push(`${slug} decision ${i+1}: must have exactly one 'best' choice (found ${bestCount})`);
+      }
+    });
+  });
+  if (errs.length) console.error("[CPST audience-picker] Schema errors:\n  - " + errs.join("\n  - "));
+})();
+
+/* ============================================================
+ * Engine state and DOM refs.
+ * ============================================================ */
+const screenWrap = document.getElementById("screenWrap");
+const footer     = document.getElementById("footer");
+const progress   = document.getElementById("progress");
+const announcer  = document.getElementById("announcer");
+const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const state = {
+  audienceSlug: null,         // null until picker selection
+  decisionIdx: 0,
+  step: "picker",             // picker | setup | dialogue | choices | feedback | resolution | takeaway
+  chosenChoiceIdx: null,      // single-select decisions
+  chosenChoiceIdxs: [],       // multi_response decisions: array of selected indices
+  attemptedChoices: [],       // tracks choice indices attempted on current decision
+  picks: []
+};
+
+// Active scenario shortcut once an audience is picked
+function getScenario() {
+  return state.audienceSlug ? SCENARIOS[state.audienceSlug] : null;
+}
+
+document.title = "CPST audience-track scenario";
+
+/* ============================================================
+ * Utilities.
+ * ============================================================ */
+function announce(msg) {
+  // Force change so screen readers always re-announce.
+  // 220ms delay lets the focus-driven heading announcement land first
+  // so screen readers don't collide focus content with the live region.
+  announcer.textContent = "";
+  setTimeout(() => { announcer.textContent = msg; }, 220);
+}
+
+function formatBeats(html) {
+  return html
+    .split(/(?:\s*<br\s*\/?>\s*)+/i)
+    .filter(s => s.trim().length)
+    .map(s => `<span class="beat">${s}</span>`)
+    .join("");
+}
+
+function stateGlyph(s) {
+  return s === "best" ? "✓" : s === "reconsider" ? "↻" : "!";
+}
+function stateLabel(s) {
+  return s === "best" ? "Strong move" : s === "reconsider" ? "Reconsider" : "Pause";
+}
+
+/* ============================================================
+ * Progress dots.
+ * ============================================================ */
+function renderProgress() {
+  const topbar = progress.closest(".topbar");
+  const onResolution = state.step === "resolution" || state.step === "closing" || state.step === "takeaway";
+  const onPicker = state.step === "picker";
+  // Hide the topbar on the picker, closing, and takeaway screens.
+  if (topbar) topbar.style.display = (onResolution || onPicker) ? "none" : "";
+  if (onResolution || onPicker) { progress.innerHTML = ""; return; }
+
+  progress.innerHTML = "";
+  const sc = getScenario();
+  if (!sc) return;
+  const total = sc.decisions.length;
+  for (let i = 0; i < total; i++) {
+    const li = document.createElement("li");
+    li.className = "progress-step";
+    li.textContent = String(i + 1);
+    if (i === state.decisionIdx) {
+      li.setAttribute("aria-current", "step");
+      li.setAttribute("aria-label", `Decision ${i + 1}, current`);
+    } else if (i < state.decisionIdx) {
+      li.setAttribute("aria-label", `Decision ${i + 1} completed`);
+    } else {
+      li.setAttribute("aria-label", `Decision ${i + 1}, upcoming`);
+    }
+    progress.appendChild(li);
+  }
+}
+
+/* ============================================================
+ * Screen mounting with transitions and focus management.
+ * ============================================================ */
+function setScreen(html, opts) {
+  opts = opts || {};
+  const prev = screenWrap.firstElementChild;
+
+  const inject = () => {
+    screenWrap.innerHTML = html;
+    if (opts.afterMount) opts.afterMount();
+    // Focus the first focus target so keyboard users land in content.
+    const focusTarget = screenWrap.querySelector("[data-focus]") || screenWrap.firstElementChild;
+    if (focusTarget && focusTarget.focus) {
+      focusTarget.setAttribute("tabindex", "-1");
+      focusTarget.focus({ preventScroll: true });
+    }
+    if (opts.announce) announce(opts.announce);
+  };
+
+  if (!prev || REDUCED_MOTION) { inject(); return; }
+  prev.classList.add("is-leaving");
+  let injected = false;
+  const handler = () => {
+    prev.removeEventListener("animationend", handler);
+    if (!injected) { injected = true; inject(); }
+  };
+  prev.addEventListener("animationend", handler);
+  setTimeout(() => {
+    if (!injected && screenWrap.firstElementChild === prev) {
+      injected = true; inject();
+    }
+  }, 320);
+}
+
+function setFooter(html) { footer.innerHTML = html; }
+
+/* ============================================================
+ * Screens.
+ * ============================================================ */
+function screenPicker() {
+  state.step = "picker";
+  state.audienceSlug = null;
+  state.decisionIdx = 0;
+  state.chosenChoiceIdx = null;
+  state.chosenChoiceIdxs = [];
+  state.attemptedChoices = [];
+  state.picks = [];
+  renderProgress();
+
+  const cards = Object.entries(SCENARIOS).map(([slug, s]) => `
+    <button type="button" class="picker-card" data-slug="${slug}">
+      <div class="picker-card-info">
+        <span class="picker-pill">${s.pickerLabel}</span>
+        <span class="picker-name">${s.character.name}, <span class="age">${s.character.age}</span></span>
+        <span class="picker-context">${s.character.context}</span>
+      </div>
+      <span class="picker-arrow" aria-hidden="true">→</span>
+    </button>
+  `).join("");
+
+  setScreen(`
+    <section class="screen scr-picker" aria-labelledby="picker-heading">
+      <p class="picker-eyebrow">${PICKER.eyebrow}</p>
+      <h2 id="picker-heading" class="picker-heading" data-focus tabindex="-1">${PICKER.heading}</h2>
+      <p class="picker-instruction">${PICKER.instruction}</p>
+      <div class="picker-options" role="group" aria-label="Population options">
+        ${cards}
+      </div>
+    </section>
+  `, {
+    announce: `${PICKER.heading} ${PICKER.instruction}`,
+    afterMount: () => {
+      screenWrap.querySelectorAll(".picker-card").forEach(btn => {
+        btn.addEventListener("click", () => {
+          state.audienceSlug = btn.getAttribute("data-slug");
+          screenSetup();
+        });
+      });
+    }
+  });
+
+  // Picker has no footer actions (each card commits the selection).
+  setFooter("");
+}
+
+function screenSetup() {
+  state.step = "setup";
+  renderProgress();
+  const sc = getScenario();
+  const c = sc.character;
+  setScreen(`
+    <section class="screen scr-setup" aria-labelledby="setup-name">
+      <h2 id="setup-name" class="setup-name" data-focus>${c.name}, <span class="age">${c.age}</span></h2>
+      <p class="setup-context">${c.context}</p>
+    </section>
+  `, { announce: `Scenario setup. ${c.name}, ${c.age}. ${c.context}` });
+
+  setFooter(`
+    <div class="footer-actions">
+      <button class="btn btn-primary" type="button" id="btn-next">Begin <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  `);
+  document.getElementById("btn-next").addEventListener("click", () => screenDialogue());
+}
+
+function screenDialogue() {
+  state.step = "dialogue";
+  state.attemptedChoices = [];
+  renderProgress();
+  const sc = getScenario();
+  const idx = state.decisionIdx;
+  const d = sc.decisions[idx];
+
+  setScreen(`
+    <section class="screen scr-dialogue" aria-labelledby="dialogue-heading-${idx}">
+      <h2 id="dialogue-heading-${idx}" class="visually-hidden">Decision ${idx + 1} of ${sc.decisions.length}: dialogue</h2>
+      ${d.cues && d.cues.length ? `
+        <div class="scene-set" data-focus tabindex="-1">
+          <div class="scene-set-text">${d.cues.map(p => `<p>${p}</p>`).join("")}</div>
+        </div>
+      ` : ""}
+      <figure class="dialogue-block">
+        <span class="dialogue-mark" aria-hidden="true">“</span>
+        <blockquote class="dialogue-text"><p>${formatBeats(d.dialogue)}</p></blockquote>
+        <figcaption class="visually-hidden">${sc.character.name} speaks.</figcaption>
+      </figure>
+    </section>
+  `, { announce: `Decision ${idx + 1} of ${sc.decisions.length}.` });
+
+  setFooter(`
+    <div class="footer-actions">
+      <button class="btn btn-primary" type="button" id="btn-next">Continue <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  `);
+  document.getElementById("btn-next").addEventListener("click", () => screenChoices());
+}
+
+function screenChoices() {
+  state.step = "choices";
+  const sc = getScenario();
+  const idx = state.decisionIdx;
+  const d = sc.decisions[idx];
+  const isMulti = d.type === "multi_response";
+  const inputType = isMulti ? "checkbox" : "radio";
+  const fieldsetClass = isMulti ? "choices-fieldset multi-response" : "choices-fieldset";
+
+  // WCAG H71 on radios; the same fieldset/legend pattern works with
+  // native checkboxes for multi-response decisions. Native semantics,
+  // browser handles keyboard/screen reader behavior.
+  setScreen(`
+    <section class="screen scr-question">
+      <fieldset class="${fieldsetClass}">
+        <legend id="question-${idx}" class="question" data-focus tabindex="-1">${d.question}</legend>
+        ${d.choices.map((c, i) => {
+          const tried = state.attemptedChoices.indexOf(i) !== -1;
+          const inputId = `choice-${idx}-${i}`;
+          return `
+            <input
+              type="${inputType}"
+              name="choice-${idx}"
+              id="${inputId}"
+              value="${i}"
+              class="visually-hidden choice-input"${tried ? ' disabled' : ''}>
+            <label for="${inputId}" class="choice${tried ? ' is-tried' : ''}">
+              <span class="choice-letter" aria-hidden="true">${c.letter}</span>
+              <span class="choice-text">${c.text}${tried ? '<span class="visually-hidden"> (already tried)</span>' : ''}</span>
+              <span class="choice-arrow" aria-hidden="true">${isMulti ? "" : "→"}</span>
+            </label>
+          `;
+        }).join("")}
+      </fieldset>
+    </section>
+  `, {
+    afterMount: () => {
+      const fieldset = screenWrap.querySelector(".choices-fieldset");
+      if (!fieldset) return;
+      // Enable Continue when at least one input is checked.
+      fieldset.addEventListener("change", () => {
+        const anyChecked = fieldset.querySelector(`input[name="choice-${idx}"]:checked`);
+        const continueBtn = document.getElementById("btn-continue");
+        if (continueBtn && anyChecked) {
+          continueBtn.disabled = false;
+          continueBtn.removeAttribute("aria-disabled");
+        }
+      });
+    }
+  });
+
+  setFooter(`
+    <div class="footer-actions">
+      <button class="btn btn-secondary" type="button" id="btn-back">Back</button>
+      <button class="btn btn-primary" type="button" id="btn-continue" disabled aria-disabled="true">Continue <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  `);
+  document.getElementById("btn-back").addEventListener("click", () => screenDialogue());
+  document.getElementById("btn-continue").addEventListener("click", () => {
+    const checked = Array.from(screenWrap.querySelectorAll(`input[name="choice-${idx}"]:checked`));
+    if (!checked.length) return;
+    if (isMulti) {
+      state.chosenChoiceIdxs = checked.map(el => Number(el.value));
+    } else {
+      state.chosenChoiceIdx = Number(checked[0].value);
+    }
+    screenFeedback();
+  });
+}
+
+function screenFeedback() {
+  state.step = "feedback";
+  const sc = getScenario();
+  const idx = state.decisionIdx;
+  const d = sc.decisions[idx];
+  const isMulti = d.type === "multi_response";
+  const isLast = idx === sc.decisions.length - 1;
+
+  // Compute state, echo HTML, and feedback body based on decision type
+  let activeState, echoHtml, bodyParas, isCorrect;
+
+  if (isMulti) {
+    // Multi-response: correct iff selected set === correct set (no extras, no misses)
+    const selectedIdxs = state.chosenChoiceIdxs.slice().sort();
+    const correctIdxs = d.choices
+      .map((c, i) => c.correct === true ? i : -1).filter(i => i >= 0)
+      .sort();
+    const exact = selectedIdxs.length === correctIdxs.length &&
+      selectedIdxs.every((v, i) => v === correctIdxs[i]);
+    isCorrect = exact;
+    activeState = exact ? "best" : "reconsider";
+
+    // Track this attempt as one composite (use a hash of selection for the
+    // attempted-set, but for simplicity we just track the wrong choices selected
+    // so they're crossed off in retry hints — though full retry is supported).
+    if (!exact) {
+      // Mark all wrong choices the learner picked as "attempted" so the next
+      // pass shows them as is-tried (and skipped by Tab).
+      selectedIdxs.forEach(i => {
+        if (!d.choices[i].correct && state.attemptedChoices.indexOf(i) === -1) {
+          state.attemptedChoices.push(i);
+        }
+      });
+    }
+
+    // Echo: the chosen items, comma-joined
+    const echoTexts = selectedIdxs.map(i => d.choices[i].text);
+    echoHtml = `
+      <span class="echo-label">Your selection</span>
+      <p class="echo-text">${echoTexts.map(t => `<em>${t}</em>`).join(", ")}</p>
+    `;
+
+    // Body: if correct, show correctBody; else show feedback per wrong choice
+    if (exact) {
+      bodyParas = d.correctBody || [];
+    } else {
+      const wrongSelected = selectedIdxs.filter(i => !d.choices[i].correct);
+      const missedCorrect = correctIdxs.filter(i => selectedIdxs.indexOf(i) === -1);
+      bodyParas = [];
+      wrongSelected.forEach(i => {
+        (d.choices[i].body || []).forEach(p => bodyParas.push(p));
+      });
+      if (missedCorrect.length && wrongSelected.length === 0) {
+        bodyParas.push("You're on the right track — but the tension here involves more than one principle. Look at the choices again and consider which others apply.");
+      } else if (missedCorrect.length) {
+        bodyParas.push("There may also be additional principles in tension here that you haven't selected yet. Look at the choices again with the feedback above in mind.");
+      }
+    }
+  } else {
+    // Single-select MC (the standard branching pattern)
+    const choice = d.choices[state.chosenChoiceIdx];
+    activeState = choice.state;
+    isCorrect = choice.state === "best";
+    if (state.attemptedChoices.indexOf(state.chosenChoiceIdx) === -1) {
+      state.attemptedChoices.push(state.chosenChoiceIdx);
+    }
+    echoHtml = `
+      <span class="echo-label">Your response</span>
+      <p class="echo-text">“${choice.text}”</p>
+    `;
+    bodyParas = choice.body || [];
+  }
+
+  const announceMsg = isCorrect
+    ? `${stateLabel(activeState)}. ${bodyParas.join(" ")}`
+    : `${stateLabel(activeState)}. ${bodyParas.join(" ")} Try a different response.`;
+
+  setScreen(`
+    <section class="screen scr-feedback is-${activeState}" aria-labelledby="feedback-heading-${idx}">
+      <h2 id="feedback-heading-${idx}" class="visually-hidden">Feedback on your response — ${stateLabel(activeState)}</h2>
+      <div class="feedback-choice-echo" data-focus tabindex="-1">
+        ${echoHtml}
+      </div>
+      <div class="state-row-wrap">
+        <div class="state-row">
+          <span class="state-glyph" aria-hidden="true">${stateGlyph(activeState)}</span>
+          <span class="state-label">${stateLabel(activeState)}</span>
+        </div>
+      </div>
+      <div class="feedback-body">
+        ${bodyParas.map(p => `<p>${p}</p>`).join("")}
+      </div>
+    </section>
+  `, { announce: announceMsg });
+
+  if (isCorrect) {
+    const hasClosing = sc.resolution && sc.resolution.closingQuote;
+    const continueLabel = isLast ? (hasClosing ? "See resolution" : "Continue to reflection") : "Continue";
+    setFooter(`
+      <div class="footer-actions">
+        <button class="btn btn-primary" type="button" id="btn-continue">${continueLabel} <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    `);
+    document.getElementById("btn-continue").addEventListener("click", () => {
+      state.picks[idx] = activeState;
+      state.chosenChoiceIdx = null;
+      state.chosenChoiceIdxs = [];
+      if (isLast) {
+        if (hasClosing) screenClosing();
+        else screenTakeaway();
+      } else {
+        state.decisionIdx = idx + 1;
+        screenDialogue();
+      }
+    });
+  } else {
+    setFooter(`
+      <div class="footer-actions">
+        <button class="btn btn-primary" type="button" id="btn-retry">Try a different response <span class="arrow" aria-hidden="true">→</span></button>
+      </div>
+    `);
+    document.getElementById("btn-retry").addEventListener("click", () => {
+      state.chosenChoiceIdx = null;
+      state.chosenChoiceIdxs = [];
+      screenChoices();
+    });
+  }
+}
+
+function screenClosing() {
+  state.step = "closing";
+  renderProgress();
+  const sc = getScenario();
+  const r = sc.resolution;
+  const cuesHTML = r.closingCues ? `
+      <div class="scene-set" data-focus tabindex="-1">
+        <div class="scene-set-text"><p>${r.closingCues}</p></div>
+      </div>` : "";
+  const tailHTML = r.closingTail ? `<p class="closing-tail">${r.closingTail}</p>` : "";
+  setScreen(`
+    <section class="screen scr-closing" aria-labelledby="closing-heading">
+      <h2 id="closing-heading" class="visually-hidden">Closing scene</h2>
+      ${cuesHTML}
+      <figure class="dialogue-block"${r.closingCues ? "" : " data-focus tabindex=\"-1\""}>
+        <span class="closing-mark" aria-hidden="true">“</span>
+        <blockquote class="closing-quote"><p>${r.closingQuote}</p></blockquote>
+        <figcaption class="visually-hidden">${sc.character.name} speaks.</figcaption>
+      </figure>
+      ${tailHTML}
+    </section>
+  `, { announce: `Closing scene. ${r.closingCues || ""} ${sc.character.name} says: ${r.closingQuote}. ${r.closingTail || ""}`.trim() });
+
+  setFooter(`
+    <div class="footer-actions">
+      <button class="btn btn-primary" type="button" id="btn-takeaway">Continue <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  `);
+  document.getElementById("btn-takeaway").addEventListener("click", () => screenTakeaway());
+}
+
+function screenTakeaway() {
+  state.step = "takeaway";
+  renderProgress();
+  const sc = getScenario();
+  const r = sc.resolution;
+  setScreen(`
+    <section class="screen scr-takeaway" aria-labelledby="takeaway-heading">
+      <h2 id="takeaway-heading" class="takeaway-heading" data-focus>Reflection</h2>
+      <div class="takeaway-body">
+        <p>${r.takeaway}</p>
+      </div>
+    </section>
+  `, { announce: `Reflection. ${r.takeaway}` });
+
+  setFooter(`
+    <div class="footer-actions">
+      <button class="btn btn-secondary" type="button" id="btn-restart">Restart scenario</button>
+      <button class="btn btn-primary" type="button" id="btn-complete">Mark complete <span class="arrow" aria-hidden="true">→</span></button>
+    </div>
+  `);
+  document.getElementById("btn-restart").addEventListener("click", () => {
+    state.audienceSlug = null;
+    state.decisionIdx = 0;
+    state.chosenChoiceIdx = null;
+    state.chosenChoiceIdxs = [];
+    state.attemptedChoices = [];
+    state.picks = [];
+    screenPicker();
+  });
+  document.getElementById("btn-complete").addEventListener("click", () => {
+    const btn = document.getElementById("btn-complete");
+    btn.textContent = "✓ Marked complete";
+    btn.disabled = true;
+    btn.setAttribute("aria-disabled", "true");
+    announce("Scenario marked complete.");
+  });
+}
+
+/* ============================================================
+ * Boot. Engine starts on the audience picker, not on setup —
+ * the learner chooses their population first.
+ * ============================================================ */
+screenPicker();
+</script>
+</body>
+</html>

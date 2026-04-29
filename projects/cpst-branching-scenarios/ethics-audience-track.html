@@ -797,12 +797,12 @@ const SCENARIOS = {
     character: {
       name: "Jordan",
       age: 15,
-      context: "A 15-year-old with anxiety and limited peer connections. Over time, Jordan has been asking for help outside your service role — messaging on social media, asking you to attend their school events, staying past session because they feel like you're the only adult who really listens."
+      context: "Anxiety, limited peer connections. Has been leaning on you for support that falls outside your service role."
     },
     decisions: [
       {
         type: "multi_response",
-        cues: ["Recently, Jordan asked if you could come to their school field trip with them. They said:"],
+        cues: ["Recently, Jordan asked if you could come to their school field trip with them."],
         dialogue: "You're the only one who gets me. If you don't come, I'll just be alone again.",
         situationNote: "There are no immediate safety concerns, but you recognize this request is outside your professional role.",
         question: "Which ethical principles may be in tension in this situation? Select all that apply.",
@@ -821,7 +821,7 @@ const SCENARIOS = {
       },
       {
         cues: [
-          "After you explain that you cannot attend their school field trip, Jordan shuts down and says:"
+          "After you explain that you cannot attend their school field trip, Jordan shuts down."
         ],
         dialogue: "Fine. I knew you didn't actually care. Everyone leaves eventually.",
         situationNote: "You are aware that Jordan has experienced instability in past adult relationships. You want to maintain trust while holding your professional boundaries.",
@@ -852,12 +852,12 @@ const SCENARIOS = {
     character: {
       name: "Destiny",
       age: 20,
-      context: "A 20-year-old navigating early adulthood with a mood disorder and few natural supports. Over time, Destiny has been leaning on you beyond your service role — texting on weekends, asking you to help draft personal emails, extending sessions to talk through unrelated decisions."
+      context: "Mood disorder, few natural supports. Has been reaching out to you in ways that fall outside your service role."
     },
     decisions: [
       {
         type: "multi_response",
-        cues: ["Recently, Destiny asked if you could help her move into her new apartment on Saturday. She said:"],
+        cues: ["Recently, Destiny asked if you could help her move into her new apartment on Saturday."],
         dialogue: "You actually care about what happens to me. Everyone else is just doing a job.",
         situationNote: "There are no immediate safety concerns, but you recognize this request extends beyond your professional role.",
         question: "Which ethical principles may be in tension in this situation? Select all that apply.",
@@ -875,7 +875,7 @@ const SCENARIOS = {
         ]
       },
       {
-        cues: ["After you explain that you are not able to help with the move, Destiny becomes quiet and says:"],
+        cues: ["After you explain that you are not able to help with the move, Destiny becomes quiet."],
         dialogue: "I get it. I'm just someone you serve. I thought this was different.",
         situationNote: "You are aware that Destiny has had experiences of abandonment and is in a vulnerable transition. You want to validate her feelings without compromising your professional role.",
         question: "What is the most ethically appropriate next step?",
@@ -905,12 +905,12 @@ const SCENARIOS = {
     character: {
       name: "Malik",
       age: 46,
-      context: "A 46-year-old adult with a serious mental illness and limited social supports. Over time, Malik has been asking for help with tasks outside your service role — filling out unrelated paperwork, providing rides to non-service appointments, staying past session because he \"doesn't really have anyone else.\""
+      context: "Serious mental illness, limited social supports. Has been asking you for help with tasks that fall outside your service role."
     },
     decisions: [
       {
         type: "multi_response",
-        cues: ["Recently, Malik asked if you could stop by on your day off to help clean his apartment. He says:"],
+        cues: ["Recently, Malik asked if you could stop by on your day off to help clean his apartment."],
         dialogue: "You're the only one I trust. If you don't help me, I don't know who will.",
         situationNote: "There are no immediate safety concerns, but you recognize the request extends beyond your professional role.",
         question: "Which ethical principles may be in tension in this situation? Select all that apply.",
@@ -928,7 +928,7 @@ const SCENARIOS = {
         ]
       },
       {
-        cues: ["After you explain that you cannot stop by on your day off, Malik becomes visibly upset:"],
+        cues: ["After you explain that you cannot stop by on your day off, Malik becomes visibly upset."],
         dialogue: "So, you're just like everyone else. I thought you actually cared.",
         situationNote: "You are aware that Malik has struggled with abandonment in the past. You feel the need to reassure him and maintain trust.",
         question: "What is the most ethically appropriate next step?",
@@ -1159,6 +1159,7 @@ function screenPicker() {
 
 function screenSetup() {
   state.step = "setup";
+  state.lastSelection = null;
   renderProgress();
   const sc = getScenario();
   const c = sc.character;
@@ -1226,7 +1227,11 @@ function screenChoices() {
       <fieldset class="${fieldsetClass}">
         <legend id="question-${idx}" class="question" data-focus tabindex="-1">${d.question}</legend>
         ${d.choices.map((c, i) => {
-          const tried = state.attemptedChoices.indexOf(i) !== -1;
+          // Single-select: tried-and-wrong choices are disabled on retry.
+          // Multi-select: preserve the learner's last selection so they can
+          // refine; don't disable any choices.
+          const tried = !isMulti && state.attemptedChoices.indexOf(i) !== -1;
+          const preChecked = isMulti && Array.isArray(state.lastSelection) && state.lastSelection.indexOf(i) !== -1;
           const inputId = `choice-${idx}-${i}`;
           return `
             <input
@@ -1234,7 +1239,7 @@ function screenChoices() {
               name="choice-${idx}"
               id="${inputId}"
               value="${i}"
-              class="visually-hidden choice-input"${tried ? ' disabled' : ''}>
+              class="visually-hidden choice-input"${tried ? ' disabled' : ''}${preChecked ? ' checked' : ''}>
             <label for="${inputId}" class="choice${tried ? ' is-tried' : ''}">
               <span class="choice-letter" aria-hidden="true">${c.letter}</span>
               <span class="choice-text">${c.text}${tried ? '<span class="visually-hidden"> (already tried)</span>' : ''}</span>
@@ -1248,15 +1253,24 @@ function screenChoices() {
     afterMount: () => {
       const fieldset = screenWrap.querySelector(".choices-fieldset");
       if (!fieldset) return;
-      // Enable Continue when at least one input is checked.
-      fieldset.addEventListener("change", () => {
-        const anyChecked = fieldset.querySelector(`input[name="choice-${idx}"]:checked`);
-        const continueBtn = document.getElementById("btn-continue");
-        if (continueBtn && anyChecked) {
-          continueBtn.disabled = false;
-          continueBtn.removeAttribute("aria-disabled");
+      const continueBtn = () => document.getElementById("btn-continue");
+      const anyChecked = () => fieldset.querySelector(`input[name="choice-${idx}"]:checked`);
+      const refreshContinue = () => {
+        const btn = continueBtn();
+        if (!btn) return;
+        if (anyChecked()) {
+          btn.disabled = false;
+          btn.removeAttribute("aria-disabled");
+        } else {
+          btn.disabled = true;
+          btn.setAttribute("aria-disabled", "true");
         }
-      });
+      };
+      // Enable Continue immediately if a pre-checked option (from a retry's
+      // preserved selection) is present. Refresh on every change so unchecking
+      // the last box re-disables Continue.
+      refreshContinue();
+      fieldset.addEventListener("change", refreshContinue);
     }
   });
 
@@ -1304,15 +1318,11 @@ function screenFeedback() {
     // Track this attempt as one composite (use a hash of selection for the
     // attempted-set, but for simplicity we just track the wrong choices selected
     // so they're crossed off in retry hints — though full retry is supported).
-    if (!exact) {
-      // Mark all wrong choices the learner picked as "attempted" so the next
-      // pass shows them as is-tried (and skipped by Tab).
-      selectedIdxs.forEach(i => {
-        if (!d.choices[i].correct && state.attemptedChoices.indexOf(i) === -1) {
-          state.attemptedChoices.push(i);
-        }
-      });
-    }
+    // Multi-response retry preserves the learner's last selection so they
+    // can refine the set rather than start over. We don't disable any
+    // choices on retry — the learner needs full access to all options to
+    // adjust their hypothesis.
+    state.lastSelection = selectedIdxs.slice();
 
     // Echo: the chosen items, comma-joined
     const echoTexts = selectedIdxs.map(i => d.choices[i].text);
@@ -1386,11 +1396,13 @@ function screenFeedback() {
       state.picks[idx] = activeState;
       state.chosenChoiceIdx = null;
       state.chosenChoiceIdxs = [];
+      state.lastSelection = null;
       if (isLast) {
         if (hasClosing) screenClosing();
         else screenTakeaway();
       } else {
         state.decisionIdx = idx + 1;
+        state.lastSelection = null;
         screenDialogue();
       }
     });

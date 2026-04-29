@@ -644,15 +644,6 @@
   }
   .picker-card:active { transform: translateY(1px); }
   .picker-card-info { display: flex; flex-direction: column; gap: 6px; }
-  /* Age overline — matches the CPST Mighty .block-statement--note overline.
-     Small caps teal, no background, sits above the name. */
-  .picker-age-overline {
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    color: var(--interactive);
-  }
   .picker-pill {
     display: inline-block;
     font-size: 11px;
@@ -1143,8 +1134,7 @@ function screenPicker() {
     <button type="button" class="picker-card" data-slug="${slug}">
       <div class="picker-card-info">
         <span class="picker-pill">${s.pickerLabel}</span>
-        <span class="picker-age-overline">Age ${s.character.age}</span>
-        <span class="picker-name">${s.character.name}</span>
+        <span class="picker-name">${s.character.name}, <span class="age">age ${s.character.age}</span></span>
         <span class="picker-context">${s.character.context}</span>
       </div>
       <span class="picker-arrow" aria-hidden="true">→</span>

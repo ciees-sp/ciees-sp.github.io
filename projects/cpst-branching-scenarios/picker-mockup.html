@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Picker layout mockups — A vs B</title>
+<link rel="icon" href="data:," />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --page-bg: #F4F6F9;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--page-bg);
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 56px 24px 80px;
+  }
+
+  .page-header {
+    margin: 0 0 56px;
+  }
+  .page-header h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.02em;
+    margin: 0 0 8px;
+  }
+  .page-header p {
+    font-size: 16px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .layout-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+    color: var(--interactive);
+    background: rgba(11, 106, 138, 0.08);
+    padding: 5px 14px;
+    border-radius: 100px;
+    margin: 0 0 16px;
+  }
+  .layout-section {
+    margin: 0 0 80px;
+  }
+  .layout-section h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    margin: 0 0 8px;
+  }
+  .layout-section .desc {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 0 0 28px;
+    max-width: 60ch;
+  }
+
+  /* Frame matches the engine's outer card aesthetic */
+  .frame {
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    overflow: hidden;
+  }
+  .scr-picker {
+    padding: 56px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .picker-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* ============================================================
+     LAYOUT A — stacked cards with top image strip
+     ============================================================ */
+  .layout-a .picker-card {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  }
+  .layout-a .picker-card:hover {
+    border-color: var(--interactive);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px -2px rgba(11,106,138,.18);
+  }
+  .layout-a .picker-card-image {
+    display: block;
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    object-position: center 35%;
+    background: var(--tint);
+  }
+  .layout-a .picker-card-body {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px 18px;
+  }
+  .layout-a .picker-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .layout-a .picker-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+  }
+  .layout-a .picker-name .age { color: var(--muted); font-weight: 400; }
+  .layout-a .picker-context {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .layout-a .picker-arrow {
+    color: var(--accent);
+    font-size: 20px;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+  .layout-a .picker-card:hover .picker-arrow {
+    color: var(--interactive);
+    transform: translateX(3px);
+  }
+
+  /* ============================================================
+     LAYOUT B — 3-column gallery, top image, text below
+     ============================================================ */
+  .layout-b .frame {
+    max-width: 920px;  /* wider to give 3 columns room */
+  }
+  .layout-b .picker-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  .layout-b .picker-card {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+  }
+  .layout-b .picker-card:hover {
+    border-color: var(--interactive);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px -4px rgba(11,106,138,.2);
+  }
+  .layout-b .picker-card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    object-position: center 35%;
+    background: var(--tint);
+  }
+  .layout-b .picker-card-body {
+    padding: 16px 18px 18px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .layout-b .picker-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.012em;
+    line-height: 1.2;
+  }
+  .layout-b .picker-name .age { color: var(--muted); font-weight: 400; }
+  .layout-b .picker-context {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .layout-b .picker-arrow {
+    margin-top: auto;
+    align-self: flex-end;
+    color: var(--accent);
+    font-size: 18px;
+    transition: color 160ms ease, transform 160ms ease;
+  }
+  .layout-b .picker-card:hover .picker-arrow {
+    color: var(--interactive);
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 720px) {
+    .layout-b .picker-options {
+      grid-template-columns: 1fr;
+    }
+    .layout-b .frame { max-width: 720px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="page-header">
+    <h1>Picker layout mockups</h1>
+    <p>Two options for adding character thumbnails to the audience-track picker. Both inside the existing white frame card. The card morphs into the scenario card on selection.</p>
+  </header>
+
+  <!-- ====================== LAYOUT A ====================== -->
+  <section class="layout-section layout-a">
+    <span class="layout-label">Layout A</span>
+    <h2>Stacked cards with top image strip</h2>
+    <p class="desc">Same vertical flow as the current engine. Each card grows: full-width photo on top, then name and description below. Three cards stack inside the frame. Closest to the existing engine pattern; clean responsive behavior; no breakpoint surgery.</p>
+
+    <div class="frame">
+      <div class="scr-picker">
+        <div class="picker-options">
+
+          <button type="button" class="picker-card" aria-label="Jordan, age 15. Anxiety and limited peer connections. They begin messaging you on social media.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/jordan.jpg" alt="">
+            <div class="picker-card-body">
+              <div class="picker-card-info">
+                <span class="picker-name">Jordan, <span class="age">age 15</span></span>
+                <span class="picker-context">Anxiety and limited peer connections. They begin messaging you on social media.</span>
+              </div>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+          <button type="button" class="picker-card" aria-label="Destiny, age 20. Mood disorder and few natural supports. She begins texting you on weekends.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/destiny.jpg" alt="">
+            <div class="picker-card-body">
+              <div class="picker-card-info">
+                <span class="picker-name">Destiny, <span class="age">age 20</span></span>
+                <span class="picker-context">Mood disorder and few natural supports. She begins texting you on weekends.</span>
+              </div>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+          <button type="button" class="picker-card" aria-label="Malik, age 46. Serious mental illness and limited social supports. He begins asking you to help with unrelated paperwork.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/malik.jpg" alt="">
+            <div class="picker-card-body">
+              <div class="picker-card-info">
+                <span class="picker-name">Malik, <span class="age">age 46</span></span>
+                <span class="picker-context">Serious mental illness and limited social supports. He begins asking you to help with unrelated paperwork.</span>
+              </div>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================== LAYOUT B ====================== -->
+  <section class="layout-section layout-b">
+    <span class="layout-label">Layout B</span>
+    <h2>3-column gallery</h2>
+    <p class="desc">Three cards side-by-side at desktop, each with a 4:3 photo on top and shorter text below. Frame widens to 920px at desktop to give the columns breathing room. Stacks to a single column on mobile (≤720px). More gallery-feel; lets the three populations be compared at a glance.</p>
+
+    <div class="frame">
+      <div class="scr-picker">
+        <div class="picker-options">
+
+          <button type="button" class="picker-card" aria-label="Jordan, age 15. Anxiety and limited peer connections. They begin messaging you on social media.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/jordan.jpg" alt="">
+            <div class="picker-card-body">
+              <span class="picker-name">Jordan, <span class="age">age 15</span></span>
+              <span class="picker-context">Anxiety and limited peer connections. They begin messaging you on social media.</span>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+          <button type="button" class="picker-card" aria-label="Destiny, age 20. Mood disorder and few natural supports. She begins texting you on weekends.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/destiny.jpg" alt="">
+            <div class="picker-card-body">
+              <span class="picker-name">Destiny, <span class="age">age 20</span></span>
+              <span class="picker-context">Mood disorder and few natural supports. She begins texting you on weekends.</span>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+          <button type="button" class="picker-card" aria-label="Malik, age 46. Serious mental illness and limited social supports. He begins asking you to help with unrelated paperwork.">
+            <img class="picker-card-image" src="picker-mockup-thumbs/malik.jpg" alt="">
+            <div class="picker-card-body">
+              <span class="picker-name">Malik, <span class="age">age 46</span></span>
+              <span class="picker-context">Serious mental illness and limited social supports. He begins asking you to help with unrelated paperwork.</span>
+              <span class="picker-arrow" aria-hidden="true">→</span>
+            </div>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

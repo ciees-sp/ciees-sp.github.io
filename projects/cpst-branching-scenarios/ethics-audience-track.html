@@ -612,6 +612,16 @@
   }
   .picker-card:active { transform: translateY(1px); }
   .picker-card-info { display: flex; flex-direction: column; gap: 6px; }
+  /* Italic diagnosis label — sits between name and behavior. Reads as
+     a label fragment (no period), not a sentence. Muted gray for visual
+     demotion; AA-compliant on white via --muted (#4A4E63 → 7.7:1). */
+  .picker-diagnosis {
+    display: block;
+    font-size: 14px;
+    font-style: italic;
+    color: var(--muted);
+    line-height: 1.4;
+  }
   .picker-pill {
     display: inline-block;
     font-size: 11px;
@@ -775,7 +785,8 @@ const SCENARIOS = {
       name: "Jordan",
       age: 15,
       context: "You are working with Jordan, a 15-year-old with anxiety and limited peer connections. Over time, Jordan begins asking you for help with things outside your service role — messaging you on social media to share how their day went, asking you to attend their school event, or staying longer than scheduled because they feel like you're the only adult who really listens.",
-      pickerContext: "Anxiety and limited peer connections. They begin messaging you on social media."
+      pickerDiagnosis: "Anxiety and limited peer connections",
+      pickerBehavior: "Jordan has begun asking for help outside your service role — messaging you on social media, or asking you to attend their school events."
     },
     decisions: [
       {
@@ -831,7 +842,8 @@ const SCENARIOS = {
       name: "Destiny",
       age: 20,
       context: "You are working with Destiny, a 20-year-old navigating early adulthood with a mood disorder and few natural supports. Over time, Destiny begins leaning on you beyond your service role — texting you on weekends to process difficult moments, asking you to help draft personal emails, or extending sessions to talk through decisions unrelated to her service goals.",
-      pickerContext: "Mood disorder and few natural supports. She begins texting you on weekends."
+      pickerDiagnosis: "Mood disorder and few natural supports",
+      pickerBehavior: "Over time, Destiny has come to lean on you beyond your role — texting on weekends, or asking you to help draft personal emails."
     },
     decisions: [
       {
@@ -885,7 +897,8 @@ const SCENARIOS = {
       name: "Malik",
       age: 46,
       context: "You are working with Malik, a 46-year-old adult with a serious mental illness and limited social supports. Over time, Malik begins asking for help with tasks outside your service role — filling out unrelated paperwork, providing rides to non-service appointments, or staying longer than scheduled because he \"doesn't really have anyone else.\"",
-      pickerContext: "Serious mental illness and limited social supports. He begins asking you to help with unrelated paperwork."
+      pickerDiagnosis: "Serious mental illness and limited social supports",
+      pickerBehavior: "Lately, Malik has been asking for help outside your service role — filling out paperwork, or providing rides to non-service appointments."
     },
     decisions: [
       {
@@ -1111,16 +1124,18 @@ function screenPicker() {
   renderProgress();
 
   const cards = Object.entries(SCENARIOS).map(([slug, s]) => {
-    // Picker uses the short `pickerContext` so each card is a quick preview;
-    // the full character.context (Kim's verbatim setup) appears on the
-    // setup screen once a scenario is chosen.
-    const preview = s.character.pickerContext || s.character.context;
-    const label = `${s.pickerLabel}: ${s.character.name}, age ${s.character.age}. ${preview}`;
+    // Picker shows two-part preview: italic diagnosis label + behavior
+    // sentence. The full character.context (Kim's verbatim setup) appears
+    // on the setup screen once a scenario is chosen.
+    const dx = s.character.pickerDiagnosis || "";
+    const beh = s.character.pickerBehavior || s.character.pickerContext || s.character.context;
+    const label = `${s.pickerLabel}: ${s.character.name}, age ${s.character.age}. ${dx ? dx + ". " : ""}${beh}`;
     return `
     <button type="button" class="picker-card" data-slug="${slug}" aria-label="${label.replace(/"/g, '&quot;')}">
       <div class="picker-card-info" aria-hidden="true">
         <span class="picker-name">${s.character.name}, <span class="age">age ${s.character.age}</span></span>
-        <span class="picker-context">${preview}</span>
+        ${dx ? `<em class="picker-diagnosis">${dx}</em>` : ""}
+        <span class="picker-context">${beh}</span>
       </div>
       <span class="picker-arrow" aria-hidden="true">→</span>
     </button>

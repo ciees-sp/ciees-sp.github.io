@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="CPST scenario — Empathy and Validation. Destiny, 16. Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions." />
+<meta name="description" content="CPST scenario — Trauma-Informed Practice. Kristin, 32. One of the regular individuals you serve. You have been supporting her for several months. Today she has arrived quieter than usual, sitting with her arms crossed and avoiding eye contact." />
 <link rel="icon" href="data:," />
-<title>Empathy and Validation — CPST branching scenario</title>
+<title>Trauma-Informed Practice — CPST branching scenario</title>
 
 <!--
   CPST Scenario Engine v2
@@ -638,151 +638,148 @@
 -->
 <script>
 const SCENARIO = {
-  title: "Empathy and Validation",
+  title: "Trauma-Informed Practice",
   character: {
-    name: "Destiny",
-    age: 16,
-    context: "Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions."
+    name: "Kristin",
+    age: 32,
+    context: "One of the regular individuals you serve. You have been supporting her for several months. Today she has arrived quieter than usual, sitting with her arms crossed and avoiding eye contact."
   },
   decisions: [
     {
       cues: [
-        "She arrives looking tired and sits down without making eye contact. After a few minutes of silence, she speaks."
+        "You notice something is different about her body language. She speaks first."
       ],
-      dialogue: "I don’t know why I even come here. Nobody actually gets what it’s like. Everyone tells me what to do or how to feel.",
-      question: "Destiny has just disclosed that she feels misunderstood and talked at rather than heard. This is the first time she has said anything this direct. What do you do?",
+      dialogue: "Hi. Sorry, I am a little off today.",
+      question: "How do you open the conversation?",
       choices: [
         {
           letter: "A",
           state: "reconsider",
-          text: "Tell Destiny that you understand, and that this space is different — you are here to listen, not to give advice.",
+          text: "“You seem troubled. Do you mind if I ask what’s wrong?”",
           body: [
-            "Telling Destiny this space is different is a promise, not a demonstration. Empathy does not explain itself; it shows up."
+            "The word ‘wrong’ implies something is broken or defective about Kristin or her situation. Trauma-informed care teaches us to ask ‘What happened to you,’ not ‘What’s wrong with you?’ The framing shifts from blame to curiosity and safety."
           ]
         },
         {
           letter: "B",
           state: "best",
-          text: "Reflect that it sounds like she has been surrounded by a lot of voices telling her what to do, and not many people who have just tried to understand what it is actually like for her.",
+          text: "“Kristin, I can see that you don’t seem like yourself today. Do you mind if I ask what happened?”",
           body: [
-            "Destiny is not asking to be convinced that this space is different; she is expressing that she feels unseen. Reflecting on what she just shared is the beginning of empathy. It shows her that you heard not just the complaint but the loneliness underneath it."
+            "Noticing Kristin’s distress and asking ‘What happened?’ rather than ‘What’s wrong?’ opens the door with safety and curiosity. You are signaling that this is a space in which she can share without judgment."
           ]
         },
         {
           letter: "C",
           state: "reconsider",
-          text: "Ask Destiny what she means by “nobody gets it” so you can better understand her experience.",
+          text: "“Let’s just get started with our session today, and hope that helps you feel better.”",
           body: [
-            "A question here, even a well-meaning one, may feel like another adult asking her to explain herself. Destiny has just told you that people do not get what it is like for her. Asking for clarification before acknowledging the feeling risks confirming exactly what she said."
+            "Ignoring Kristin’s distress prioritizes your agenda over her safety. Trauma-informed care requires responsiveness and meeting the person where they are, especially when something has clearly shifted."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny looks up briefly, then back down. After a pause, she speaks."
+        "Kristin responds to your question. She has just disclosed something significant and deeply personal. She used the word ‘weak’ and expressed shame. This is a critical moment."
       ],
-      dialogue: "My mom and I got into it again last night. She kept saying I was being dramatic. I told her I was really struggling, and she said I want attention. I didn’t say anything after that. I just went to my room.",
-      question: "Destiny has just shared something painful — going to her mother with something real and being told it was not real. She went quiet after. What do you do?",
+      dialogue: "No, I don’t mind. I trust you not to think badly of me. My spouse has been hitting me for a while now, always where it won’t show. I don’t know what to do. I feel weak for not stopping him or for not getting away. It is so scary.",
+      question: "How do you respond to Kristin’s disclosure?",
       choices: [
         {
           letter: "A",
-          state: "best",
-          text: "Validate that it makes sense that she went quiet. Being told your feelings aren’t real can feel painful. Going to your room can feel like the safest way to protect yourself.",
+          state: "reconsider",
+          text: "“That’s really serious, Kristin. You need to leave that situation as soon as possible. I can help you find a shelter.”",
           body: [
-            "Destiny did not just have a hard conversation with her mother — she reached out for support and was told her experience was not real. Shutting down was the only reasonable response available to her in that moment. Naming that directly is validation."
+            "Moving immediately to action, even well-intentioned action, before acknowledging Kristin’s feelings can feel dismissive and unsafe. She hasn’t been asked what she wants or needs yet. Trauma-informed care prioritizes safety, choice, and collaboration before problem-solving."
           ]
         },
         {
           letter: "B",
-          state: "reconsider",
-          text: "Empathize by saying you can hear how much that hurt, and then ask what the argument was originally about so you have the full picture.",
+          state: "best",
+          text: "“Thank you for sharing your story with me. Kristin, it is never OK for one person to hit another person, especially repeatedly. It is not something you have to be embarrassed about.”",
           body: [
-            "Empathy is the right start. But moving quickly to the details shifts attention away from what mattered most — she tried to be vulnerable and felt dismissed. Stay with the emotional experience before asking for more information."
+            "You honored Kristin’s courage in sharing, named clearly that what is happening is not okay, and directly addressed her shame by saying she has nothing to be embarrassed about. This response creates emotional safety before anything else — exactly what trauma-informed care calls for."
           ]
         },
         {
           letter: "C",
-          state: "reconsider",
-          text: "Normalize the experience by letting her know that a lot of teenagers feel misunderstood by their parents and that it gets easier as she gets older.",
+          state: "caution",
+          text: "“I’m so sorry to hear that. Why do you think you haven’t been able to leave?”",
           body: [
-            "Normalizing shifts away from her specific experience and toward general reassurance. In this moment, she needs validation — acknowledgment of what happened and how it felt."
+            "Even when phrased gently, ‘Why haven’t you left?’ places responsibility on Kristin and can reinforce her shame. It implies she has the power to simply leave, which misunderstands the complexity of domestic violence. This response is not trauma-informed."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny is quiet for a moment. Then, without looking up, she speaks. She pauses, then says the last sentence very quietly."
+        "Kristin is expressing fear and feeling paralyzed. She has not asked for a specific kind of help yet. She is still in the disclosure stage and processing out loud."
       ],
-      dialogue: "She always does that. Every time I try to say something real, she makes it about her or calls me dramatic. So, I don’t really tell her anything anymore. I don’t really tell anyone anything.<br><br>I don’t know why I’m telling you.",
-      question: "Destiny just said she stopped telling people things, and then realized she is telling you. This is a fragile moment of trust. What do you do?",
+      dialogue: "Thank you. I just don’t know where to start. I feel so stuck. And honestly, I’m scared that if I try to do something about it, it’ll get worse.",
+      question: "How do you respond?",
       choices: [
         {
           letter: "A",
           state: "best",
-          text: "Reflect that she may have learned that sharing leads to being hurt, so she stopped — and that telling you now, even without knowing why, might mean part of her is still looking for somewhere safe.",
+          text: "“I completely understand. A lot of people feel that way. The important thing is that you told someone. If you want me to, I can help you find some resources, or I can just sit here and listen. Whatever feels right to you.”",
           body: [
-            "This response reflects both her protective shutdown and the fragile trust in this moment. Staying with that meaning strengthens the connection rather than redirecting it."
+            "This response is grounded in choice and collaboration, two of the five pillars of trauma-informed care. You validated Kristin’s experience, normalized her feelings, and offered support in a way that puts her in control of what happens next."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Thank Destiny for sharing and let her know that whatever she tells you stays between the two of you.",
+          text: "“I hear you. I’ve seen situations like this before, and I really think the best thing for you is to call a hotline tonight.”",
           body: [
-            "Reassuring her about confidentiality is appropriate at times, but she didn’t question privacy. She noticed something about herself. Shifting to logistics moves away from the emotional moment instead of staying with it."
+            "Telling Kristin what you think she should do — even from experience — removes her choice and autonomy at exactly the moment she needs to feel in control. Trauma-informed care centers the person’s self-direction, especially in situations involving safety."
           ]
         },
         {
           letter: "C",
           state: "reconsider",
-          text: "Tell Destiny that you are glad she is telling you, and that it shows real courage to open up after being hurt like that.",
+          text: "“You’re not stuck — you have more options than you think. Let me tell you what they are.”",
           body: [
-            "Calling it ‘courage’ is well-intentioned but evaluative. It interprets her behavior instead of reflecting her experience. In this moment, she needs you to stay close to what she said, not add meaning to it."
+            "‘You’re not stuck’ minimizes Kristin’s experience. Even meant encouragingly, it dismisses the very real fear she is describing. Lead with validation before offering solutions."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny finally looks up. Her expression has shifted — not open, but less guarded. She speaks, pauses, then looks down again."
+        "Kristin has been clear — she wants information, but she is not ready to act. She needed to be heard first. This is a common and valid place for someone to be."
       ],
-      dialogue: "I guess. Maybe.<br><br>No one’s ever said it like that before. Like… that it makes sense, I stopped.<br><br>My mom’s not a bad person. She doesn’t know how to… I don’t know. She’s got her own stuff.",
-      question: "Destiny just did something important. She acknowledged her own pain and made room for her mother at the same time. This moment happened because she felt safe enough to keep talking. What do you do?",
+      dialogue: "I think… I’d like to know my options. But I’m not ready to do anything yet. I just needed someone to know.",
+      question: "How do you honor where Kristin is right now?",
       choices: [
         {
           letter: "A",
-          state: "reconsider",
-          text: "Affirm that her mother sounds like she is doing her best and that understanding that may help Destiny have a better relationship with her.",
+          state: "best",
+          text: "“I understand. I can share some options with you whenever you’re ready — no pressure to do anything today. And I want you to know I’m here, and what you shared stays between us.”",
           body: [
-            "Saying her mother is ‘doing her best’ adds meaning that Destiny did not offer. She acknowledged her mother’s struggles, but she did not excuse her behavior. Adding that frame shifts the focus away from Destiny’s experience."
+            "You met Kristin exactly where she is, not where you think she should be. Offering information without pressure, affirming confidentiality, and reinforcing your presence gives her safety, trust, and choice. All five pillars of trauma-informed care are present in this response."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Suggest that since she is thinking this way now, it might be helpful to talk about what she needs from her mother in the future.",
+          text: "“I’m glad you told me. But I do want to be honest — staying in this situation is dangerous. I really think you should act sooner rather than later.”",
           body: [
-            "Moving to planning turns a meaningful emotional moment into a task. Problem-solving can come later. Right now, the clinical priority is to acknowledge what just happened."
+            "Applying urgency, even out of genuine concern, undermines Kristin’s self-direction and can replicate the power dynamic she experiences at home. She told you she is not ready. Honoring that is part of trauma-informed care."
           ]
         },
         {
           letter: "C",
-          state: "best",
-          text: "Reflect that she is holding two things at once — that what happened hurt her and that her mother has her own struggles — and that being able to do that is not a small thing.",
+          state: "caution",
+          text: "“Of course. And just so you know, I’m required to report this, so I’ll need to document it and notify your case supervisor.”",
           body: [
-            "Destiny started this conversation guarded and hurt. Now she’s able to hold both her pain and her mom’s humanity at the same time. Reflecting that moment shows you noticed what she just did, without judging it or turning it into a lesson. It keeps the focus on her experience and helps her feel safe to keep talking."
+            "Unless you have a specific mandatory reporting obligation in this context, this response could cause Kristin to regret disclosing and disengage from support entirely. Always know your actual reporting obligations and do not imply reporting is required when it is not."
           ]
         }
       ]
     }
   ],
   resolution: {
-    closingCues: "Destiny looks out the window for a moment, then back at you.",
-    closingQuote: "I might come back next week.",
-    closingTail: "It’s not a commitment. But it’s something. The session ends.",
-    takeaway: "Destiny came in, and no one could understand her. Empathy didn’t fix that — it met it. Validation didn’t solve the conflict with her mother — it let her know her reaction made sense. Together, they created just enough safety for her to keep talking. That’s what these skills make possible."
+    takeaway: "You navigated all four critical moments with Kristin, applying the five pillars of trauma-informed care: safety (you created emotional safety before anything else), trust (Kristin trusted you because you did not judge or rush her), choice (you offered options without directing her toward any of them), collaboration (you worked alongside Kristin, not ahead of her), and empowerment (you kept her in control of what happened next)."
   }
 };
 </script>

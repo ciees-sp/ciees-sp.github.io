@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="CPST scenario — Empathy and Validation. Destiny, 16. Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions." />
+<meta name="description" content="CPST scenario — Applying the Ethical Decision-Making Framework. Magna, 34. Has a history of depression and social anxiety. The home visit has been going well — Magna seems more relaxed than usual and begins opening up. Suicidal ideation is always clinically significant, regardless of age." />
 <link rel="icon" href="data:," />
-<title>Empathy and Validation — CPST branching scenario</title>
+<title>Applying the Ethical Decision-Making Framework — CPST branching scenario</title>
 
 <!--
   CPST Scenario Engine v2
@@ -638,151 +638,149 @@
 -->
 <script>
 const SCENARIO = {
-  title: "Empathy and Validation",
+  title: "Applying the Ethical Decision-Making Framework",
   character: {
-    name: "Destiny",
-    age: 16,
-    context: "Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions."
+    name: "Magna",
+    age: 34,
+    context: "Has a history of depression and social anxiety. The home visit has been going well — Magna seems more relaxed than usual and begins opening up. Suicidal ideation is always clinically significant, regardless of age."
   },
   decisions: [
     {
       cues: [
-        "She arrives looking tired and sits down without making eye contact. After a few minutes of silence, she speaks."
+        "After a pause, Magna says quietly:"
       ],
-      dialogue: "I don’t know why I even come here. Nobody actually gets what it’s like. Everyone tells me what to do or how to feel.",
-      question: "Destiny has just disclosed that she feels misunderstood and talked at rather than heard. This is the first time she has said anything this direct. What do you do?",
+      dialogue: "I have been having some dark thoughts lately. Just thinking about not being here anymore. But I would never actually do anything. I just needed to say it out loud.<br><br>Please don’t tell anyone. I am afraid it will lead to hospitalization. Please — just keep this between us.",
+      question: "Magna has just disclosed suicidal ideation and asked you to keep it confidential. You are still in the home visit. What do you do?",
       choices: [
         {
           letter: "A",
-          state: "reconsider",
-          text: "Tell Destiny that you understand, and that this space is different — you are here to listen, not to give advice.",
+          state: "caution",
+          text: "Honor Magna’s request and keep the disclosure confidential to preserve trust.",
           body: [
-            "Telling Destiny this space is different is a promise, not a demonstration. Empathy does not explain itself; it shows up."
+            "Promising confidentiality around a disclosure of suicidal ideation is a serious ethical and clinical error. Confidentiality does not apply when there is a risk of harm to the individual. Making this promise, even with good intentions, places Magna at risk and exposes the practitioner to significant professional and ethical liability."
           ]
         },
         {
           letter: "B",
           state: "best",
-          text: "Reflect that it sounds like she has been surrounded by a lot of voices telling her what to do, and not many people who have just tried to understand what it is actually like for her.",
+          text: "Acknowledge Magna’s disclosure with care, explain that you cannot promise confidentiality around safety concerns, and let Magna know you will need to consult with your supervisor before leaving.",
           body: [
-            "Destiny is not asking to be convinced that this space is different; she is expressing that she feels unseen. Reflecting on what she just shared is the beginning of empathy. It shows her that you heard not just the complaint but the loneliness underneath it."
+            "All disclosures of suicidal ideation require further assessment. The practitioner responds with both empathy and honesty. Acknowledging the disclosure without promising confidentiality regarding safety concerns simultaneously upholds veracity and nonmaleficence.",
+            "Informing Magna that supervisor consultation is required before leaving the visit is the appropriate and ethical next step. Consultation is a core component of ethical decision-making."
           ]
         },
         {
           letter: "C",
-          state: "reconsider",
-          text: "Ask Destiny what she means by “nobody gets it” so you can better understand her experience.",
+          state: "caution",
+          text: "Document the disclosure in your notes and raise it with your supervisor at your next scheduled supervision meeting.",
           body: [
-            "A question here, even a well-meaning one, may feel like another adult asking her to explain herself. Destiny has just told you that people do not get what it is like for her. Asking for clarification before acknowledging the feeling risks confirming exactly what she said."
+            "Delaying action following a disclosure of suicidal ideation is clinically unsafe and ethically indefensible. Scheduled supervision is not the appropriate forum; an immediate consultation is required before the practitioner leaves the home visit. Waiting places Magna at risk."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny looks up briefly, then back down. After a pause, she speaks."
+        "You step aside and call your supervisor from outside Magna’s home. The supervisor asks you to describe the situation."
       ],
-      dialogue: "My mom and I got into it again last night. She kept saying I was being dramatic. I told her I was really struggling, and she said I want attention. I didn’t say anything after that. I just went to my room.",
-      question: "Destiny has just shared something painful — going to her mother with something real and being told it was not real. She went quiet after. What do you do?",
+      dialogue: "Tell me exactly what happened and what Magna said.",
+      question: "How do you approach this conversation with your supervisor?",
       choices: [
         {
           letter: "A",
-          state: "best",
-          text: "Validate that it makes sense that she went quiet. Being told your feelings aren’t real can feel painful. Going to your room can feel like the safest way to protect yourself.",
+          state: "caution",
+          text: "Tell the supervisor that Magna seemed fine overall, but mentioned some dark thoughts — just wanted to check in.",
           body: [
-            "Destiny did not just have a hard conversation with her mother — she reached out for support and was told her experience was not real. Shutting down was the only reasonable response available to her in that moment. Naming that directly is validation."
+            "Minimizing or softening the disclosure during supervisor consultation prevents the supervisor from making an informed recommendation. The practitioner has an obligation to describe the situation accurately and completely. Framing suicidal ideation as minor or routine is a clinical and ethical error that compromises Magna’s safety. Effective consultation requires honesty."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Empathize by saying you can hear how much that hurt, and then ask what the argument was originally about so you have the full picture.",
+          text: "Ask the supervisor what the policy is without describing the specific situation, to avoid breaching Magna’s confidentiality.",
           body: [
-            "Empathy is the right start. But moving quickly to the details shifts attention away from what mattered most — she tried to be vulnerable and felt dismissed. Stay with the emotional experience before asking for more information."
+            "Supervisor consultation around safety concerns is not a breach of confidentiality; it is a required and ethical use of the supervisory relationship. Withholding the details of the situation prevents the supervisor from providing meaningful guidance and leaves the practitioner without the support they need to act ethically."
           ]
         },
         {
           letter: "C",
-          state: "reconsider",
-          text: "Normalize the experience by letting her know that a lot of teenagers feel misunderstood by their parents and that it gets easier as she gets older.",
+          state: "best",
+          text: "Describe the disclosure accurately and completely — what was said, the context, and Magna’s request for confidentiality. Share your uncertainty about the level of risk.",
           body: [
-            "Normalizing shifts away from her specific experience and toward general reassurance. In this moment, she needs validation — acknowledgment of what happened and how it felt."
+            "Accurate and complete disclosure to the supervisor is essential for informed consultation. The practitioner’s uncertainty is not a weakness; it is exactly the kind of information the supervisor needs to provide appropriate guidance. Naming the dilemma directly and asking for help is what ethical practice looks like in action."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny is quiet for a moment. Then, without looking up, she speaks. She pauses, then says the last sentence very quietly."
+        "After consulting with the supervisor, you return to Magna. The supervisor has guided you on the next steps per agency safety protocol. Magna looks up anxiously."
       ],
-      dialogue: "She always does that. Every time I try to say something real, she makes it about her or calls me dramatic. So, I don’t really tell her anything anymore. I don’t really tell anyone anything.<br><br>I don’t know why I’m telling you.",
-      question: "Destiny just said she stopped telling people things, and then realized she is telling you. This is a fragile moment of trust. What do you do?",
+      dialogue: "What did they say? What happens now? I really feel like I should not have said anything. I knew this was going to turn into something bigger.",
+      question: "Magna is frightened and beginning to regret the disclosure. What do you do?",
       choices: [
         {
           letter: "A",
-          state: "best",
-          text: "Reflect that she may have learned that sharing leads to being hurt, so she stopped — and that telling you now, even without knowing why, might mean part of her is still looking for somewhere safe.",
+          state: "caution",
+          text: "Reassure Magna that everything is fine, that the call was routine, and that nothing will change.",
           body: [
-            "This response reflects both her protective shutdown and the fragile trust in this moment. Staying with that meaning strengthens the connection rather than redirecting it."
+            "Providing false reassurance violates veracity and undermines the trust Magna placed in the practitioner. The practitioner cannot promise an outcome they do not control. Minimizing what happened misrepresents the seriousness of the situation and is not consistent with honest, ethical practice."
           ]
         },
         {
           letter: "B",
-          state: "reconsider",
-          text: "Thank Destiny for sharing and let her know that whatever she tells you stays between the two of you.",
+          state: "best",
+          text: "Be honest with Magna about what you did and why. Explain the next steps clearly, express genuine care for their safety, and stay present to support them through what comes next.",
           body: [
-            "Reassuring her about confidentiality is appropriate at times, but she didn’t question privacy. She noticed something about herself. Shifting to logistics moves away from the emotional moment instead of staying with it."
+            "Honesty in this moment is both an ethical obligation and a clinical necessity. The practitioner explains that they consulted with their supervisor because Magna’s safety matters, describes the next steps transparently, and remains present and supportive. Staying engaged — rather than distancing — is the ethical and human response."
           ]
         },
         {
           letter: "C",
-          state: "reconsider",
-          text: "Tell Destiny that you are glad she is telling you, and that it shows real courage to open up after being hurt like that.",
+          state: "caution",
+          text: "Tell Magna that what happens next is out of your hands and that the supervisor will be in touch with them directly.",
           body: [
-            "Calling it ‘courage’ is well-intentioned but evaluative. It interprets her behavior instead of reflecting her experience. In this moment, she needs you to stay close to what she said, not add meaning to it."
+            "Distancing from the situation and redirecting Magna to another party abandons the professional obligation to remain present and supportive. The practitioner has a duty to stay engaged, communicate honestly, and help Magna navigate next steps — not to disengage at the most critical moment."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny finally looks up. Her expression has shifted — not open, but less guarded. She speaks, pauses, then looks down again."
+        "The home visit has concluded. You are back at your desk and need to document the interaction in Magna’s record."
       ],
-      dialogue: "I guess. Maybe.<br><br>No one’s ever said it like that before. Like… that it makes sense, I stopped.<br><br>My mom’s not a bad person. She doesn’t know how to… I don’t know. She’s got her own stuff.",
-      question: "Destiny just did something important. She acknowledged her own pain and made room for her mother at the same time. This moment happened because she felt safe enough to keep talking. What do you do?",
+      dialogue: "How do you document what occurred during today’s home visit?",
+      question: "What approach to documentation do you take?",
       choices: [
         {
           letter: "A",
-          state: "reconsider",
-          text: "Affirm that her mother sounds like she is doing her best and that understanding that may help Destiny have a better relationship with her.",
+          state: "best",
+          text: "Document the disclosure accurately and completely — what Magna said, the context, the safety concern identified, the supervisor consultation including what was discussed and recommended, the actions taken, and Magna’s response.",
           body: [
-            "Saying her mother is ‘doing her best’ adds meaning that Destiny did not offer. She acknowledged her mother’s struggles, but she did not excuse her behavior. Adding that frame shifts the focus away from Destiny’s experience."
+            "Accurate, timely, and complete documentation is both an ethical obligation and a professional standard. The record should reflect what occurred, the clinical concern identified, the consultation sought, the decision made and why, and the steps taken. Documentation protects the individual, the practitioner, and the integrity of the service."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Suggest that since she is thinking this way now, it might be helpful to talk about what she needs from her mother in the future.",
+          text: "Write a brief note indicating that Magna had a difficult session and that you followed up with your supervisor as needed.",
           body: [
-            "Moving to planning turns a meaningful emotional moment into a task. Problem-solving can come later. Right now, the clinical priority is to acknowledge what just happened."
+            "Vague documentation that omits the specific nature of the disclosure, the clinical concern identified, and the consultation that occurred does not meet professional or ethical standards. Documentation must be accurate, complete, and specific enough that another practitioner or supervisor could understand exactly what happened and what actions were taken."
           ]
         },
         {
           letter: "C",
-          state: "best",
-          text: "Reflect that she is holding two things at once — that what happened hurt her and that her mother has her own struggles — and that being able to do that is not a small thing.",
+          state: "caution",
+          text: "Document that Magna disclosed personal struggles and that you provided emotional support and will continue to monitor.",
           body: [
-            "Destiny started this conversation guarded and hurt. Now she’s able to hold both her pain and her mom’s humanity at the same time. Reflecting that moment shows you noticed what she just did, without judging it or turning it into a lesson. It keeps the focus on her experience and helps her feel safe to keep talking."
+            "This documentation significantly understates what occurred. Describing suicidal ideation as ‘personal struggles’ and the response as ‘emotional support’ is inaccurate and does not reflect the seriousness of the situation or the consultation that took place. Incomplete or inaccurate documentation is an ethical violation."
           ]
         }
       ]
     }
   ],
   resolution: {
-    closingCues: "Destiny looks out the window for a moment, then back at you.",
-    closingQuote: "I might come back next week.",
-    closingTail: "It’s not a commitment. But it’s something. The session ends.",
-    takeaway: "Destiny came in, and no one could understand her. Empathy didn’t fix that — it met it. Validation didn’t solve the conflict with her mother — it let her know her reaction made sense. Together, they created just enough safety for her to keep talking. That’s what these skills make possible."
+    takeaway: "Suicidal ideation is always clinically significant. The right response combines empathy with honesty — acknowledging the disclosure without promising confidentiality you cannot keep, consulting before leaving, communicating next steps openly, and documenting accurately. Each step is what ethical practice looks like under pressure."
   }
 };
 </script>

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="CPST scenario — Empathy and Validation. Destiny, 16. Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions." />
+<meta name="description" content="CPST scenario — Ethical Dilemmas in Practice. Janis, 16. Has anxiety and anger issues. During a session, Janis opens up about something personal — struggles related to sexual orientation — and asks you to keep it between you." />
 <link rel="icon" href="data:," />
-<title>Empathy and Validation — CPST branching scenario</title>
+<title>Ethical Dilemmas in Practice — CPST branching scenario</title>
 
 <!--
   CPST Scenario Engine v2
@@ -638,151 +638,152 @@
 -->
 <script>
 const SCENARIO = {
-  title: "Empathy and Validation",
+  title: "Ethical Dilemmas in Practice",
   character: {
-    name: "Destiny",
+    name: "Janis",
     age: 16,
-    context: "Referred to behavioral health services by her school counselor after a recent decline in attendance. Today is her third session. She has been quiet and guarded in past sessions."
+    context: "Has anxiety and anger issues. During a session, Janis opens up about something personal — struggles related to sexual orientation — and asks you to keep it between you."
   },
   decisions: [
     {
       cues: [
-        "She arrives looking tired and sits down without making eye contact. After a few minutes of silence, she speaks."
+        "Janis looks at you directly after sharing what they’ve been struggling with."
       ],
-      dialogue: "I don’t know why I even come here. Nobody actually gets what it’s like. Everyone tells me what to do or how to feel.",
-      question: "Destiny has just disclosed that she feels misunderstood and talked at rather than heard. This is the first time she has said anything this direct. What do you do?",
+      dialogue: "Please don’t tell my parent. Please keep this between us.<br><br>If they find out, I don’t know what will happen at home.",
+      question: "Janis has just disclosed something deeply personal and asked for confidentiality. What do you do?",
       choices: [
         {
           letter: "A",
           state: "reconsider",
-          text: "Tell Destiny that you understand, and that this space is different — you are here to listen, not to give advice.",
+          text: "Reassure Janis that everything shared in this session stays between you.",
           body: [
-            "Telling Destiny this space is different is a promise, not a demonstration. Empathy does not explain itself; it shows up."
+            "Practitioners cannot promise unconditional confidentiality to any individual, including youth. Making this promise creates a false expectation and may result in an ethical violation if disclosure later becomes necessary. Veracity requires honesty about the limits of confidentiality from the outset."
           ]
         },
         {
           letter: "B",
           state: "best",
-          text: "Reflect that it sounds like she has been surrounded by a lot of voices telling her what to do, and not many people who have just tried to understand what it is actually like for her.",
+          text: "Acknowledge Janis’s courage in sharing, explain the limits of confidentiality honestly, and clarify what can and cannot be kept private.",
           body: [
-            "Destiny is not asking to be convinced that this space is different; she is expressing that she feels unseen. Reflecting on what she just shared is the beginning of empathy. It shows her that you heard not just the complaint but the loneliness underneath it."
+            "The practitioner honors Janis’s disclosure while being transparent about confidentiality limits. Always follow regulations and policy. Sexual orientation disclosures do not automatically require caregiver notification. Being honest now protects both Janis and the practitioner."
           ]
         },
         {
           letter: "C",
           state: "reconsider",
-          text: "Ask Destiny what she means by “nobody gets it” so you can better understand her experience.",
+          text: "Tell Janis you will need to inform their caregiver because they are a minor and their caregiver is their legal guardian.",
           body: [
-            "A question here, even a well-meaning one, may feel like another adult asking her to explain herself. Destiny has just told you that people do not get what it is like for her. Asking for clarification before acknowledging the feeling risks confirming exactly what she said."
+            "Being a minor does not automatically eliminate confidentiality protections. Disclosing Janis’s personal information without clinical or legal justification is an ethical violation that could cause serious harm and damage trust. The practitioner should review applicable regulations and consult with their supervisor before making any disclosure."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny looks up briefly, then back down. After a pause, she speaks."
+        "After you explain confidentiality limits, Janis becomes tense."
       ],
-      dialogue: "My mom and I got into it again last night. She kept saying I was being dramatic. I told her I was really struggling, and she said I want attention. I didn’t say anything after that. I just went to my room.",
-      question: "Destiny has just shared something painful — going to her mother with something real and being told it was not real. She went quiet after. What do you do?",
+      dialogue: "So, you WILL tell my parent? What’s the point of even talking to you? I thought I could trust you. Maybe I should just stop sharing things.",
+      question: "Janis is pulling back and questioning the relationship. What do you do?",
       choices: [
         {
           letter: "A",
           state: "best",
-          text: "Validate that it makes sense that she went quiet. Being told your feelings aren’t real can feel painful. Going to your room can feel like the safest way to protect yourself.",
+          text: "Validate Janis’s reaction, clarify specifically what would and would not trigger a disclosure, and reassure that the relationship is still safe.",
           body: [
-            "Destiny did not just have a hard conversation with her mother — she reached out for support and was told her experience was not real. Shutting down was the only reasonable response available to her in that moment. Naming that directly is validation."
+            "The practitioner acknowledges Janis’s fear without making false promises. Clarifying, for example, that disclosures of imminent safety risks are the primary trigger for mandatory reporting gives Janis accurate information. This approach preserves trust through honesty rather than reassurance, which is the foundation of an ethical practitioner-individual relationship."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Empathize by saying you can hear how much that hurt, and then ask what the argument was originally about so you have the full picture.",
+          text: "Back down and tell Janis you will not share anything to restore trust.",
           body: [
-            "Empathy is the right start. But moving quickly to the details shifts attention away from what mattered most — she tried to be vulnerable and felt dismissed. Stay with the emotional experience before asking for more information."
+            "Reversing a clear explanation of confidentiality limits to manage Janis’s emotional reaction is not ethically permissible. The practitioner cannot promise full confidentiality after already explaining its limits. Doing so undermines veracity and creates a false sense of safety."
           ]
         },
         {
           letter: "C",
           state: "reconsider",
-          text: "Normalize the experience by letting her know that a lot of teenagers feel misunderstood by their parents and that it gets easier as she gets older.",
+          text: "Redirect the conversation to another topic to give Janis time to calm down.",
           body: [
-            "Normalizing shifts away from her specific experience and toward general reassurance. In this moment, she needs validation — acknowledgment of what happened and how it felt."
+            "Avoiding the tension in this moment leaves Janis’s concerns unaddressed and the practitioner’s obligations unexplained. Redirecting without resolution does not serve Janis’s well-being or the integrity of the professional relationship. The practitioner must stay present and address the concern directly."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny is quiet for a moment. Then, without looking up, she speaks. She pauses, then says the last sentence very quietly."
+        "The next day, Janis’s caregiver calls you directly and applies significant pressure."
       ],
-      dialogue: "She always does that. Every time I try to say something real, she makes it about her or calls me dramatic. So, I don’t really tell her anything anymore. I don’t really tell anyone anything.<br><br>I don’t know why I’m telling you.",
-      question: "Destiny just said she stopped telling people things, and then realized she is telling you. This is a fragile moment of trust. What do you do?",
+      dialogue: "I am Janis’s legal guardian, and I am paying for these services. I have a right to know everything that is discussed in those sessions. I want to know what is really going on with my child, and I want to know now.",
+      question: "The caregiver is demanding full disclosure. What do you do?",
       choices: [
         {
           letter: "A",
-          state: "best",
-          text: "Reflect that she may have learned that sharing leads to being hurt, so she stopped — and that telling you now, even without knowing why, might mean part of her is still looking for somewhere safe.",
+          state: "caution",
+          text: "Share what Janis disclosed because the caregiver is the legal guardian and has the right to that information.",
           body: [
-            "This response reflects both her protective shutdown and the fragile trust in this moment. Staying with that meaning strengthens the connection rather than redirecting it."
+            "Legal guardianship and financial responsibility do not override confidentiality protections. Disclosing Janis’s personal disclosures, particularly sensitive identity-related information, without proper authorization constitutes a serious ethical violation and could cause direct harm to Janis."
           ]
         },
         {
           letter: "B",
-          state: "reconsider",
-          text: "Thank Destiny for sharing and let her know that whatever she tells you stays between the two of you.",
+          state: "best",
+          text: "Acknowledge the caregiver’s concerns, clearly explain confidentiality obligations, and offer to discuss how they can be appropriately involved in Janis’s services.",
           body: [
-            "Reassuring her about confidentiality is appropriate at times, but she didn’t question privacy. She noticed something about herself. Shifting to logistics moves away from the emotional moment instead of staying with it."
+            "Applicable laws and agency policies must always guide this decision. The practitioner can acknowledge the caregiver’s concerns without disclosing protected information.",
+            "Explaining confidentiality obligations clearly and offering an appropriate path for caregiver involvement — such as a joint session with Janis’s agreement — maintains ethical practice while keeping the door open for family engagement. The practitioner should document this call and consult with their supervisor."
           ]
         },
         {
           letter: "C",
           state: "reconsider",
-          text: "Tell Destiny that you are glad she is telling you, and that it shows real courage to open up after being hurt like that.",
+          text: "Tell the caregiver you cannot discuss the matter and end the call.",
           body: [
-            "Calling it ‘courage’ is well-intentioned but evaluative. It interprets her behavior instead of reflecting her experience. In this moment, she needs you to stay close to what she said, not add meaning to it."
+            "Ending the call without explanation does not fulfill the practitioner’s professional obligation to communicate clearly about confidentiality. While the practitioner is not required to disclose protected information, they should explain their obligations respectfully and offer an appropriate path forward before ending the conversation."
           ]
         }
       ]
     },
     {
       cues: [
-        "Destiny finally looks up. Her expression has shifted — not open, but less guarded. She speaks, pauses, then looks down again."
+        "At the next session, Janis arrives looking guarded. Before you can speak, they say:"
       ],
-      dialogue: "I guess. Maybe.<br><br>No one’s ever said it like that before. Like… that it makes sense, I stopped.<br><br>My mom’s not a bad person. She doesn’t know how to… I don’t know. She’s got her own stuff.",
-      question: "Destiny just did something important. She acknowledged her own pain and made room for her mother at the same time. This moment happened because she felt safe enough to keep talking. What do you do?",
+      dialogue: "My parent told me they called you. Did you tell them anything? Because if you did, I’m done. I knew I shouldn’t have trusted you.",
+      question: "Janis is upset, scared, and testing whether you held the practitioner-individual boundary. What do you do?",
       choices: [
         {
           letter: "A",
           state: "reconsider",
-          text: "Affirm that her mother sounds like she is doing her best and that understanding that may help Destiny have a better relationship with her.",
+          text: "Tell Janis their caregiver called, but minimize what was discussed to avoid upsetting them any further.",
           body: [
-            "Saying her mother is ‘doing her best’ adds meaning that Destiny did not offer. She acknowledged her mother’s struggles, but she did not excuse her behavior. Adding that frame shifts the focus away from Destiny’s experience."
+            "Minimizing or being vague about what occurred is a violation of veracity. If the practitioner handled the caregiver’s call correctly, there is nothing to hide and being evasive will erode trust far more than honest transparency will. The practitioner must be direct and accurate about what happened."
           ]
         },
         {
           letter: "B",
           state: "reconsider",
-          text: "Suggest that since she is thinking this way now, it might be helpful to talk about what she needs from her mother in the future.",
+          text: "Apologize to Janis and tell them their caregiver caught you off guard, and you may have said more than you should have.",
           body: [
-            "Moving to planning turns a meaningful emotional moment into a task. Problem-solving can come later. Right now, the clinical priority is to acknowledge what just happened."
+            "If the practitioner handled the parent’s call correctly, this apology is inaccurate and creates unnecessary alarm. If the practitioner did disclose something they should not have, a vague apology is insufficient. The situation requires immediate consultation with the supervisor and honest disclosure to Janis about what occurred."
           ]
         },
         {
           letter: "C",
           state: "best",
-          text: "Reflect that she is holding two things at once — that what happened hurt her and that her mother has her own struggles — and that being able to do that is not a small thing.",
+          text: "Be honest and confirm that their caregiver did call. Explain that no confidential information was shared and describe what was said to reaffirm your commitment to the professional relationship.",
           body: [
-            "Destiny started this conversation guarded and hurt. Now she’s able to hold both her pain and her mom’s humanity at the same time. Reflecting that moment shows you noticed what she just did, without judging it or turning it into a lesson. It keeps the focus on her experience and helps her feel safe to keep talking."
+            "Transparency here is both ethical and therapeutic. Janis deserves an honest account of what happened. Confirming that the boundary was held — and explaining exactly how — rebuilds trust through action, not just words. This moment becomes an opportunity to reinforce that the practitioner can be relied upon even under pressure."
           ]
         }
       ]
     }
   ],
   resolution: {
-    closingCues: "Destiny looks out the window for a moment, then back at you.",
-    closingQuote: "I might come back next week.",
-    closingTail: "It’s not a commitment. But it’s something. The session ends.",
-    takeaway: "Destiny came in, and no one could understand her. Empathy didn’t fix that — it met it. Validation didn’t solve the conflict with her mother — it let her know her reaction made sense. Together, they created just enough safety for her to keep talking. That’s what these skills make possible."
+    closingCues: "Janis is quiet for a moment. Then they let out a slow breath.",
+    closingQuote: "So… you didn’t tell them?",
+    closingTail: "You explain that the sessions are confidential and that you could not share what you discuss without their agreement. Janis nods slowly. The session continues. Trust holds.",
+    takeaway: "You navigated one of the most difficult situations in behavioral health practice — maintaining professional boundaries under direct pressure from a caregiver while remaining honest and trustworthy with the individual. This is what ethical practice looks like."
   }
 };
 </script>

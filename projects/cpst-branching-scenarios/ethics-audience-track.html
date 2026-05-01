@@ -1017,7 +1017,8 @@ const state = {
   chosenChoiceIdx: null,      // single-select decisions
   chosenChoiceIdxs: [],       // multi_response decisions: array of selected indices
   attemptedChoices: [],       // tracks choice indices attempted on current decision
-  picks: []
+  picks: [],
+  completionFired: false      // true once postMessage('complete') has been sent to Rise
 };
 
 // Active scenario shortcut once an audience is picked
@@ -1477,6 +1478,23 @@ function screenTakeaway() {
   renderProgress();
   const sc = getScenario();
   const r = sc.resolution;
+
+  // Tell Rise the interaction is complete. Fires on first arrival at
+  // the takeaway screen for whichever scenario the learner picked.
+  // Once any one of the three audience scenarios reaches resolution,
+  // the activity is considered complete.
+  // Authoring note: the Rise Continue block MUST be placed immediately
+  // after this HTML block — no spacer, text, or other block between
+  // them — or the gate may not fire.
+  if (!state.completionFired) {
+    try {
+      window.parent.postMessage({ type: "complete" }, "*");
+      state.completionFired = true;
+    } catch (e) {
+      console.warn("[CPST audience-picker] completion postMessage failed:", e);
+    }
+  }
+
   setScreen(`
     <section class="screen scr-takeaway" aria-labelledby="takeaway-heading">
       <h2 id="takeaway-heading" class="takeaway-heading" data-focus>Reflection</h2>

@@ -570,48 +570,26 @@
     font-style: italic;
   }
 
-  /* PICKER screen — 3 audience cards stacked. Same card aesthetic as
-     the choice cards inside scenarios; pill-label aesthetic from the
-     CPST Mighty section-pill pattern. */
+  /* PICKER screen — 3 audience cards floating on a transparent ground.
+     The .frame's white card and drop shadow are suppressed via a body
+     data attribute toggled in JS, so each picker card stands on its
+     own as a self-contained tile. */
   .scr-picker {
-    background: var(--canvas);
-    padding: 56px 40px;
+    background: transparent;
+    padding: 24px 12px;
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
-  /* Picker scenario pill — section-pill aesthetic from CPST Mighty.
-     Identifies the scenario activity, separate from the directive below.
-     align-self: flex-start so the pill stays its content width inside the
-     flex-column .scr-picker (whose default align-items: stretch would
-     otherwise pull it full-width). */
-  .picker-scenario-pill {
-    align-self: flex-start;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 1.8px;
-    text-transform: uppercase;
-    color: var(--interactive);
-    background: rgba(11, 106, 138, 0.08);
-    padding: 5px 14px;
-    border-radius: 100px;
-    margin: 0 0 18px;
+  body[data-step="picker"] {
+    background: transparent;
   }
-  .picker-heading {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--structure);
-    letter-spacing: -0.012em;
-    line-height: 1.3;
-    margin: 0 0 8px;
-    max-width: 60ch;
-    text-wrap: pretty;
+  body[data-step="picker"] .frame {
+    background: transparent;
+    box-shadow: none;
   }
-  .picker-instruction {
-    font-size: 16px;
-    color: var(--muted);
-    margin: 0 0 28px;
-    max-width: 60ch;
+  body[data-step="picker"] .screen-wrap {
+    overflow: visible;
   }
   .picker-options {
     display: flex;
@@ -620,9 +598,9 @@
   }
   .picker-card {
     background: var(--canvas);
-    border: 1.5px solid var(--hairline);
-    border-radius: 8px;
-    padding: 18px 20px;
+    border: none;
+    border-radius: 12px;
+    padding: 22px 24px;
     text-align: left;
     cursor: pointer;
     width: 100%;
@@ -632,17 +610,19 @@
     gap: 16px;
     font: inherit;
     color: var(--text);
-    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+    box-shadow: 0 1px 2px rgba(22,25,62,.06), 0 8px 24px -8px rgba(22,25,62,.18);
+    transition: box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
   }
   .picker-card:hover {
-    border-color: var(--interactive);
-    background: var(--tint);
+    background: var(--canvas);
+    box-shadow: 0 2px 4px rgba(11,106,138,.12), 0 14px 32px -8px rgba(11,106,138,.24);
+    transform: translateY(-2px);
   }
   .picker-card:focus-visible {
     outline: 3px solid var(--interactive);
-    outline-offset: 2px;
+    outline-offset: 3px;
   }
-  .picker-card:active { transform: translateY(1px); }
+  .picker-card:active { transform: translateY(0); }
   .picker-card-info { display: flex; flex-direction: column; gap: 6px; }
   .picker-pill {
     display: inline-block;
@@ -1008,6 +988,9 @@ const screenWrap = document.getElementById("screenWrap");
 const footer     = document.getElementById("footer");
 const progress   = document.getElementById("progress");
 const announcer  = document.getElementById("announcer");
+// Reflect the current step on <body> so CSS can style the frame
+// differently on the picker (transparent, no card chrome).
+function syncBodyStep() { document.body.dataset.step = state.step; }
 const REDUCED_MOTION = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
@@ -1130,6 +1113,7 @@ function setFooter(html) { footer.innerHTML = html; }
  * ============================================================ */
 function screenPicker() {
   state.step = "picker";
+  syncBodyStep();
   state.audienceSlug = null;
   state.decisionIdx = 0;
   state.chosenChoiceIdx = null;
@@ -1155,16 +1139,14 @@ function screenPicker() {
   `;}).join("");
 
   setScreen(`
-    <section class="screen scr-picker" aria-labelledby="picker-heading">
-      <span class="picker-scenario-pill">${PICKER.pill}</span>
-      <h2 id="picker-heading" class="picker-heading" data-focus tabindex="-1">${PICKER.heading}</h2>
-      <p class="picker-instruction">${PICKER.instruction}</p>
-      <div class="picker-options" role="group" aria-label="Population options">
+    <section class="screen scr-picker" aria-labelledby="picker-sr-heading">
+      <h2 id="picker-sr-heading" class="visually-hidden" data-focus tabindex="-1">${PICKER.instruction}</h2>
+      <div class="picker-options" role="group" aria-label="${PICKER.instruction}">
         ${cards}
       </div>
     </section>
   `, {
-    announce: `${PICKER.heading} ${PICKER.instruction}`,
+    announce: PICKER.instruction,
     afterMount: () => {
       screenWrap.querySelectorAll(".picker-card").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -1181,6 +1163,7 @@ function screenPicker() {
 
 function screenSetup() {
   state.step = "setup";
+  syncBodyStep();
   state.lastSelection = null;
   renderProgress();
   const sc = getScenario();
@@ -1202,6 +1185,7 @@ function screenSetup() {
 
 function screenDialogue() {
   state.step = "dialogue";
+  syncBodyStep();
   state.attemptedChoices = [];
   renderProgress();
   const sc = getScenario();
@@ -1234,6 +1218,7 @@ function screenDialogue() {
 
 function screenChoices() {
   state.step = "choices";
+  syncBodyStep();
   const sc = getScenario();
   const idx = state.decisionIdx;
   const d = sc.decisions[idx];
@@ -1317,6 +1302,7 @@ function screenChoices() {
 
 function screenFeedback() {
   state.step = "feedback";
+  syncBodyStep();
   const sc = getScenario();
   const idx = state.decisionIdx;
   const d = sc.decisions[idx];
@@ -1444,6 +1430,7 @@ function screenFeedback() {
 
 function screenClosing() {
   state.step = "closing";
+  syncBodyStep();
   renderProgress();
   const sc = getScenario();
   const r = sc.resolution;
@@ -1475,6 +1462,7 @@ function screenClosing() {
 
 function screenTakeaway() {
   state.step = "takeaway";
+  syncBodyStep();
   renderProgress();
   const sc = getScenario();
   const r = sc.resolution;

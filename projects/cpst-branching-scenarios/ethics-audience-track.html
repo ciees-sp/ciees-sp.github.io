@@ -570,26 +570,16 @@
     font-style: italic;
   }
 
-  /* PICKER screen — 3 audience cards floating on a transparent ground.
-     The .frame's white card and drop shadow are suppressed via a body
-     data attribute toggled in JS, so each picker card stands on its
-     own as a self-contained tile. */
+  /* PICKER screen — picker options live inside the same white frame
+     that morphs into the scenario card. No pill, heading, or directions
+     above the options; the directive is exposed to screen readers via
+     a visually-hidden h2 and the live region announcer. */
   .scr-picker {
-    background: transparent;
-    padding: 24px 12px;
+    background: var(--canvas);
+    padding: 56px 40px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-  }
-  body[data-step="picker"] {
-    background: transparent;
-  }
-  body[data-step="picker"] .frame {
-    background: transparent;
-    box-shadow: none;
-  }
-  body[data-step="picker"] .screen-wrap {
-    overflow: visible;
   }
   .picker-options {
     display: flex;
@@ -598,9 +588,9 @@
   }
   .picker-card {
     background: var(--canvas);
-    border: none;
-    border-radius: 12px;
-    padding: 22px 24px;
+    border: 1.5px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 20px;
     text-align: left;
     cursor: pointer;
     width: 100%;
@@ -610,19 +600,17 @@
     gap: 16px;
     font: inherit;
     color: var(--text);
-    box-shadow: 0 1px 2px rgba(22,25,62,.06), 0 8px 24px -8px rgba(22,25,62,.18);
-    transition: box-shadow 160ms ease, transform 160ms ease, background 160ms ease;
+    transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
   }
   .picker-card:hover {
-    background: var(--canvas);
-    box-shadow: 0 2px 4px rgba(11,106,138,.12), 0 14px 32px -8px rgba(11,106,138,.24);
-    transform: translateY(-2px);
+    border-color: var(--interactive);
+    background: var(--tint);
   }
   .picker-card:focus-visible {
     outline: 3px solid var(--interactive);
-    outline-offset: 3px;
+    outline-offset: 2px;
   }
-  .picker-card:active { transform: translateY(0); }
+  .picker-card:active { transform: translateY(1px); }
   .picker-card-info { display: flex; flex-direction: column; gap: 6px; }
   .picker-pill {
     display: inline-block;

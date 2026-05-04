@@ -1,0 +1,280 @@
+:root {
+  --mighty-theme-color: #16193e;
+  --mighty-color-style-gh_aIMPKypz_N51Pl8ahD: #0B6A8A;
+  --mighty-color-style-gOPDoU5CEwycC8awMpKmH: #48AEE1;
+  --mighty-color-style-hH_PvZFuUvSzDqrlyaFV0: #E0EAF0;
+  --mighty-color-style-b2ot33Ngf-RMhS2W71EzC: #DCEEF0;
+}
+
+/* Type Style: display */
+.mighty-type-style-display {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #16193E;
+
+font-weight: 700;
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-display {
+    font-size: 48px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-display {
+    font-size: 42px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-display {
+    font-size: 36px;
+}
+}
+
+
+/* Type Style: heading-large */
+.mighty-type-style-heading-large {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #16193E;
+
+font-weight: 700;
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-heading-large {
+    font-size: 32px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-heading-large {
+    font-size: 29px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-heading-large {
+    font-size: 27px;
+}
+}
+
+
+/* Type Style: heading */
+.mighty-type-style-heading {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #16193E;
+
+font-weight: 700;
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-heading {
+    font-size: 28px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-heading {
+    font-size: 27px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-heading {
+    font-size: 26px;
+}
+}
+
+
+/* Type Style: subheading */
+.mighty-type-style-subheading {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #16193E;
+
+font-weight: 400;
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-subheading {
+    font-size: 18px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-subheading {
+    font-size: 17px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-subheading {
+    font-size: 17px;
+}
+}
+
+
+/* Type Style: body */
+.mighty-type-style-body {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #222222;
+
+
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-body {
+    font-size: 18px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-body {
+    font-size: 17px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-body {
+    font-size: 17px;
+}
+}
+
+
+/* Type Style: body-small */
+.mighty-type-style-body-small {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #222222;
+
+
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-body-small {
+    font-size: 16px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-body-small {
+    font-size: 16px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-body-small {
+    font-size: 16px;
+}
+}
+
+
+/* Type Style: micro */
+.mighty-type-style-micro {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #555555;
+
+
+
+
+
+
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-micro {
+    font-size: 16px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-micro {
+    font-size: 16px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-micro {
+    font-size: 16px;
+}
+}
+
+
+/* Type Style: button */
+.mighty-type-style-button {
+
+    font-family: "Plus Jakarta Sans" !important;
+    --mighty-font-family: "Plus Jakarta Sans" !important;
+color: #FFFFFF;
+
+font-weight: 700;
+
+
+letter-spacing: 1.5px;
+text-transform: uppercase;
+
+}
+
+@media (min-width: 1280px) {
+.mighty-type-style-button {
+    font-size: 12px;
+}
+}
+
+@media (min-width: 600px) and (max-width: 1279px) {
+.mighty-type-style-button {
+    font-size: 12px;
+}
+}
+
+@media (max-width: 599px) {
+.mighty-type-style-button {
+    font-size: 12px;
+}
+}
+/** Interactive Body Font **/
+body { font-family: "Plus Jakarta Sans" }

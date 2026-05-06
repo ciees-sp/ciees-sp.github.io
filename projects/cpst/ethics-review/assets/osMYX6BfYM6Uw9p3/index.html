@@ -420,7 +420,7 @@
     line-height: 1.2;
   }
 
-  /* CALLOUT BOXES — "In practice" and "In tension" share the same
+  /* CALLOUT BOXES — "In practice" and "Tension" share the same
      tinted-box visual language so they read as parallel content
      blocks. Only the overline label distinguishes them. */
   .reveal-practice,
@@ -623,7 +623,7 @@
               <p id="reveal-practice"></p>
             </div>
             <div class="reveal-tension" id="reveal-tension-box">
-              <span class="callout-label" id="tension-callout-label">In tension</span>
+              <span class="callout-label" id="tension-callout-label">Tension</span>
               <p id="reveal-tension"></p>
             </div>
             <div class="tension-pills-row" id="tension-pills-row">
@@ -789,13 +789,13 @@ function activate(key) {
   const tensionCalloutLabel = document.getElementById('tension-callout-label');
   const tensionPillsRow = document.getElementById('tension-pills-row');
   if (hasConnections) {
-    tensionCalloutLabel.textContent = 'In tension';
+    tensionCalloutLabel.textContent = 'Tension';
     tensionPillsRow.style.display = '';
     tensionPills.innerHTML = data.connections
       .map(c => `<span class="tension-pill">${principles[c].title}</span>`)
       .join('');
   } else {
-    tensionCalloutLabel.textContent = data.overline || 'In tension';
+    tensionCalloutLabel.textContent = data.overline || 'Tension';
     tensionPillsRow.style.display = 'none';
     tensionPills.innerHTML = '';
   }

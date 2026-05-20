@@ -236,6 +236,7 @@
     <li><a href="#content">Content blocks</a></li>
     <li><a href="#interactive">Interactive block</a></li>
     <li><a href="#scenario">Scenario block</a></li>
+    <li><a href="#video">Video block</a></li>
     <li><a href="#reflection">Reflection</a></li>
     <li><a href="#takeaways">Takeaways (fixed)</a></li>
   </ul>
@@ -296,7 +297,7 @@
         <tr><td><span class="swatch-inline" style="background:#F4F4F4"></span>Gray body</td><td>Pick the <strong>Gray</strong> preset</td></tr>
         <tr><td><span class="swatch-inline" style="background:#DCEEF0"></span>Tint Teal</td><td><strong>Custom</strong> → enter <code class="inline">#DCEEF0</code> (or pick from Recently used)</td></tr>
         <tr><td><span class="swatch-inline" style="background:#E0EAF0"></span>Tint Blue</td><td><strong>Custom</strong> → enter <code class="inline">#E0EAF0</code></td></tr>
-        <tr><td><span class="swatch-inline" style="background:#16193E"></span>Dark (video, v2)</td><td><strong>Custom</strong> → enter <code class="inline">#16193E</code></td></tr>
+        <tr><td><span class="swatch-inline" style="background:#16193E"></span>Dark (video)</td><td><strong>Custom</strong> → enter <code class="inline">#16193E</code></td></tr>
       </tbody>
     </table>
     <p style="font-size:13px;margin:0 0 16px;color:var(--tbd-label);"><strong>Don't use "Theme tint."</strong> That's a different auto-generated color. The CPST washed tints only come from Custom + the exact hex above.</p>
@@ -336,7 +337,7 @@
         <tbody>
           <tr><td><strong>Interactive</strong></td><td><span class="swatch-inline" style="background:#DCEEF0"></span>Tint (teal or blue)</td><td>Slant in + slant out</td><td>INTERACTIVE</td></tr>
           <tr><td><strong>Scenario</strong></td><td><span class="swatch-inline" style="background:#FFFFFF"></span>White</td><td>Continue gates only</td><td>SCENARIO</td></tr>
-          <tr><td><strong>Video</strong> <span class="tbd-tag">v2</span></td><td><span class="swatch-inline" style="background:#16193E"></span>Dark (structure)</td><td>Slant in + slant out</td><td>VIDEO</td></tr>
+          <tr><td><strong>Video</strong></td><td><span class="swatch-inline" style="background:#16193E"></span>Dark (structure)</td><td>Slant in + slant out</td><td>VIDEO</td></tr>
           <tr><td><strong>Standalone content</strong></td><td><span class="swatch-inline" style="background:#FFFFFF"></span>White, or <span class="swatch-inline" style="background:#F4F4F4"></span>gray</td><td>Continue gate + flip</td><td>—</td></tr>
         </tbody>
       </table>
@@ -597,6 +598,51 @@
           <li><span class="k">Brackets</span><span class="v">Continue gates — no slants</span></li>
         </ul>
         <p class="why">Same Add-code engine as Interactive; the difference is the white bg, the illustrative photo, the SCENARIO overline, and the Continue gates instead of slant transitions. Scenarios stay on the white plane — the gate and the overline carry the demarcation.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- VIDEO -->
+  <section id="video">
+    <div class="section-header">
+      <h2>Video block</h2>
+      <p class="section-purpose">The same shape as the Interactive block, with three differences: a Statement D overline (the bright-blue pill, the only one that reads on dark), a Vimeo embed in place of the Add code block, and a dark #16193E background. Bracketed by slant transitions, either direction.</p>
+    </div>
+
+    <div class="recipe-panel">
+      <h4>Assembly</h4>
+      <ul class="recipe-list">
+        <li><span class="step">▱</span><span class="what">Slant transition in</span><span class="meta">F2 A20 · 10/10 · either direction</span></li>
+        <li><span class="step">1</span><span class="what">Statement D overline → "Video"</span><span class="meta">padding 0 · bg dark</span></li>
+        <li><span class="step">2</span><span class="what">Paragraph with heading (section title)</span><span class="meta">padding 0 · width Med · heading Large</span></li>
+        <li><span class="step">3</span><span class="what">Vimeo embed block</span><span class="meta">padding 0 · bg dark</span></li>
+        <li><span class="step">▱</span><span class="what">Slant transition out</span><span class="meta">same direction as slant in</span></li>
+      </ul>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--light" style="padding:0"><div class="mock-slant"><svg viewBox="0 0 760 50" preserveAspectRatio="none"><polygon points="0,50 760,10 760,50 0,50" fill="#16193E"/></svg><span class="tlabel">Slant in</span></div></div>
+        <div class="mock mock--structure"><div class="mock-inner" style="padding:32px 30px 16px"><span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:#fff;background:var(--accent);padding:5px 14px;border-radius:100px;">Video</span></div></div>
+        <div class="mock mock--structure" style="margin:0"><div class="mock-inner no-pad"><h2>Watch: Ethics in the Field</h2></div></div>
+        <div class="mock mock--structure" style="margin:0"><div class="mock-inner no-pad" style="padding-bottom:16px"><div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.18);border-radius:8px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-size:14px;letter-spacing:0.5px;">▶ &nbsp;Vimeo embed</div></div></div>
+        <div class="mock mock--structure" style="padding:0"><div class="mock-slant"><svg viewBox="0 0 760 50" preserveAspectRatio="none"><polygon points="0,50 760,10 760,50 0,50" fill="#FFFFFF"/></svg><span class="tlabel">Slant out · same direction</span></div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Video block</div>
+        <h3>Slant · Overline · Heading · Vimeo · Slant</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Background</span><span class="v">Dark — Custom <code>#16193E</code></span></li>
+          <li><span class="k">Overline</span><span class="v">Statement D → "Video" (bright-blue pill)</span></li>
+          <li><span class="k">Embed</span><span class="v">Vimeo embed block</span></li>
+          <li><span class="k">Stack padding</span><span class="v"><code>0</code> on overline, heading, embed</span></li>
+          <li><span class="k">Slant in/out</span><span class="v">Sharp · F2 · A20 · 10/10 · either direction</span></li>
+        </ul>
+        <div class="mighty-tbd">
+          <div class="tbd-head">Statement D overline — not C</div>
+          Video uses Statement <strong>D</strong>. It's styled in the global Custom Code as a bright-blue (#48AEE1) pill with white text — the only pill that reads on the dark background. Set the text white in the editor so it's visible while authoring. Same four steps as the C pill: choose variant D, type "Video," zero all padding, set the background to dark.
+        </div>
+        <p class="why">Identical to the Interactive block except for the dark background, the Statement D pill, and a Vimeo embed where the Add code block would be. Slants run either direction — vary them for interest, same as Interactive.</p>
       </aside>
     </div>
   </section>

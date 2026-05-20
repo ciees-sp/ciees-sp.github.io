@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Module — Annotated Lesson Template</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --interactive-hover: #085a75;
+    --accent: #48AEE1;
+    --tint-blue: #E0EAF0;
+    --tint-teal: #DCEEF0;
+    --gray-bg: #F4F4F4;
+    --white: #FFFFFF;
+    --text: #1B1B1F;
+    --text-muted: rgba(27,27,31,0.6);
+    --hairline: rgba(27,27,31,0.08);
+
+    --annotation-bg: #FFFCF0;
+    --annotation-border: #E8DFB8;
+    --annotation-label: #8A6F2A;
+    --tbd-bg: #FFF0E8;
+    --tbd-border: #E8B89A;
+    --tbd-label: #8A4A2A;
+
+    --block-width: 760px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: #FAFAFA;
+    color: var(--text);
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, sans-serif;
+    font-size: 16px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .doc-header {
+    background: var(--structure); color: white;
+    padding: 48px 60px 40px;
+    border-bottom: 6px solid var(--accent);
+  }
+  .doc-header h1 { font-size: 36px; font-weight: 700; margin: 0 0 8px; color: var(--accent); }
+  .doc-header .subtitle { font-size: 17px; font-weight: 400; color: rgba(255,255,255,0.85); margin: 0 0 24px; max-width: 820px; }
+  .doc-header .meta { font-size: 13px; color: rgba(255,255,255,0.65); letter-spacing: 0.4px; text-transform: uppercase; }
+
+  .toc {
+    background: white; padding: 20px 60px;
+    border-bottom: 1px solid var(--hairline);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 1px 0 var(--hairline);
+  }
+  .toc-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
+  .toc-list { display: flex; flex-wrap: wrap; gap: 8px 18px; list-style: none; margin: 0; padding: 0; }
+  .toc-list a { color: var(--interactive); text-decoration: none; font-size: 14px; font-weight: 600; }
+  .toc-list a:hover { text-decoration: underline; }
+
+  .doc-body { max-width: 1400px; margin: 0 auto; padding: 48px 60px 80px; }
+
+  .how-to {
+    background: white; border-left: 4px solid var(--accent);
+    padding: 24px 28px; margin-bottom: 40px; border-radius: 0 8px 8px 0;
+  }
+  .how-to h2 { font-size: 20px; font-weight: 700; margin: 0 0 12px; color: var(--structure); }
+  .how-to p { margin: 0 0 10px; font-size: 15px; }
+  .how-to p:last-child { margin-bottom: 0; }
+
+  .section-header { margin: 56px 0 24px; padding-bottom: 16px; border-bottom: 2px solid var(--structure); }
+  .section-header .label {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--interactive);
+    background: rgba(11,106,138,0.08); padding: 4px 12px; border-radius: 100px; margin-bottom: 12px;
+  }
+  .section-header .label.fixed { color: #2A6A4A; background: rgba(42,106,74,0.10); }
+  .section-header .label.flex { color: #6A4F8A; background: rgba(106,79,138,0.10); }
+  .section-header h2 { font-size: 28px; font-weight: 700; margin: 0 0 8px; color: var(--structure); }
+  .section-header .section-purpose { font-size: 16px; color: var(--text-muted); max-width: 820px; margin: 0; }
+
+  .block-row { display: grid; grid-template-columns: 1fr 380px; gap: 32px; align-items: start; margin-bottom: 4px; }
+  .block-visual { background: white; border: 1px solid var(--hairline); border-radius: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+  .block-annotation { background: var(--annotation-bg); border: 1px solid var(--annotation-border); border-radius: 8px; padding: 16px 18px; font-size: 13.5px; position: sticky; top: 86px; }
+  .block-annotation .ann-label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; color: var(--annotation-label); text-transform: uppercase; margin-bottom: 8px; }
+  .block-annotation h3 { font-size: 17px; font-weight: 700; margin: 0 0 12px; color: var(--structure); }
+  .block-annotation .why { font-size: 13px; color: var(--text-muted); margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--annotation-border); line-height: 1.5; }
+
+  .ann-settings { margin: 0; padding: 0; list-style: none; }
+  .ann-settings li { display: grid; grid-template-columns: 120px 1fr; gap: 10px; padding: 4px 0; font-size: 13px; border-bottom: 1px dotted rgba(0,0,0,0.06); }
+  .ann-settings li:last-child { border-bottom: none; }
+  .ann-settings .k { color: var(--text-muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .ann-settings .v { color: var(--text); font-weight: 500; }
+  .ann-settings .v code, code.inline { background: rgba(0,0,0,0.05); padding: 1px 5px; border-radius: 3px; font-size: 12px; font-family: 'SF Mono', Menlo, Consolas, monospace; }
+
+  .mock { width: 100%; }
+  .mock--tint-teal { background: var(--tint-teal); }
+  .mock--tint-blue { background: var(--tint-blue); }
+  .mock--light { background: white; }
+  .mock--gray { background: var(--gray-bg); }
+  .mock--structure { background: var(--structure); color: white; }
+  .mock-inner { max-width: var(--block-width); margin: 0 auto; padding: 60px 30px; }
+  .mock-inner.tight-top { padding-top: 30px; }
+  .mock-inner.tight-bottom { padding-bottom: 30px; }
+  .mock-inner.no-pad { padding-top: 0; padding-bottom: 0; }
+  .mock-inner.hero { padding: 0; max-width: 100%; }
+
+  .mock h2 { color: var(--structure); font-size: 28px; font-weight: 700; margin: 0 0 16px; line-height: 1.2; }
+  .mock h3 { color: var(--structure); font-size: 20px; font-weight: 700; margin: 0 0 12px; }
+  .mock h4 { color: var(--structure); font-size: 17px; font-weight: 700; margin: 0 0 10px; }
+  .mock p { font-size: 15px; line-height: 1.7; margin: 0 0 12px; }
+  .mock p:last-child { margin-bottom: 0; }
+  .mock.mock--structure h2, .mock.mock--structure h3 { color: var(--accent); }
+
+  .mock-hero { width: 100%; aspect-ratio: 16/9; background: linear-gradient(180deg, rgba(0,0,0,0.05), rgba(0,0,0,0.18)), linear-gradient(135deg, #C9B89A 0%, #8E7D6B 100%); display: flex; align-items: flex-end; justify-content: center; color: rgba(255,255,255,0.85); font-size: 13px; padding-bottom: 16px; font-weight: 500; }
+
+  /* Statement C overline pill — accent text on structure (dark) pill */
+  .mock-pill {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 1.8px;
+    text-transform: uppercase; color: var(--accent); background: var(--structure);
+    padding: 5px 14px; border-radius: 100px; margin-bottom: 14px;
+  }
+
+  .mock-continue { background: var(--structure); color: var(--accent); padding: 18px 32px; text-align: center; border-radius: 0; font-weight: 700; letter-spacing: 1.7px; font-size: 14px; display: block; max-width: 660px; margin: 0 auto; }
+
+  /* Chevron transition (down) */
+  .mock-chevron { position: relative; height: 80px; overflow: hidden; }
+  .mock-chevron svg { width: 100%; height: 100%; display: block; }
+  .mock-chevron .tlabel, .mock-slant .tlabel { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-size: 10px; font-weight: 700; color: var(--interactive); background: rgba(255,255,255,0.9); padding: 3px 9px; border-radius: 4px; letter-spacing: 0.5px; text-transform: uppercase; z-index: 2; border: 1px solid var(--hairline); }
+  .mock-slant { position: relative; height: 50px; overflow: hidden; }
+  .mock-slant svg { width: 100%; height: 100%; display: block; }
+
+  .mock-grid { display: grid; gap: 16px; }
+  .mock-grid--two { grid-template-columns: 1fr 1fr; }
+  .mock-grid--three { grid-template-columns: 1fr 1fr 1fr; }
+  .mock-grid .photo { aspect-ratio: 4/3; background: linear-gradient(135deg, #A8B5C1 0%, #6B7A8A 100%); border-radius: 4px; }
+  .mock-grid .cap { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 6px; text-align: center; }
+
+  .mock-mc { background: white; border-radius: 8px; box-shadow: 0 2px 30px rgba(0,0,0,0.08); padding: 36px 32px; max-width: 660px; margin: 0 auto; }
+  .mock-mc .prompt { background: var(--tint-teal); padding: 16px 20px; border-radius: 4px; margin: -36px -32px 24px; }
+  .mock-mc .prompt-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--interactive); margin-bottom: 6px; }
+  .mock-mc .option { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-bottom: 1px solid var(--hairline); font-size: 15px; }
+  .mock-mc .radio { width: 18px; height: 18px; border: 2px solid rgba(0,0,0,0.3); border-radius: 50%; flex-shrink: 0; }
+  .mock-mc .submit { background: var(--interactive); color: white; padding: 10px 24px; border-radius: 0; font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; display: inline-block; margin-top: 16px; }
+
+  .mock-numbered { list-style: none; padding: 0; margin: 0; }
+  .mock-numbered > .head { font-weight: 700; color: var(--structure); margin-bottom: 16px; }
+  .mock-numbered li { display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+  .mock-numbered .num { width: 36px; height: 36px; border-radius: 50%; background: var(--interactive); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+  .mock-numbered .item-content { padding-top: 5px; font-size: 15px; }
+  .mock-numbered .item-content b { color: var(--text); }
+
+  .mock-divider { display: flex; align-items: center; gap: 16px; max-width: var(--block-width); margin: 0 auto; }
+  .mock-divider .num { width: 56px; height: 56px; border-radius: 50%; background: var(--interactive); color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 24px; }
+  .mock-divider .line { flex: 1; height: 2px; background: var(--structure); }
+
+  .mock-interactive { background: white; border-radius: 12px; padding: 32px; border: 2px dashed var(--tbd-border); text-align: center; color: var(--tbd-label); }
+  .mock-interactive .label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; margin-bottom: 6px; }
+  .mock-interactive .desc { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+  .mock-reflect { background: white; border: 1px solid var(--hairline); border-radius: 8px; padding: 20px; max-width: 660px; margin: 0 auto; }
+  .mock-reflect .field { border: 1px solid var(--hairline); border-radius: 4px; padding: 12px; color: var(--text-muted); font-size: 14px; margin-top: 8px; }
+
+  .chip { display: inline-block; background: rgba(11,106,138,0.10); color: var(--interactive); padding: 2px 8px; border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+
+  .recipe-panel { background: white; border: 1px solid var(--hairline); border-radius: 12px; padding: 24px 28px; margin: 20px 0; }
+  .recipe-panel h4 { font-size: 14px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--interactive); margin: 0 0 16px; }
+  .recipe-list { list-style: none; margin: 0; padding: 0; font-size: 14px; }
+  .recipe-list li { padding: 8px 0; border-bottom: 1px solid var(--hairline); display: grid; grid-template-columns: 36px 1fr 240px; gap: 12px; align-items: center; }
+  .recipe-list li:last-child { border-bottom: none; }
+  .recipe-list .step { color: var(--text-muted); font-weight: 700; font-size: 12px; }
+  .recipe-list .what { font-weight: 600; }
+  .recipe-list .meta { font-size: 12px; color: var(--text-muted); text-align: right; }
+
+  .foundations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+  .foundation-card { background: white; border: 1px solid var(--hairline); border-radius: 12px; padding: 20px 24px; }
+  .foundation-card h3 { font-size: 16px; font-weight: 700; color: var(--structure); margin: 0 0 12px; }
+  .foundation-card .swatches { display: flex; gap: 8px; margin: 12px 0; flex-wrap: wrap; }
+  .foundation-card .sw { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .foundation-card .sw .chipcolor { width: 40px; height: 40px; border-radius: 6px; border: 1px solid var(--hairline); }
+  .foundation-card .sw .lbl { font-size: 9px; color: var(--text-muted); font-family: 'SF Mono', Menlo, monospace; }
+  .foundation-card dl { margin: 0; font-size: 13px; }
+  .foundation-card dt { font-weight: 700; margin-top: 8px; }
+  .foundation-card dd { margin: 0 0 4px; color: var(--text-muted); font-family: 'SF Mono', Menlo, monospace; font-size: 12px; }
+  .type-scale { list-style: none; margin: 0; padding: 0; }
+  .type-scale li { display: flex; align-items: baseline; gap: 12px; padding: 4px 0; border-bottom: 1px dotted var(--hairline); }
+  .type-scale li:last-child { border-bottom: none; }
+  .type-scale .nm { font-weight: 700; color: var(--structure); width: 110px; }
+  .type-scale .px { color: var(--text-muted); font-family: 'SF Mono', Menlo, monospace; font-size: 12px; }
+
+  .pattern-callout { background: #F6F3FA; border: 1px solid #DCD2E8; border-radius: 8px; padding: 16px 18px; margin: 16px 0 24px; font-size: 14px; }
+  .pattern-callout .label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #6A4F8A; margin-bottom: 6px; }
+
+  .map-table { width: 100%; border-collapse: collapse; font-size: 14px; background: white; border-radius: 12px; overflow: hidden; border: 1px solid var(--hairline); }
+  .map-table th { background: var(--structure); color: white; text-align: left; padding: 12px 16px; font-size: 12px; letter-spacing: 0.5px; text-transform: uppercase; }
+  .map-table td { padding: 12px 16px; border-bottom: 1px solid var(--hairline); }
+  .map-table tr:last-child td { border-bottom: none; }
+  .swatch-inline { display: inline-block; width: 14px; height: 14px; border-radius: 3px; vertical-align: middle; margin-right: 6px; border: 1px solid var(--hairline); }
+
+  .checklist { background: white; border: 1px solid var(--hairline); border-radius: 12px; padding: 24px 28px; }
+  .checklist h3 { font-size: 18px; margin: 0 0 12px; color: var(--structure); }
+  .checklist ul { list-style: none; padding: 0; margin: 0; }
+  .checklist li { padding: 8px 0 8px 28px; position: relative; font-size: 14px; border-bottom: 1px dashed var(--hairline); }
+  .checklist li:last-child { border-bottom: none; }
+  .checklist li::before { content: ""; position: absolute; left: 0; top: 11px; width: 16px; height: 16px; border: 1.5px solid var(--interactive); border-radius: 3px; }
+
+  .tbd-tag { display: inline-block; background: var(--tbd-bg); color: var(--tbd-label); border: 1px solid var(--tbd-border); padding: 1px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; }
+  .mighty-tbd { display: block; background: var(--tbd-bg); border-left: 3px solid var(--tbd-border); padding: 10px 12px; border-radius: 0 4px 4px 0; margin-top: 14px; font-size: 12px; color: var(--tbd-label); }
+  .mighty-tbd .tbd-head { font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; font-size: 10px; margin-bottom: 4px; }
+
+  @media print { .toc { display: none; } .block-annotation { position: static; } .doc-body { padding: 24px; } }
+  @media (max-width: 900px) { .block-row { grid-template-columns: 1fr; } .block-annotation { position: static; } .foundations-grid { grid-template-columns: 1fr; } .recipe-list li { grid-template-columns: 36px 1fr; } .recipe-list .meta { grid-column: 2; text-align: left; } }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="meta">How to assemble a CPST lesson in Rise + Mighty</div>
+  <h1>CPST Module — Annotated Lesson Template</h1>
+</header>
+
+<nav class="toc">
+  <div class="toc-label">Contents</div>
+  <ul class="toc-list">
+    <li><a href="#shape">Lesson shape</a></li>
+    <li><a href="#padding">Block padding</a></li>
+    <li><a href="#backgrounds">Backgrounds</a></li>
+    <li><a href="#demarcation">Transition shapes</a></li>
+    <li><a href="#gates">Continue gates</a></li>
+    <li><a href="#introduction">Introduction (fixed)</a></li>
+    <li><a href="#inpractice">In Practice (fixed)</a></li>
+    <li><a href="#content">Content blocks</a></li>
+    <li><a href="#interactive">Interactive block</a></li>
+    <li><a href="#scenario">Scenario block</a></li>
+    <li><a href="#reflection">Reflection</a></li>
+    <li><a href="#takeaways">Takeaways (fixed)</a></li>
+  </ul>
+</nav>
+
+<div class="doc-body">
+
+  <!-- LESSON SHAPE -->
+  <section id="shape">
+    <div class="section-header">
+      <h2>Lesson shape</h2>
+      <p class="section-purpose">Fixed blocks bookend every lesson. The middle is assembled from content blocks. Two chevron transitions sit at the fixed boundaries; slant transitions wrap interactive and video blocks wherever they land.</p>
+    </div>
+
+    <div class="recipe-panel">
+      <h4>Block order</h4>
+      <ul class="recipe-list">
+        <li><span class="step">①</span><span class="what">Introduction <span class="chip">fixed</span></span><span class="meta">hero image + intro text · tinted</span></li>
+        <li><span class="step">▼</span><span class="what">Chevron transition (points down)</span><span class="meta">top boundary</span></li>
+        <li><span class="step">②</span><span class="what">In Practice <span class="chip">fixed</span></span><span class="meta">2-image gallery + heading · tinted</span></li>
+        <li><span class="step">···</span><span class="what">Content blocks, assembled as needed</span><span class="meta">interactive / scenario / content / MC / reflection</span></li>
+        <li><span class="step">▲</span><span class="what">Chevron transition (points up)</span><span class="meta">bottom boundary</span></li>
+        <li><span class="step">③</span><span class="what">Lesson Takeaways <span class="chip">fixed</span></span><span class="meta">heading + summary · tinted</span></li>
+      </ul>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);max-width:820px;">The tinted background bookends the lesson — Introduction, In Practice, and Takeaways all sit on a washed tint, so the learner feels the lesson open and close on the same plane. The middle moves through white and gray.</p>
+  </section>
+
+  <!-- BLOCK PADDING -->
+  <section id="padding">
+    <div class="section-header">
+      <h2>Block padding</h2>
+      <p class="section-purpose">Padding is how blocks group and breathe. Set it in the Format menu. Most blocks use M; reduce one side to join a block to its neighbor; set to zero to fuse blocks into one unit.</p>
+    </div>
+    <table class="map-table" style="margin-bottom:16px">
+      <thead><tr><th>Padding</th><th>Means</th><th>Used for</th></tr></thead>
+      <tbody>
+        <tr><td><code class="inline">60 / 0</code> (M)</td><td>60px top &amp; bottom, 0 sides</td><td>Standalone block, full breathing room</td></tr>
+        <tr><td><code class="inline">60 / 0 / 30</code></td><td>60 top, 30 bottom</td><td>Top of a joined pair — reduced bottom meets the block below</td></tr>
+        <tr><td><code class="inline">30 / 0 / 60</code></td><td>30 top, 60 bottom</td><td>Bottom of a joined pair — reduced top meets the block above</td></tr>
+        <tr><td><code class="inline">30 / 0</code> (S)</td><td>30px top &amp; bottom</td><td>Block joined on both sides</td></tr>
+        <tr><td><code class="inline">0</code></td><td>No padding</td><td>Fused stack — blocks read as one (overline + heading + interactive)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:14px;color:var(--text-muted);max-width:820px;">Throughout this guide, <code class="inline">60 / 0</code> means top/bottom 60, sides 0; a third number is the bottom when it differs from the top.</p>
+  </section>
+
+  <!-- BACKGROUNDS -->
+  <section id="backgrounds">
+    <div class="section-header">
+      <h2>Backgrounds</h2>
+      <p class="section-purpose">Set the background in the Style panel (the palette icon on the block), under Color. Light and Gray are presets; the washed tints and dark come from Custom + a hex.</p>
+    </div>
+    <table class="map-table" style="margin-bottom:16px">
+      <thead><tr><th>Want</th><th>Do this</th></tr></thead>
+      <tbody>
+        <tr><td><span class="swatch-inline" style="background:#FFFFFF"></span>White body</td><td>Pick the <strong>Light</strong> preset</td></tr>
+        <tr><td><span class="swatch-inline" style="background:#F4F4F4"></span>Gray body</td><td>Pick the <strong>Gray</strong> preset</td></tr>
+        <tr><td><span class="swatch-inline" style="background:#DCEEF0"></span>Tint Teal</td><td><strong>Custom</strong> → enter <code class="inline">#DCEEF0</code> (or pick from Recently used)</td></tr>
+        <tr><td><span class="swatch-inline" style="background:#E0EAF0"></span>Tint Blue</td><td><strong>Custom</strong> → enter <code class="inline">#E0EAF0</code></td></tr>
+        <tr><td><span class="swatch-inline" style="background:#16193E"></span>Dark (video, v2)</td><td><strong>Custom</strong> → enter <code class="inline">#16193E</code></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:13px;margin:0 0 16px;color:var(--tbd-label);"><strong>Don't use "Theme tint."</strong> That's a different auto-generated color. The CPST washed tints only come from Custom + the exact hex above.</p>
+    <div class="pattern-callout">
+      <div class="label">Gray rule</div>
+      Standalone content is white by default. Switch a content block to gray when two white sections would otherwise sit back-to-back and blur together — gray gives one of them its own visual container without needing a transition.
+    </div>
+  </section>
+
+  <!-- TRANSITION SHAPES -->
+  <section id="demarcation">
+    <div class="section-header">
+      <h2>Transition shapes</h2>
+      <p class="section-purpose">Two Mighty transition shapes carry the lesson's flow. Both are the Sharp style — the difference is the amplitude and where they're used.</p>
+    </div>
+
+    <table class="map-table" style="margin-bottom:24px">
+      <thead><tr><th>Shape</th><th>Used for</th><th>Settings</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Chevron</strong></td>
+          <td>The two fixed lesson boundaries: Introduction → In Practice (points down), and the block before Takeaways → Takeaways (points up).</td>
+          <td>Sharp V. Frequency 3, Amplitude 50, padding 20/20. Direction follows bg-color order automatically.</td>
+        </tr>
+        <tr>
+          <td><strong>Slant</strong></td>
+          <td>Brackets each Interactive and Video block — one slant in, one slant out, same direction.</td>
+          <td>Shallow single slant. Frequency 2, Amplitude 20, padding 10/10. Consultant picks direction; vary it across the lesson.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="recipe-panel">
+      <h4>Content block → background → transition</h4>
+      <table class="map-table" style="border:none">
+        <thead><tr><th>Block type</th><th>Background</th><th>Bracketed by</th><th>Overline</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Interactive</strong></td><td><span class="swatch-inline" style="background:#DCEEF0"></span>Tint (teal or blue)</td><td>Slant in + slant out</td><td>INTERACTIVE</td></tr>
+          <tr><td><strong>Scenario</strong></td><td><span class="swatch-inline" style="background:#FFFFFF"></span>White</td><td>Continue gates only</td><td>SCENARIO</td></tr>
+          <tr><td><strong>Video</strong> <span class="tbd-tag">v2</span></td><td><span class="swatch-inline" style="background:#16193E"></span>Dark (structure)</td><td>Slant in + slant out</td><td>VIDEO</td></tr>
+          <tr><td><strong>Standalone content</strong></td><td><span class="swatch-inline" style="background:#FFFFFF"></span>White, or <span class="swatch-inline" style="background:#F4F4F4"></span>gray</td><td>Continue gate + flip</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="font-size:14px;color:var(--text-muted);max-width:820px;margin:0;">Where no transition is used — Scenario boundaries and between standalone content groups — a Continue gate plus a background change carries the seam. Blocks meant to read as one unit share a background and run at 0 padding so there's no seam at all.</p>
+  </section>
+
+  <!-- CONTINUE GATES -->
+  <section id="gates">
+    <div class="section-header">
+      <h2>Continue gates</h2>
+      <p class="section-purpose">A Continue gate forces a pause and lets the next block come in on a fresh background. It also carries the seam where no transition is used.</p>
+    </div>
+    <div class="recipe-panel">
+      <h4>Continue gate setup</h4>
+      <p style="font-size:14px;margin:0 0 12px;color:var(--text);">The Continue button lives in Rise's <strong>Dividers</strong> block category (alongside the Numbered divider and Photo divider).</p>
+      <ul class="ann-settings" style="font-size:14px;">
+        <li><span class="k">Add from</span><span class="v">Dividers category</span></li>
+        <li><span class="k">Format menu</span><span class="v">M block padding (60px)</span></li>
+        <li><span class="k">Edit menu</span><span class="v">Completion type — "all blocks above"</span></li>
+        <li><span class="k">Exception</span><span class="v">Completion turned off during testing</span></li>
+        <li><span class="k">Styling</span><span class="v">None — the course CSS squares the corners and tints the label automatically</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- INTRODUCTION -->
+  <section id="introduction">
+    <div class="section-header">
+      <h2>Introduction</h2>
+      <p class="section-purpose">Hero image flush to the top, then the Introduction text. Both sit on a washed tint. This is the same block in every lesson — only the photo and copy change.</p>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--tint-teal"><div class="mock-inner hero"><div class="mock-hero">[Full-width hero photo · 16:9]</div></div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Hero image</div>
+        <h3>Image — full width</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Block</span><span class="v">Image · Full width</span></li>
+          <li><span class="k">Background</span><span class="v">Tint (teal or blue)</span></li>
+          <li><span class="k">Padding</span><span class="v"><code>0 / 0 / 30</code> — flush top, 30 bottom</span></li>
+          <li><span class="k">Zoom on click</span><span class="v">n/a (single image)</span></li>
+          <li><span class="k">Alt text</span><span class="v">Required — describe the scene</span></li>
+        </ul>
+        <p class="why">Flush top because the lesson title sits directly above in Rise's header. The 30px bottom gives the Introduction text room without breaking the tinted plane.</p>
+      </aside>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--tint-teal"><div class="mock-inner">
+          <h2>Introduction</h2>
+          <p>Ethics shows up every day in your work, mostly in small moments — what to share with a family member, when to decline a request that sits outside your role.</p>
+          <p>In this lesson, you'll learn the shared vocabulary the field uses for those situations.</p>
+        </div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Introduction text</div>
+        <h3>Paragraph with heading</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Block</span><span class="v">Text · Paragraph with heading</span></li>
+          <li><span class="k">Heading</span><span class="v">"Introduction"</span></li>
+          <li><span class="k">Text width</span><span class="v">Medium</span></li>
+          <li><span class="k">Heading padding</span><span class="v">Large</span></li>
+          <li><span class="k">Background</span><span class="v">Tint — same as hero</span></li>
+          <li><span class="k">Padding</span><span class="v"><code>60 / 0</code></span></li>
+        </ul>
+        <p class="why">Same tint as the hero, so the two read as one continuous opening. The chevron below is what breaks into In Practice.</p>
+      </aside>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--tint-teal" style="padding-bottom:0"><div class="mock-chevron">
+          <svg viewBox="0 0 760 80" preserveAspectRatio="none"><polygon points="0,0 760,0 760,30 380,80 0,30" fill="#DCEEF0"/></svg>
+          <span class="tlabel">Chevron · points down</span>
+        </div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Top boundary</div>
+        <h3>Chevron transition (down)</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Block</span><span class="v">Mighty Transition</span></li>
+          <li><span class="k">Style</span><span class="v">Sharp</span></li>
+          <li><span class="k">Frequency</span><span class="v">3</span></li>
+          <li><span class="k">Amplitude</span><span class="v">50</span></li>
+          <li><span class="k">Roundness</span><span class="v">0</span></li>
+          <li><span class="k">Offset</span><span class="v">0</span></li>
+          <li><span class="k">Responsive</span><span class="v">On</span></li>
+          <li><span class="k">Inherit color</span><span class="v">On</span></li>
+          <li><span class="k">Padding (Mighty)</span><span class="v">20 / 20</span></li>
+        </ul>
+        <p class="why">Points down because the tinted bg is above and the lighter bg is below — Inherit color fills the V from the neighbors. Same config produces the up-pointing chevron at the bottom of the lesson; only the color order differs.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- IN PRACTICE -->
+  <section id="inpractice">
+    <div class="section-header">
+      <h2>In Practice</h2>
+      <p class="section-purpose">A 2-image gallery paired with the "[Topic] in Practice" heading. The gallery slot can sit above or below the heading — that's a content judgment. Whichever is on top takes the reduced-bottom padding; the lower one takes the reduced-top padding. Same tint across both.</p>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--tint-teal"><div class="mock-inner tight-bottom">
+          <div class="mock-grid mock-grid--two">
+            <div><div class="photo"></div><div class="cap">Grocery store conversation</div></div>
+            <div><div class="photo"></div><div class="cap">Kitchen-table check-in</div></div>
+          </div>
+        </div></div>
+        <div class="mock mock--tint-teal" style="margin:0"><div class="mock-inner tight-top">
+          <h2>Ethics in Daily Practice</h2>
+          <p>Much of your work happens in informal settings. Small ethical decisions come up often across these encounters.</p>
+        </div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">In Practice pair</div>
+        <h3>2-image gallery + heading</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Gallery block</span><span class="v">Gallery · Two column</span></li>
+          <li><span class="k">Zoom on click</span><span class="v"><strong>Off</strong> — uncheck in block settings</span></li>
+          <li><span class="k">Heading block</span><span class="v">Paragraph with heading · width Medium · heading padding Large</span></li>
+          <li><span class="k">Background</span><span class="v">Tint — both blocks match</span></li>
+          <li><span class="k">Padding (top block)</span><span class="v"><code>60 / 0 / 30</code></span></li>
+          <li><span class="k">Padding (lower block)</span><span class="v"><code>30 / 0 / 60</code></span></li>
+          <li><span class="k">Captions</span><span class="v">Only if the photo shows something the learner needs to name</span></li>
+        </ul>
+        <p class="why">Gallery and heading are one unit. The reduced padding at the shared seam (30) joins them; the outer edges keep 60 to breathe. Position (gallery first or heading first) flexes per lesson — settings stay constant.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- CONTENT BLOCKS -->
+  <section id="content">
+    <div class="section-header">
+      <h2>Standalone content blocks</h2>
+      <p class="section-purpose">Body content between the interactive moments — paragraphs, numbered lists, grids. White by default; gray when two white groups would otherwise sit adjacent. Headings anchor groups; the padding ladder fuses a heading to the list or paragraph beneath it.</p>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--light"><div class="mock-inner tight-bottom" style="padding-bottom:0"><h2>Understanding the Principles</h2></div>
+          <div class="mock mock--light" style="margin:0"><div class="mock-inner tight-top tight-bottom">
+            <ul class="mock-numbered">
+              <div class="head">Key ethical principles include:</div>
+              <li><div class="num">1</div><div class="item-content"><b>Autonomy:</b> Respecting an individual's right to make their own choices.</div></li>
+              <li><div class="num">2</div><div class="item-content"><b>Beneficence:</b> Acting in the best interest of the individual you serve.</div></li>
+              <li><div class="num">3</div><div class="item-content"><b>Confidentiality:</b> Protecting an individual's private information.</div></li>
+            </ul>
+          </div></div>
+          <div class="mock mock--light" style="margin:0"><div class="mock-inner tight-top"><p>These principles work together. Tension between them is normal.</p></div></div>
+        </div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Anchored content group</div>
+        <h3>Heading + Numbered list + Paragraph</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Heading</span><span class="v">Paragraph with heading · width Medium · heading padding Large</span></li>
+          <li><span class="k">List</span><span class="v">Numbered list</span></li>
+          <li><span class="k">Backgrounds</span><span class="v">White (all three)</span></li>
+          <li><span class="k">Padding (heading)</span><span class="v"><code>60 / 0 / 0</code></span></li>
+          <li><span class="k">Padding (list)</span><span class="v"><code>30 / 0</code></span></li>
+          <li><span class="k">Padding (paragraph)</span><span class="v"><code>0 / 0 / 60</code></span></li>
+        </ul>
+        <div class="mighty-tbd">
+          <div class="tbd-head">Numbered list — Mighty mod</div>
+          Circle color <code class="inline">#0B6A8A</code> (Interactive — overrides theme indigo) · Number color <code class="inline">#fff</code> · Space between Medium · List spacing Large · Bullet size Large · Baseline shift −10 · Number type 1, 2, 3
+        </div>
+        <p class="why">The three blocks read as one group. Heading drops its bottom padding to meet the list; the list drops both; the paragraph drops its top. 60px on the outer edges lets the group breathe.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE -->
+  <section id="interactive">
+    <div class="section-header">
+      <h2>Interactive block</h2>
+      <p class="section-purpose">A custom interactive on a tinted background, bracketed by slant transitions. The overline reads INTERACTIVE. The custom HTML changes every lesson — the setup is what stays constant.</p>
+    </div>
+
+    <div class="recipe-panel">
+      <h4>Assembly</h4>
+      <ul class="recipe-list">
+        <li><span class="step">▱</span><span class="what">Slant transition in</span><span class="meta">F2 A20 · 10/10 · direction = consultant choice</span></li>
+        <li><span class="step">1</span><span class="what">Statement C overline → "Interactive"</span><span class="meta">padding 0 · bg tint</span></li>
+        <li><span class="step">2</span><span class="what">Paragraph with heading (section title)</span><span class="meta">padding 0 · width Med · heading Large</span></li>
+        <li><span class="step">3</span><span class="what">Add code block (paste lesson's HTML)</span><span class="meta">padding 0 · bg tint</span></li>
+        <li><span class="step">▱</span><span class="what">Slant transition out</span><span class="meta">same direction as slant in</span></li>
+      </ul>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--light" style="padding:0"><div class="mock-slant"><svg viewBox="0 0 760 50" preserveAspectRatio="none"><polygon points="0,50 760,10 760,50 0,50" fill="#DCEEF0"/></svg><span class="tlabel">Slant in</span></div></div>
+        <div class="mock mock--tint-teal"><div class="mock-inner" style="padding:32px 30px 16px"><span class="mock-pill">Interactive</span></div></div>
+        <div class="mock mock--tint-teal" style="margin:0"><div class="mock-inner no-pad"><h2>Explore the Principles</h2></div></div>
+        <div class="mock mock--tint-teal" style="margin:0"><div class="mock-inner no-pad" style="padding-bottom:16px"><div class="mock-interactive"><div class="label">Add code — Mighty Custom HTML</div><div class="desc">The interactive for this lesson. Built separately per module; consultant pastes it here.</div></div></div></div>
+        <div class="mock mock--tint-teal" style="padding:0"><div class="mock-slant"><svg viewBox="0 0 760 50" preserveAspectRatio="none"><polygon points="0,50 760,10 760,50 0,50" fill="#FFFFFF"/></svg><span class="tlabel">Slant out · same direction</span></div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Interactive block</div>
+        <h3>Slant · Overline · Heading · Add code · Slant</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Background</span><span class="v">Tint (teal or blue)</span></li>
+          <li><span class="k">Overline</span><span class="v">Statement C → "Interactive"</span></li>
+          <li><span class="k">Stack padding</span><span class="v"><code>0</code> on overline, heading, Add code</li>
+          <li><span class="k">Slant in/out</span><span class="v">Sharp · F2 · A20 · 10/10 · same direction</span></li>
+        </ul>
+        <div class="mighty-tbd">
+          <div class="tbd-head">Statement C overline — 4 steps</div>
+          1. Choose Statement variant C · 2. Type "Interactive" (CSS auto-caps + pills it) · 3. Set all padding sliders to 0 · 4. Override the bg from gray (its default) to the section tint.
+        </div>
+        <p class="why">Overline + heading + Add code share the tint and run at 0 padding so they read as one composed unit. The two slants point the same way; pick a direction that differs from the previous interactive so the lesson doesn't repeat the same angle.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- SCENARIO -->
+  <section id="scenario">
+    <div class="section-header">
+      <h2>Scenario block</h2>
+      <p class="section-purpose">Same custom-HTML engine as Interactive, framed as a story situation and illustrated with a photo. On white, bracketed by Continue gates — no slant transitions. The overline reads SCENARIO.</p>
+    </div>
+
+    <div class="recipe-panel">
+      <h4>Assembly</h4>
+      <ul class="recipe-list">
+        <li><span class="step">⊕</span><span class="what">Continue gate before</span><span class="meta">bg white</span></li>
+        <li><span class="step">1</span><span class="what">Statement C overline → "Scenario"</span><span class="meta">padding 0 · bg white</span></li>
+        <li><span class="step">2</span><span class="what">Paragraph with heading ("…in Action")</span><span class="meta">padding 0 · width Med · heading Large</span></li>
+        <li><span class="step">3</span><span class="what">Banner or Image (illustration)</span><span class="meta">padding 0</span></li>
+        <li><span class="step">4</span><span class="what">Add code block (scenario HTML)</span><span class="meta">padding 0</span></li>
+        <li><span class="step">⊕</span><span class="what">Continue gate after</span><span class="meta">bg white</span></li>
+      </ul>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--light"><div class="mock-inner" style="padding:30px 30px 16px"><span class="mock-pill">Scenario</span></div></div>
+        <div class="mock mock--light" style="margin:0"><div class="mock-inner no-pad"><h2>Ethical Principles in Action</h2></div></div>
+        <div class="mock mock--light" style="margin:0"><div class="mock-inner no-pad" style="padding-bottom:8px"><div class="mock-grid mock-grid--three"><div class="photo"></div><div class="photo"></div><div class="photo"></div></div></div></div>
+        <div class="mock mock--light" style="margin:0"><div class="mock-inner no-pad" style="padding-bottom:30px"><div class="mock-interactive"><div class="label">Add code — Scenario HTML</div><div class="desc">Branching or decision scenario for this lesson.</div></div></div></div>
+        <div class="mock mock--light"><div class="mock-inner" style="padding:30px"><div class="mock-continue">CONTINUE</div></div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Scenario block</div>
+        <h3>Overline · Heading · Image · Add code</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Background</span><span class="v">White (light)</span></li>
+          <li><span class="k">Overline</span><span class="v">Statement C → "Scenario"</span></li>
+          <li><span class="k">Illustration</span><span class="v">Banner or full-width Image</span></li>
+          <li><span class="k">Stack padding</span><span class="v"><code>0</code> across the unit</span></li>
+          <li><span class="k">Brackets</span><span class="v">Continue gates — no slants</span></li>
+        </ul>
+        <p class="why">Same Add-code engine as Interactive; the difference is the white bg, the illustrative photo, the SCENARIO overline, and the Continue gates instead of slant transitions. Scenarios stay on the white plane — the gate and the overline carry the demarcation.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- REFLECTION -->
+  <section id="reflection">
+    <div class="section-header">
+      <h2>Reflection — Reflect and Commit</h2>
+      <p class="section-purpose">A Mighty Reflection block with a free-text field, introduced by a "Reflect and Commit" heading on the tint. Sits just before the closing chevron and Lesson Takeaways.</p>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--tint-teal"><div class="mock-inner tight-bottom"><h3>Reflect and Commit</h3><p>One last moment before you go. Take stock of what shifted.</p></div></div>
+        <div class="mock mock--tint-teal" style="margin:0"><div class="mock-inner tight-top"><div class="mock-reflect"><div style="font-weight:600;font-size:14px;">What's one principle you'll hold onto this week?</div><div class="field">Type your response…</div></div></div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Reflection</div>
+        <h3>Heading + Mighty Reflection block</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Heading block</span><span class="v">Heading · "Reflect and Commit" · heading padding Small</span></li>
+          <li><span class="k">Reflection block</span><span class="v">Mighty Reflection</span></li>
+          <li><span class="k">Background</span><span class="v">Tint</span></li>
+        </ul>
+        <div class="mighty-tbd">
+          <div class="tbd-head">v2 — Reflection settings</div>
+          Placeholder text, response visibility, and any download/print option still to be captured.
+        </div>
+        <p class="why">Small heading padding keeps "Reflect and Commit" modest — it's a label for the closing sequence, not a major section heading.</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section id="takeaways">
+    <div class="section-header">
+      <h2>Lesson Takeaways</h2>
+      <p class="section-purpose">The closing chevron points up into the Takeaways block, which returns to the tint that opened the lesson. On the final lesson of a module the heading reads "Module Summary" instead.</p>
+    </div>
+
+    <div class="block-row">
+      <div class="block-visual">
+        <div class="mock mock--light" style="padding:0"><div class="mock-chevron"><svg viewBox="0 0 760 80" preserveAspectRatio="none"><polygon points="0,50 380,0 760,50 760,80 0,80" fill="#DCEEF0"/></svg><span class="tlabel">Chevron · points up</span></div></div>
+        <div class="mock mock--tint-teal"><div class="mock-inner">
+          <h2>Lesson Takeaways</h2>
+          <p>You learned the four principles that anchor ethical practice and worked through how they show up in daily decisions.</p>
+          <p>Next, we look at the common dilemmas that surface when these principles meet real situations.</p>
+        </div></div>
+      </div>
+      <aside class="block-annotation">
+        <div class="ann-label">Bottom boundary + close</div>
+        <h3>Chevron up + Takeaways</h3>
+        <ul class="ann-settings">
+          <li><span class="k">Chevron</span><span class="v">Sharp · F3 · A50 · 20/20 · Inherit color On</span></li>
+          <li><span class="k">Takeaways block</span><span class="v">Paragraph with heading · width Med · heading Large</span></li>
+          <li><span class="k">Heading text</span><span class="v">"Lesson Takeaways" — or "Module Summary" on the final lesson</span></li>
+          <li><span class="k">Background</span><span class="v">Tint — matches the Introduction</span></li>
+          <li><span class="k">Padding</span><span class="v"><code>60 / 0</code></span></li>
+        </ul>
+        <p class="why">The chevron points up because the lighter bg is now above and the tint is below — same transition config as the top chevron, reversed by color order. The tint return makes the lesson feel like it comes back around to where it opened.</p>
+      </aside>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

@@ -274,14 +274,14 @@
     <table class="map-table" style="margin-bottom:16px">
       <thead><tr><th>Padding</th><th>Means</th><th>Used for</th></tr></thead>
       <tbody>
-        <tr><td><code class="inline">60 / 0</code> (M)</td><td>60px top &amp; bottom, 0 sides</td><td>Standalone block, full breathing room</td></tr>
-        <tr><td><code class="inline">60 / 0 / 30</code></td><td>60 top, 30 bottom</td><td>Top of a joined pair — reduced bottom meets the block below</td></tr>
-        <tr><td><code class="inline">30 / 0 / 60</code></td><td>30 top, 60 bottom</td><td>Bottom of a joined pair — reduced top meets the block above</td></tr>
-        <tr><td><code class="inline">30 / 0</code> (S)</td><td>30px top &amp; bottom</td><td>Block joined on both sides</td></tr>
+        <tr><td><code class="inline">60</code> (M)</td><td>60px top &amp; bottom</td><td>Standalone block, full breathing room</td></tr>
+        <tr><td><code class="inline">60 / 30</code></td><td>60 top, 30 bottom</td><td>Top of a joined pair — reduced bottom meets the block below</td></tr>
+        <tr><td><code class="inline">30 / 60</code></td><td>30 top, 60 bottom</td><td>Bottom of a joined pair — reduced top meets the block above</td></tr>
+        <tr><td><code class="inline">30</code> (S)</td><td>30px top &amp; bottom</td><td>Block joined on both sides</td></tr>
         <tr><td><code class="inline">0</code></td><td>No padding</td><td>Fused stack — blocks read as one (overline + heading + interactive)</td></tr>
       </tbody>
     </table>
-    <p style="font-size:14px;color:var(--text-muted);max-width:820px;">Throughout this guide, <code class="inline">60 / 0</code> means top/bottom 60, sides 0; a third number is the bottom when it differs from the top.</p>
+    <p style="font-size:14px;color:var(--text-muted);max-width:820px;">Throughout this guide, a single number is top &amp; bottom; two numbers are top, then bottom when it differs from the top. Rise only exposes top and bottom padding.</p>
   </section>
 
   <!-- BACKGROUNDS -->
@@ -381,7 +381,7 @@
         <ul class="ann-settings">
           <li><span class="k">Block</span><span class="v">Image · Full width</span></li>
           <li><span class="k">Background</span><span class="v">Tint (teal or blue)</span></li>
-          <li><span class="k">Padding</span><span class="v"><code>0 / 0 / 30</code> — flush top, 30 bottom</span></li>
+          <li><span class="k">Padding</span><span class="v"><code>0 / 30</code> — flush top, 30 bottom</span></li>
           <li><span class="k">Zoom on click</span><span class="v">n/a (single image)</span></li>
           <li><span class="k">Alt text</span><span class="v">Required — describe the scene</span></li>
         </ul>
@@ -406,7 +406,7 @@
           <li><span class="k">Text width</span><span class="v">Medium</span></li>
           <li><span class="k">Heading padding</span><span class="v">Large</span></li>
           <li><span class="k">Background</span><span class="v">Tint — same as hero</span></li>
-          <li><span class="k">Padding</span><span class="v"><code>60 / 0</code></span></li>
+          <li><span class="k">Padding</span><span class="v"><code>60</code></span></li>
         </ul>
         <p class="why">Same tint as the hero, so the two read as one continuous opening. The chevron below is what breaks into In Practice.</p>
       </aside>
@@ -466,8 +466,8 @@
           <li><span class="k">Zoom on click</span><span class="v"><strong>Off</strong> — uncheck in block settings</span></li>
           <li><span class="k">Heading block</span><span class="v">Paragraph with heading · width Medium · heading padding Large</span></li>
           <li><span class="k">Background</span><span class="v">Tint — both blocks match</span></li>
-          <li><span class="k">Padding (top block)</span><span class="v"><code>60 / 0 / 30</code></span></li>
-          <li><span class="k">Padding (lower block)</span><span class="v"><code>30 / 0 / 60</code></span></li>
+          <li><span class="k">Padding (top block)</span><span class="v"><code>60 / 30</code></span></li>
+          <li><span class="k">Padding (lower block)</span><span class="v"><code>30 / 60</code></span></li>
           <li><span class="k">Captions</span><span class="v">Only if the photo shows something the learner needs to name</span></li>
         </ul>
         <p class="why">Gallery and heading are one unit. The reduced padding at the shared seam (30) joins them; the outer edges keep 60 to breathe. Position (gallery first or heading first) flexes per lesson — settings stay constant.</p>
@@ -503,9 +503,9 @@
           <li><span class="k">Heading</span><span class="v">Paragraph with heading · width Medium · heading padding Large</span></li>
           <li><span class="k">List</span><span class="v">Numbered list</span></li>
           <li><span class="k">Backgrounds</span><span class="v">White (all three)</span></li>
-          <li><span class="k">Padding (heading)</span><span class="v"><code>60 / 0 / 0</code></span></li>
-          <li><span class="k">Padding (list)</span><span class="v"><code>30 / 0</code></span></li>
-          <li><span class="k">Padding (paragraph)</span><span class="v"><code>0 / 0 / 60</code></span></li>
+          <li><span class="k">Padding (heading)</span><span class="v"><code>60 / 0</code></span></li>
+          <li><span class="k">Padding (list)</span><span class="v"><code>30</code></span></li>
+          <li><span class="k">Padding (paragraph)</span><span class="v"><code>0 / 60</code></span></li>
         </ul>
         <div class="mighty-tbd">
           <div class="tbd-head">Numbered list — Mighty mod</div>
@@ -700,7 +700,7 @@
           <li><span class="k">Takeaways block</span><span class="v">Paragraph with heading · width Med · heading Large</span></li>
           <li><span class="k">Heading text</span><span class="v">"Lesson Takeaways" — or "Module Summary" on the final lesson</span></li>
           <li><span class="k">Background</span><span class="v">Tint — matches the Introduction</span></li>
-          <li><span class="k">Padding</span><span class="v"><code>60 / 0</code></span></li>
+          <li><span class="k">Padding</span><span class="v"><code>60</code></span></li>
         </ul>
         <p class="why">The chevron points up because the lighter bg is now above and the tint is below — same transition config as the top chevron, reversed by color order. The tint return makes the lesson feel like it comes back around to where it opened.</p>
       </aside>

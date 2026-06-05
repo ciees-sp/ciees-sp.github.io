@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="CPST Rehab L4.1: What's Getting in the Way? Barrier audit prototype." />
+<title>CPST Rehab L4.1: Barrier Audit (Prototype)</title>
+
+<!--
+  CPST Rehab 4.1: What's Getting in the Way? BARRIER AUDIT PROTOTYPE.
+  Version: 2026-06-04
+  Pattern: diagnose-and-repair (sibling of the L3.6 plan audit, cpst-plan-audit-prototype.html).
+  The intake notes are the document. The learner selects a family member, then names
+  the barrier their words and behavior show, pulling the evidence-to-barrier link out
+  of the narrative instead of reading answer options that summarize it. The repair
+  beat is Kim's own Question 2: given the barriers, which engagement principle first.
+  Source: engagement-text.md L4.1 (Kim Dupre).
+
+  CONTENT MAPPING:
+  - Kim's five correct barriers anchor to her three people, following her own
+    correct-feedback string: Robert = misinformation + family conflict, Patricia =
+    burnout + lack of psychoeducation, DeShawn = individual disengagement.
+  - Kim's distractor (Financial barriers) stays in the bank and is wrong for every
+    person; her "not indicated" teaching fires on any attempt.
+  - Patricia's two scenario beats are merged into one section (second sentence
+    opens "She is" instead of "Patricia is"; otherwise verbatim).
+  - Question 2 (engagement principle) and its feedback are verbatim Kim.
+  - The complete-screen line is Kim's closing note, verbatim.
+
+  *** AUTHORED CONTENT FOR KIM'S REVIEW ***
+  Kim's source has one correct-feedback string and one incorrect string for Q1. The
+  per-pick strings below were written in her voice from her strings and scenario:
+  - Five correct-pick barrier feedbacks (one per anchored barrier)
+  - Twelve wrong-pick redirects (wrong barrier on a given person)
+  - The Robert + "Lack of psychoeducation" redirect deserves particular review:
+    a learner picking it is half right, and the redirect coaches toward
+    Misinformation as the more precise name. Kim may want to allow it instead.
+
+  DOCUMENTED DIVERGENCES from the card-flip sibling: same three as the plan audit
+  (no aria-live on the visible panel, persistent document, nudge line after each
+  resolved step).
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --best-ink: #15803D;
+    --reconsider-ink: #B45309;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible { outline: none; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+  .frame {
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    border: 1.5px solid var(--hairline);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .counter {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  /* Context: tinted statement-card vocabulary. Moves to Rise prose in
+     production; here for prototype review. */
+  .context {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .context-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .context-text {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .hint {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ===== The intake notes document ===== */
+  .doc {
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .doc-header {
+    background: var(--structure);
+    color: var(--canvas);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .doc-lines {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .doc-lines li + li { border-top: 1px solid var(--hairline); }
+
+  .person-btn {
+    appearance: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--canvas);
+    border: 0;
+    padding: 14px 18px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 200ms ease, opacity 200ms ease;
+    position: relative;
+  }
+  .person-btn:hover:not([disabled]) { background: var(--tint); }
+  .person-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: -3px;
+  }
+  .person-btn[disabled] { cursor: not-allowed; }
+  /* Person currently under review: tinted spotlight. */
+  .person-btn.is-active { background: var(--tint); }
+  /* Other people dim slightly while one is under review. */
+  .person-btn.is-waiting { opacity: 0.55; }
+  /* Fully resolved person: settled, slightly receded. */
+  .person-btn.is-resolved { opacity: 0.75; cursor: default; }
+
+  .person-name {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .person-text {
+    display: block;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .pill-row:empty { display: none; }
+  .barrier-pill {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 2px 10px;
+    color: var(--canvas);
+    background: var(--reconsider-ink);
+  }
+
+  /* ===== Feedback panel (sibling vocabulary) ===== */
+  .feedback {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-left-width: 4px;
+    border-left-color: var(--interactive);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 22px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .feedback.is-best   { border-left-color: var(--best-ink); }
+  .feedback.is-reconsider { border-left-color: var(--reconsider-ink); }
+  .feedback[hidden] { display: none; }
+
+  .state-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .state-glyph { font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .state-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .is-best .state-glyph, .is-best .state-label { color: var(--best-ink); }
+  .is-reconsider .state-glyph, .is-reconsider .state-label { color: var(--reconsider-ink); }
+
+  .answer-line {
+    margin: 0 0 12px;
+    color: var(--structure);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+  .feedback-prose {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .feedback-nudge {
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 0.3px;
+  }
+  .feedback-nudge[hidden] { display: none; }
+
+  /* ===== Barrier bank / principle question (choice-row vocabulary) ===== */
+  .pick-area[hidden] { display: none; }
+  .pick-prompt {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .choice-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .choice-row.single-col { grid-template-columns: 1fr; }
+  .choice-btn {
+    appearance: none;
+    background: var(--canvas);
+    color: var(--structure);
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    padding: 14px 16px;
+    min-height: 52px;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  }
+  .choice-btn:hover:not([disabled]) {
+    background: var(--structure);
+    color: var(--canvas);
+    box-shadow: 0 4px 14px -4px rgba(22,25,62,0.35);
+  }
+  .choice-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .choice-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--canvas);
+    color: var(--structure);
+    box-shadow: none;
+  }
+
+  @keyframes settleIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .complete-card {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .complete-card[hidden] { display: none; }
+  .complete-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .complete-result {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--structure);
+    letter-spacing: -0.1px;
+    line-height: 1.4;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .actions[hidden] { display: none; }
+  .btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--interactive);
+    border: 1px solid var(--hairline);
+    padding: 10px 16px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover {
+    background: var(--tint);
+    border-color: var(--interactive);
+  }
+
+  @media (max-width: 600px) {
+    .frame { border-radius: 10px; padding: 20px; }
+    .context { padding: 16px 18px; }
+    .person-btn { padding: 12px 14px; }
+    .choice-row { grid-template-columns: 1fr; }
+    .choice-btn { padding: 14px 16px; font-size: 14px; min-height: 48px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <section class="frame" aria-label="What's getting in the way activity">
+
+    <span class="counter" id="counter">0 of 5 barriers identified</span>
+
+    <div class="context">
+      <span class="context-label">The meeting</span>
+      <p class="context-text">You are meeting with the Carter family. Their son, DeShawn (19), recently returned home after a 30-day inpatient stay following a first episode of psychosis.</p>
+    </div>
+
+    <p class="hint" id="hint">Five barriers are present across this family. Select a family member, then name what's getting in the way.</p>
+
+    <div class="doc">
+      <div class="doc-header">Intake Notes &mdash; Carter Family</div>
+      <ul class="doc-lines" id="doc-lines">
+        <!-- person sections injected here -->
+      </ul>
+    </div>
+
+    <div class="pick-area" id="pick-area" hidden>
+      <p class="pick-prompt" id="pick-prompt"></p>
+      <div class="choice-row" id="pick-choices" role="group" aria-label="Name the barrier"></div>
+    </div>
+
+    <div class="feedback" id="feedback" hidden>
+      <div class="state-row">
+        <span class="state-glyph" id="fb-glyph" aria-hidden="true"></span>
+        <span class="state-label" id="fb-label"></span>
+      </div>
+      <p class="answer-line" id="fb-answer" hidden></p>
+      <p class="feedback-prose" id="fb-prose"></p>
+      <p class="feedback-nudge" id="fb-nudge" hidden></p>
+    </div>
+
+    <div class="complete-card" id="complete" hidden>
+      <span class="complete-label">Complete</span>
+      <p class="complete-result" tabindex="-1" id="complete-text">In practice, multiple barriers are almost always present. The skill is knowing where to start, so the rest becomes possible.</p>
+    </div>
+    <div class="actions" id="actions" hidden>
+      <button type="button" class="btn btn-ghost" id="restart">Start over</button>
+    </div>
+
+    <div class="sr-only" aria-live="polite" id="announce"></div>
+  </section>
+</main>
+
+<script>
+  // ===== CONTENT =================================================
+  // Scenario text and barrier labels verbatim from Kim's L4.1 source
+  // (Patricia's two beats merged; second sentence opens "She is").
+  // Correct-pick and wrong-pick strings AUTHORED IN KIM'S VOICE for
+  // her review (see file header).
+  const BARRIERS = {
+    misinformation: "Misinformation about the diagnosis",
+    burnout:        "Caregiver burnout",
+    psychoed:       "Lack of psychoeducation",
+    diseng:         "Individual disengagement",
+    conflict:       "Family conflict",
+    financial:      "Financial barriers"
+  };
+  const FINANCIAL_FEEDBACK = "Financial barriers are not indicated. Nothing in the scenario mentions cost, coverage, or resources. Take another look at what this family member is saying and doing.";
+
+  const PEOPLE = [
+    {
+      key: "patricia",
+      name: "Patricia",
+      text: "Patricia attended the hospital meeting but says she hasn’t had time to read the discharge materials. She is exhausted. She is managing medications, appointments, and the household alone. She says, “I don’t know what I’m supposed to be doing.”",
+      correct: {
+        burnout: "Caregiver burnout. Patricia is managing medications, appointments, and the household alone, and she is exhausted. The load she is carrying shapes everything else she can take in.",
+        psychoed: "Lack of psychoeducation. She told you directly: “I don’t know what I’m supposed to be doing.” She hasn’t had a chance to absorb the discharge materials. That is a guidance gap, not a willingness problem."
+      },
+      wrong: {
+        misinformation: "Patricia isn’t misrepresenting anything. She is telling you she doesn’t know what to do, and that points to a different barrier.",
+        diseng: "Patricia is engaged. She attended the meeting and she is carrying the daily load. What she describes is the cost of that load, not a withdrawal from the process.",
+        conflict: "The conflict in this family runs through Robert’s absence and beliefs. Patricia’s statements point to what she is carrying and what she doesn’t know."
+      }
+    },
+    {
+      key: "robert",
+      name: "Robert",
+      text: "Robert did not attend. He believes DeShawn’s episode was caused by drug use and says, “If he gets his act together, he’ll be fine.”",
+      correct: {
+        misinformation: "Misinformation about the diagnosis. Robert believes the episode was caused by drug use and will resolve if DeShawn “gets his act together.” That belief is shaping his involvement.",
+        conflict: "Family conflict. Robert didn’t attend the hospital meeting, and his beliefs about what is happening differ from Patricia’s. The family isn’t working from a shared understanding."
+      },
+      wrong: {
+        burnout: "Robert isn’t carrying the caregiving load. His barrier lives in what he believes and where he wasn’t.",
+        psychoed: "Robert’s gap is sharper than missing information. He holds an active belief about what caused the episode, and that has its own name in the barrier list.",
+        diseng: "Robert is disengaged from the process, but he isn’t the individual receiving services. His barrier shows up in his beliefs and his absence."
+      }
+    },
+    {
+      key: "deshawn",
+      name: "DeShawn",
+      text: "DeShawn sits quietly, avoids eye contact, and says, “It’s fine. Whatever they say.”",
+      correct: {
+        diseng: "Individual disengagement. “It’s fine. Whatever they say.” DeShawn is in the room but not in the conversation."
+      },
+      wrong: {
+        misinformation: "DeShawn isn’t claiming anything about the diagnosis. His words are doing something quieter.",
+        burnout: "DeShawn isn’t the caregiver. Look at how he is participating in this meeting, and how he isn’t.",
+        psychoed: "A knowledge gap isn’t what his words show. “Whatever they say” is about his stake in the process, not his understanding of it.",
+        conflict: "DeShawn isn’t in conflict with anyone here. He has stepped back from the conversation entirely, and that has its own name."
+      }
+    }
+  ];
+
+  // Repair beat: verbatim Kim (Question 2).
+  const PRINCIPLE_QUESTION = "Given the barriers present, which engagement principle should you address first?";
+  const PRINCIPLES = [
+    { text: "Collaborative approach", correct: false },
+    { text: "Psychoeducation", correct: true },
+    { text: "Support family resilience", correct: false },
+    { text: "Practical support", correct: false }
+  ];
+  const PRINCIPLE_CORRECT = "Psychoeducation is a strong starting point. Patricia lacks clarity, and Robert’s beliefs are shaping his involvement. Creating a shared understanding makes the other strategies easier to apply.";
+  const PRINCIPLE_INCORRECT = "Collaboration, resilience, and practical support all matter—but they’re harder to implement without a shared understanding of what’s happening. Which step creates that foundation?";
+
+  const TOTAL_BARRIERS = PEOPLE.reduce((n, p) => n + Object.keys(p.correct).length, 0);
+
+  // ===== STATE ===================================================
+  let activeKey = null;
+  let foundCount = 0;
+  let phase = 'barriers'; // 'barriers' | 'principle' | 'done'
+  let completionFired = false;
+  const found = {};   // person key -> Set of found barrier keys
+  const tried = {};   // person key -> Set of wrong barrier keys tried
+  const foundGlobal = new Set(); // barrier keys anchored anywhere
+
+  const docLines = document.getElementById('doc-lines');
+  const counter = document.getElementById('counter');
+  const hint = document.getElementById('hint');
+  const pickArea = document.getElementById('pick-area');
+  const pickPrompt = document.getElementById('pick-prompt');
+  const pickChoices = document.getElementById('pick-choices');
+  const feedback = document.getElementById('feedback');
+  const fbGlyph = document.getElementById('fb-glyph');
+  const fbLabel = document.getElementById('fb-label');
+  const fbAnswer = document.getElementById('fb-answer');
+  const fbProse = document.getElementById('fb-prose');
+  const fbNudge = document.getElementById('fb-nudge');
+  const completeCard = document.getElementById('complete');
+  const completeText = document.getElementById('complete-text');
+  const actions = document.getElementById('actions');
+  const announcer = document.getElementById('announce');
+
+  // ===== COMPLETION TRIGGER ======================================
+  function fireCompletion() {
+    if (completionFired) return;
+    completionFired = true;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'complete' }, '*');
+      }
+    } catch (e) { /* parent not reachable; ignore */ }
+  }
+
+  // ===== HELPERS =================================================
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+  function announce(msg) {
+    announcer.textContent = '';
+    window.setTimeout(() => { announcer.textContent = msg; }, 60);
+  }
+  function personBtn(key) {
+    return docLines.querySelector(`[data-key="${key}"]`);
+  }
+  function personDone(p) {
+    return (found[p.key] ? found[p.key].size : 0) === Object.keys(p.correct).length;
+  }
+
+  // ===== BUILD ===================================================
+  function buildDoc() {
+    docLines.innerHTML = '';
+    PEOPLE.forEach(p => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <button type="button" class="person-btn" data-key="${p.key}">
+          <span class="person-name">${escapeHtml(p.name)}</span>
+          <span class="person-text">${escapeHtml(p.text)}</span>
+          <span class="pill-row" data-pills></span>
+          <span class="sr-only" data-srstate></span>
+        </button>
+      `;
+      docLines.appendChild(li);
+    });
+    docLines.querySelectorAll('.person-btn').forEach(b => {
+      b.addEventListener('click', () => onPerson(b.dataset.key));
+    });
+  }
+
+  // ===== STATE SYNC ==============================================
+  function syncPeople() {
+    docLines.querySelectorAll('.person-btn').forEach(b => {
+      const p = PEOPLE.find(x => x.key === b.dataset.key);
+      const done = personDone(p);
+      b.classList.toggle('is-resolved', done);
+      b.classList.toggle('is-active', activeKey === p.key);
+      b.classList.toggle('is-waiting', activeKey !== null && activeKey !== p.key && !done);
+      b.disabled = done || phase !== 'barriers';
+    });
+  }
+
+  function buildBank() {
+    const p = PEOPLE.find(x => x.key === activeKey);
+    pickPrompt.textContent = `What's getting in the way for ${p.name}?`;
+    pickChoices.setAttribute('aria-label', `Name the barrier for ${p.name}`);
+    pickChoices.classList.remove('single-col');
+    pickChoices.innerHTML = '';
+    Object.keys(BARRIERS).forEach(key => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice-btn';
+      b.dataset.barrier = key;
+      const anchored = foundGlobal.has(key);
+      const triedHere = tried[p.key] && tried[p.key].has(key);
+      b.disabled = anchored || triedHere;
+      const srNote = anchored ? ' (already identified)' : (triedHere ? ' (already tried here)' : '');
+      b.innerHTML = `${escapeHtml(BARRIERS[key])}<span class="sr-only">${srNote}</span>`;
+      b.addEventListener('click', () => onBarrier(p, key));
+      pickChoices.appendChild(b);
+    });
+    pickArea.hidden = false;
+  }
+
+  // ===== FEEDBACK ================================================
+  function showFeedback(correct, prose, answerText, nudgeText) {
+    feedback.hidden = false;
+    feedback.classList.toggle('is-best', correct);
+    feedback.classList.toggle('is-reconsider', !correct);
+    fbGlyph.textContent = correct ? '✓' : '↻';
+    fbLabel.textContent = correct ? 'Correct' : 'Reconsider';
+    if (correct && answerText) {
+      fbAnswer.hidden = false;
+      fbAnswer.textContent = answerText;
+    } else {
+      fbAnswer.hidden = true;
+      fbAnswer.textContent = '';
+    }
+    fbProse.textContent = prose;
+    if (nudgeText) {
+      fbNudge.textContent = nudgeText;
+      fbNudge.hidden = false;
+    } else {
+      fbNudge.hidden = true;
+    }
+  }
+
+  // ===== EVENTS ==================================================
+  function onPerson(key) {
+    if (phase !== 'barriers') return;
+    const p = PEOPLE.find(x => x.key === key);
+    if (!p || personDone(p)) return;
+    activeKey = key;
+    syncPeople();
+    buildBank();
+    const first = pickChoices.querySelector('.choice-btn:not([disabled])');
+    if (first) first.focus();
+    announce(`Reviewing ${p.name}. Name the barrier.`);
+  }
+
+  function onBarrier(p, barrierKey) {
+    const isCorrect = Object.prototype.hasOwnProperty.call(p.correct, barrierKey);
+
+    if (isCorrect) {
+      if (!found[p.key]) found[p.key] = new Set();
+      found[p.key].add(barrierKey);
+      foundGlobal.add(barrierKey);
+      foundCount += 1;
+      counter.textContent = `${foundCount} of ${TOTAL_BARRIERS} barriers identified`;
+
+      // Anchor the pill on the person section.
+      const btn = personBtn(p.key);
+      const pill = document.createElement('span');
+      pill.className = 'barrier-pill';
+      pill.setAttribute('aria-hidden', 'true');
+      pill.textContent = BARRIERS[barrierKey];
+      btn.querySelector('[data-pills]').appendChild(pill);
+      const foundNames = Array.from(found[p.key]).map(k => BARRIERS[k]).join(', ');
+      btn.querySelector('[data-srstate]').textContent = ` (barriers identified: ${foundNames})`;
+
+      const done = personDone(p);
+      const allFound = foundCount === TOTAL_BARRIERS;
+      let nudge = null;
+      if (allFound) {
+        nudge = null;
+      } else if (done) {
+        nudge = `That's everything for ${p.name}. Review another family member.`;
+      } else {
+        nudge = `There's more getting in the way for ${p.name}.`;
+      }
+      showFeedback(true, p.correct[barrierKey], BARRIERS[barrierKey], nudge);
+
+      if (allFound) {
+        announce(`Correct. ${p.correct[barrierKey]} All ${TOTAL_BARRIERS} barriers identified.`);
+        startPrinciplePhase();
+      } else if (done) {
+        activeKey = null;
+        pickArea.hidden = true;
+        pickChoices.innerHTML = '';
+        syncPeople();
+        announce(`Correct. ${p.correct[barrierKey]} That's everything for ${p.name}. Review another family member.`);
+        const nextPerson = docLines.querySelector('.person-btn:not([disabled])');
+        if (nextPerson) nextPerson.focus();
+      } else {
+        buildBank();
+        syncPeople();
+        announce(`Correct. ${p.correct[barrierKey]} There's more getting in the way for ${p.name}.`);
+        const first = pickChoices.querySelector('.choice-btn:not([disabled])');
+        if (first) first.focus();
+      }
+    } else {
+      if (!tried[p.key]) tried[p.key] = new Set();
+      tried[p.key].add(barrierKey);
+      const prose = barrierKey === 'financial' ? FINANCIAL_FEEDBACK : p.wrong[barrierKey];
+      buildBank();
+      showFeedback(false, prose);
+      announce(`Reconsider. ${prose} Pick a different barrier for ${p.name}.`);
+      const first = pickChoices.querySelector('.choice-btn:not([disabled])');
+      if (first) first.focus();
+    }
+  }
+
+  // ===== REPAIR BEAT: Kim's Question 2 ===========================
+  function startPrinciplePhase() {
+    phase = 'principle';
+    activeKey = null;
+    syncPeople();
+    hint.hidden = true;
+    pickPrompt.textContent = PRINCIPLE_QUESTION;
+    pickChoices.setAttribute('aria-label', 'Choose the engagement principle to address first');
+    pickChoices.classList.add('single-col');
+    pickChoices.innerHTML = '';
+    PRINCIPLES.forEach((pr, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice-btn';
+      b.dataset.index = String(i);
+      b.textContent = pr.text;
+      b.addEventListener('click', () => onPrinciple(i));
+      pickChoices.appendChild(b);
+    });
+    pickArea.hidden = false;
+  }
+
+  function onPrinciple(index) {
+    const pr = PRINCIPLES[index];
+    const btn = pickChoices.querySelector(`[data-index="${index}"]`);
+    if (pr.correct) {
+      phase = 'done';
+      pickArea.hidden = true;
+      pickChoices.innerHTML = '';
+      showFeedback(true, PRINCIPLE_CORRECT, pr.text);
+      announce(`Correct. ${PRINCIPLE_CORRECT}`);
+      renderComplete();
+    } else {
+      btn.disabled = true;
+      showFeedback(false, PRINCIPLE_INCORRECT);
+      announce(`Reconsider. ${PRINCIPLE_INCORRECT}`);
+      const first = pickChoices.querySelector('.choice-btn:not([disabled])');
+      if (first) first.focus();
+    }
+  }
+
+  function renderComplete() {
+    completeCard.hidden = false;
+    actions.hidden = false;
+    fireCompletion();
+    completeText.focus();
+  }
+
+  document.getElementById('restart').addEventListener('click', () => {
+    activeKey = null;
+    foundCount = 0;
+    phase = 'barriers';
+    Object.keys(found).forEach(k => delete found[k]);
+    Object.keys(tried).forEach(k => delete tried[k]);
+    foundGlobal.clear();
+    completeCard.hidden = true;
+    actions.hidden = true;
+    feedback.hidden = true;
+    pickArea.hidden = true;
+    pickChoices.innerHTML = '';
+    hint.hidden = false;
+    counter.textContent = `0 of ${TOTAL_BARRIERS} barriers identified`;
+    buildDoc();
+    syncPeople();
+    const first = docLines.querySelector('.person-btn');
+    if (first) first.focus();
+  });
+
+  // ===== BOOT ====================================================
+  buildDoc();
+  syncPeople();
+</script>
+
+</body>
+</html>

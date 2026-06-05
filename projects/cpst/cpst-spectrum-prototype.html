@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="CPST Rehab: PSR or Symptom-Focused spectrum placement prototype." />
+<title>CPST Rehab: PSR or Symptom-Focused Spectrum (Prototype)</title>
+
+<!--
+  CPST Rehab 1.6: PSR or Symptom-Focused. SPECTRUM PLACEMENT PROTOTYPE.
+  Version: 2026-06-04
+  Pattern: spectrum placement (new template candidate). The three sort buckets are
+  reframed as an axis: Symptom-focused on the left, Skill-focused on the right,
+  Both in the center. The learner places each statement on the axis instead of
+  allocating it to a bin. The learner action becomes judging degree.
+  Content: verbatim from psr-symptom-sort.html v2026-06-03.
+
+  ACCESSIBILITY DESIGN (the reason this shape is viable):
+  - The axis is DISCRETE under the hood: five named stops implemented as a native
+    radio group. Arrow keys walk the stops (native radio behavior). No slider
+    role, no drag, no fine-motor precision required.
+  - Selection does not commit. A Place button fires the verdict, so arrow-key
+    browsing across stops never triggers judgment.
+  - Verdict zones: stops 1 and 2 map to Symptom-focused, stop 3 to Both, stops
+    4 and 5 to Skill-focused. A wrong zone disables both of its stops
+    (disabled-wrong-choice rule). Either stop within the correct zone is correct;
+    the learner's exact stop is preserved on the summary axis, so their judgment
+    of degree survives.
+  - One sr-only live region composes a single announcement per action.
+  - A summary axis below the activity accumulates each placed statement as a
+    numbered dot at the learner's chosen stop. The completed map is the closing
+    image.
+
+  DOCUMENTED DIVERGENCES from the card-flip sibling (psr-symptom-sort.html):
+  - The visible feedback panel does NOT carry aria-live; the sr-only region
+    announces instead (single composed message per action).
+  - The board (summary axis) persists across items rather than re-rendering.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --best-ink: #15803D;
+    --reconsider-ink: #B45309;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible { outline: none; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+  .frame {
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    border: 1.5px solid var(--hairline);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .statement {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .statement[hidden] { display: none; }
+  .statement-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .statement-text {
+    font-size: 18px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .statement-enter { animation: settleIn 280ms cubic-bezier(.2,.7,.2,1); }
+
+  /* ===== The axis ===== */
+  .axis[hidden] { display: none; }
+  .axis-prompt {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 4px;
+  }
+  .axis {
+    position: relative;
+    padding: 8px 0 0;
+  }
+  .axis-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
+  /* The connecting line sits behind the stops. Decorative only. */
+  .axis-track::before {
+    content: "";
+    position: absolute;
+    top: 14px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--hairline);
+  }
+  .stop {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 0 4px;
+  }
+  .stop input[type="radio"] {
+    appearance: none;
+    margin: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--structure);
+    background: var(--canvas);
+    cursor: pointer;
+    position: relative;
+    z-index: 1;
+    transition: background 200ms ease, border-color 200ms ease, box-shadow 200ms ease;
+    flex-shrink: 0;
+  }
+  .stop input[type="radio"]:hover:not([disabled]) {
+    border-color: var(--interactive);
+    box-shadow: 0 2px 8px rgba(22,25,62,0.06);
+  }
+  .stop input[type="radio"]:checked {
+    background: var(--interactive);
+    border-color: var(--interactive);
+    box-shadow: 0 0 0 4px rgba(11,106,138,0.22), 0 2px 8px rgba(22,25,62,0.08);
+  }
+  .stop input[type="radio"]:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  /* Already-tried convention: opacity dims while preserving identity. */
+  .stop input[type="radio"][disabled] {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+  .stop input[type="radio"][disabled] + .stop-label {
+    opacity: 0.45;
+  }
+  .stop-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--structure);
+    text-align: center;
+    line-height: 1.25;
+    max-width: 110px;
+  }
+
+  .axis-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+  }
+
+  /* ===== Feedback panel (sibling vocabulary) ===== */
+  .feedback {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-left-width: 4px;
+    border-left-color: var(--interactive);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 22px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .feedback.is-best   { border-left-color: var(--best-ink); }
+  .feedback.is-reconsider { border-left-color: var(--reconsider-ink); }
+  .feedback[hidden] { display: none; }
+
+  .state-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .state-glyph { font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .state-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .is-best .state-glyph, .is-best .state-label { color: var(--best-ink); }
+  .is-reconsider .state-glyph, .is-reconsider .state-label { color: var(--reconsider-ink); }
+
+  .answer-line {
+    margin: 0 0 12px;
+    color: var(--structure);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+  .feedback-prose {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ===== Summary axis: the accumulating map ===== */
+  .summary {
+    border-top: 1px solid var(--hairline);
+    padding-top: 16px;
+  }
+  .summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 12px;
+  }
+  .summary-track {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    min-height: 36px;
+    align-items: end;
+  }
+  .summary-track::before {
+    content: "";
+    position: absolute;
+    bottom: 14px;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--hairline);
+  }
+  .summary-slot {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 4px;
+    position: relative;
+    z-index: 1;
+    padding-bottom: 4px;
+  }
+  .summary-dot {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--structure);
+    color: var(--canvas);
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .summary-ends {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  @keyframes settleIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Complete, actions, buttons (sibling vocabulary) ===== */
+  .complete-card {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .complete-card[hidden] { display: none; }
+  .complete-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .complete-result {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--structure);
+    letter-spacing: -0.1px;
+    line-height: 1.4;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .actions[hidden] { display: none; }
+  .btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease, opacity 200ms ease;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .btn-primary {
+    background: var(--interactive);
+    color: var(--canvas);
+    padding: 12px 22px;
+    min-height: 44px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover:not([disabled]) { background: var(--structure); }
+  .btn-primary[disabled] { opacity: 0.45; cursor: not-allowed; }
+  .btn-primary svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--interactive);
+    border: 1px solid var(--hairline);
+    padding: 10px 16px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover {
+    background: var(--tint);
+    border-color: var(--interactive);
+  }
+
+  @media (max-width: 600px) {
+    .frame { border-radius: 10px; padding: 20px; }
+    .statement { padding: 16px 18px; }
+    .statement-text { font-size: 17px; }
+    /* Stops go vertical on narrow screens; the line follows. */
+    .axis-track { grid-template-columns: 1fr; gap: 14px; }
+    .axis-track::before {
+      top: 14px; bottom: 14px; left: 13px; right: auto;
+      width: 3px; height: auto;
+    }
+    .stop { flex-direction: row; gap: 12px; }
+    .stop-label { text-align: left; max-width: none; }
+    .summary-track { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <section class="frame" aria-label="PSR or Symptom-Focused spectrum activity">
+
+    <div class="statement" id="statement">
+      <span class="statement-label" id="statement-label"></span>
+      <p class="statement-text" tabindex="-1" id="statement-text"></p>
+    </div>
+
+    <div class="axis" id="axis">
+      <p class="axis-prompt" id="axis-prompt">Where does this statement sit?</p>
+      <fieldset style="border:0;padding:0;margin:0;">
+        <legend class="sr-only">Place the statement on the spectrum from symptom-focused to skill-focused</legend>
+        <div class="axis-track" id="axis-track">
+          <!-- stops injected here -->
+        </div>
+      </fieldset>
+      <div class="axis-actions">
+        <button type="button" class="btn btn-primary" id="place" disabled>
+          <span>Place statement</span>
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="feedback" id="feedback" hidden>
+      <div class="state-row">
+        <span class="state-glyph" id="fb-glyph" aria-hidden="true"></span>
+        <span class="state-label" id="fb-label"></span>
+      </div>
+      <p class="answer-line" id="fb-answer" hidden></p>
+      <p class="feedback-prose" id="fb-prose"></p>
+    </div>
+
+    <div class="actions" id="advance" hidden>
+      <button type="button" class="btn btn-primary" id="next">
+        <span id="next-label">Next</span>
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+      </button>
+    </div>
+
+    <div class="complete-card" id="complete" hidden>
+      <span class="complete-label">Complete</span>
+      <p class="complete-result" tabindex="-1" id="complete-text">You placed five practitioner statements by what they center. The map below is the distinction: most CPST moves live on the skill-focused side.</p>
+    </div>
+    <div class="actions" id="restart-actions" hidden>
+      <button type="button" class="btn btn-ghost" id="restart">Start over</button>
+    </div>
+
+    <div class="summary" id="summary" hidden>
+      <span class="summary-label">Your map</span>
+      <div class="summary-track" id="summary-track">
+        <div class="summary-slot" data-slot="1"></div>
+        <div class="summary-slot" data-slot="2"></div>
+        <div class="summary-slot" data-slot="3"></div>
+        <div class="summary-slot" data-slot="4"></div>
+        <div class="summary-slot" data-slot="5"></div>
+      </div>
+      <div class="summary-ends" aria-hidden="true">
+        <span>Symptom-focused</span>
+        <span>Skill-focused</span>
+      </div>
+      <ul class="sr-only" id="summary-sr" aria-label="Placed statements"></ul>
+    </div>
+
+    <div class="sr-only" aria-live="polite" id="announce"></div>
+  </section>
+</main>
+
+<script>
+  // ===== AXIS DEFINITION =========================================
+  // Five discrete stops. Zones map stops to the three source
+  // categories so Kim's per-category feedback applies unchanged.
+  const STOPS = [
+    { value: 1, label: "Symptom-focused", zone: "symptom" },
+    { value: 2, label: "Leaning symptom", zone: "symptom" },
+    { value: 3, label: "Both",            zone: "both" },
+    { value: 4, label: "Leaning skill",   zone: "psr" },
+    { value: 5, label: "Skill-focused",   zone: "psr" }
+  ];
+  const ZONE_NAMES = {
+    psr:     "Skill-Focused",
+    symptom: "Symptom-Focused",
+    both:    "Both Skills and Symptoms"
+  };
+
+  // ===== CONTENT =================================================
+  // Verbatim from psr-symptom-sort.html v2026-06-03.
+  const STATEMENTS = [
+    {
+      id: 1,
+      text: "Before we talk about your medication, I want to understand what a typical morning looks like for you — what’s hard, what’s working.",
+      answer: "psr",
+      feedback: {
+        psr:     "Focuses on understanding daily living skills and routines. The practitioner names medication only to set it aside; the full attention is on the shape of the person’s day.",
+        symptom: "Medication gets named, but only to be moved out of the way. The practitioner’s question is about what the morning looks like in practice — that’s about skills, not symptoms.",
+        both:    "The statement names medication once, but it doesn’t engage with it. The whole move is to ask about daily living skills. The focus is single, not blended."
+      }
+    },
+    {
+      id: 2,
+      text: "Your anxiety has been high this week. Let’s adjust your medication, and we’ll also check in on how you’re managing your daily routine.",
+      answer: "both",
+      feedback: {
+        both:    "Daily routine is part of the conversation, but the practitioner is also directly addressing symptoms through medication adjustment. Because both symptoms and daily living skills are being addressed, this statement fits the Both category.",
+        psr:     "Daily routine gets named, but symptom management leads. The skill-focused move would start with what the week has looked like in practice, then bring medication into the conversation if it served the question about daily living skills.",
+        symptom: "If the statement had stopped at adjusting medication, this would be symptom-focused. The daily routine check-in pulls it into both territories at once."
+      }
+    },
+    {
+      id: 3,
+      text: "You mentioned wanting to get back to work. Let’s break down what skills would help you feel ready for that — and start practicing them.",
+      answer: "psr",
+      feedback: {
+        psr:     "Centers on skill-building tied to a real-life goal.",
+        symptom: "There are no symptoms in this exchange. The practitioner is starting with a goal the person named and working backward to the skills that make it possible.",
+        both:    "The statement doesn’t touch symptoms. It’s anchored entirely in a goal and the skills to reach it. That’s skill-focused work in its purest form, not a blend."
+      }
+    },
+    {
+      id: 4,
+      text: "The hallucinations are the primary issue. Once we get those under control, everything else should improve.",
+      answer: "symptom",
+      feedback: {
+        symptom: "Assumes symptoms must be resolved before life improves.",
+        psr:     "Skill-focused work doesn’t wait for symptoms to clear before building skills. This statement does the opposite — it makes symptom control the gate, and treats everything else as downstream.",
+        both:    "Daily living skills aren’t named here. The ‘everything else’ is implied to follow automatically once symptoms improve — that’s a symptom-focused assumption, not a blended move."
+      }
+    },
+    {
+      id: 5,
+      text: "I noticed you’ve been avoiding the common area. Can we work on some strategies for starting conversations — even brief ones?",
+      answer: "psr",
+      feedback: {
+        psr:     "Names a functional pattern — withdrawal from the common area — and offers a concrete skill to work on. Recognition of the behavior plus a skill-building response is skill-focused work at the bedside.",
+        symptom: "There’s no symptom in this statement. The practitioner notices a functional behavior and offers a skill that addresses it directly. Nothing about the move is symptom-driven.",
+        both:    "Symptoms aren’t part of this exchange. Both the observation and the response are about social skills, so the focus is single, not blended."
+      }
+    }
+  ];
+
+  // ===== STATE ===================================================
+  let cursor = 0;
+  let triedZones = new Set();
+  let awaitingNext = false;
+  let completionFired = false;
+
+  const statementCard = document.getElementById('statement');
+  const statementLabel = document.getElementById('statement-label');
+  const statementText = document.getElementById('statement-text');
+  const axis = document.getElementById('axis');
+  const axisTrack = document.getElementById('axis-track');
+  const placeBtn = document.getElementById('place');
+  const feedback = document.getElementById('feedback');
+  const fbGlyph = document.getElementById('fb-glyph');
+  const fbLabel = document.getElementById('fb-label');
+  const fbAnswer = document.getElementById('fb-answer');
+  const fbProse = document.getElementById('fb-prose');
+  const advance = document.getElementById('advance');
+  const nextBtn = document.getElementById('next');
+  const nextLabel = document.getElementById('next-label');
+  const completeCard = document.getElementById('complete');
+  const completeText = document.getElementById('complete-text');
+  const restartActions = document.getElementById('restart-actions');
+  const summary = document.getElementById('summary');
+  const summarySr = document.getElementById('summary-sr');
+  const announcer = document.getElementById('announce');
+
+  // ===== COMPLETION TRIGGER ======================================
+  function fireCompletion() {
+    if (completionFired) return;
+    completionFired = true;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'complete' }, '*');
+      }
+    } catch (e) { /* parent not reachable; ignore */ }
+  }
+
+  // ===== HELPERS =================================================
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+  function announce(msg) {
+    announcer.textContent = '';
+    window.setTimeout(() => { announcer.textContent = msg; }, 60);
+  }
+
+  // ===== BUILD ===================================================
+  function buildAxis() {
+    axisTrack.innerHTML = '';
+    STOPS.forEach(stop => {
+      const lbl = document.createElement('label');
+      lbl.className = 'stop';
+      lbl.innerHTML = `
+        <input type="radio" name="placement" value="${stop.value}">
+        <span class="stop-label">${escapeHtml(stop.label)}<span class="sr-only">, position ${stop.value} of 5</span></span>
+      `;
+      axisTrack.appendChild(lbl);
+    });
+    axisTrack.querySelectorAll('input').forEach(r => {
+      r.addEventListener('change', () => { placeBtn.disabled = false; });
+    });
+  }
+
+  // ===== STATE SYNC ==============================================
+  function syncStops() {
+    axisTrack.querySelectorAll('input').forEach(r => {
+      const stop = STOPS.find(s => s.value === Number(r.value));
+      const isTried = triedZones.has(stop.zone);
+      r.disabled = isTried || awaitingNext;
+      r.checked = false;
+    });
+    placeBtn.disabled = true;
+  }
+
+  function showStatement(focusIt) {
+    const s = STATEMENTS[cursor];
+    statementLabel.textContent = `${s.id} of ${STATEMENTS.length}`;
+    statementText.textContent = s.text;
+    statementCard.classList.remove('statement-enter');
+    void statementCard.offsetWidth; /* restart the entry animation */
+    statementCard.classList.add('statement-enter');
+    if (focusIt) statementText.focus();
+  }
+
+  // ===== FEEDBACK ================================================
+  function showFeedback(correct, prose, zoneLabel) {
+    feedback.hidden = false;
+    feedback.classList.toggle('is-best', correct);
+    feedback.classList.toggle('is-reconsider', !correct);
+    fbGlyph.textContent = correct ? '✓' : '↻';
+    fbLabel.textContent = correct ? 'Correct' : 'Reconsider';
+    if (correct) {
+      fbAnswer.hidden = false;
+      fbAnswer.textContent = zoneLabel;
+    } else {
+      fbAnswer.hidden = true;
+      fbAnswer.textContent = '';
+    }
+    fbProse.textContent = prose;
+  }
+
+  // ===== SUMMARY MAP =============================================
+  function addToSummary(statementId, stopValue, stopLabel) {
+    summary.hidden = false;
+    const slot = summary.querySelector(`[data-slot="${stopValue}"]`);
+    const dot = document.createElement('div');
+    dot.className = 'summary-dot';
+    dot.setAttribute('aria-hidden', 'true');
+    dot.textContent = String(statementId);
+    slot.appendChild(dot);
+    const li = document.createElement('li');
+    li.textContent = `Statement ${statementId}: ${stopLabel}`;
+    summarySr.appendChild(li);
+  }
+
+  // ===== EVENTS ==================================================
+  placeBtn.addEventListener('click', () => {
+    const picked = axisTrack.querySelector('input:checked');
+    if (!picked || awaitingNext) return;
+    const stop = STOPS.find(s => s.value === Number(picked.value));
+    const s = STATEMENTS[cursor];
+    const correct = stop.zone === s.answer;
+    const prose = s.feedback[stop.zone];
+
+    if (correct) {
+      awaitingNext = true;
+      addToSummary(s.id, stop.value, stop.label);
+      syncStops();
+      showFeedback(true, prose, ZONE_NAMES[stop.zone]);
+      const last = cursor === STATEMENTS.length - 1;
+      nextLabel.textContent = last ? 'Finish' : 'Next';
+      advance.hidden = false;
+      announce(`Correct. ${stop.label}. ${prose}`);
+      nextBtn.focus();
+    } else {
+      triedZones.add(stop.zone);
+      syncStops();
+      showFeedback(false, prose);
+      announce(`Reconsider. ${prose} That part of the spectrum is no longer available for this statement. Pick a different position.`);
+      const firstAvailable = axisTrack.querySelector('input:not([disabled])');
+      if (firstAvailable) firstAvailable.focus();
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    awaitingNext = false;
+    advance.hidden = true;
+    feedback.hidden = true;
+    cursor += 1;
+    triedZones = new Set();
+    if (cursor >= STATEMENTS.length) {
+      renderComplete();
+    } else {
+      syncStops();
+      showStatement(true);
+      announce(`Statement ${STATEMENTS[cursor].id} of ${STATEMENTS.length}.`);
+    }
+  });
+
+  function renderComplete() {
+    statementCard.hidden = true;
+    axis.hidden = true;
+    feedback.hidden = true;
+    completeCard.hidden = false;
+    restartActions.hidden = false;
+    fireCompletion();
+    completeText.focus();
+  }
+
+  document.getElementById('restart').addEventListener('click', () => {
+    cursor = 0;
+    triedZones = new Set();
+    awaitingNext = false;
+    completeCard.hidden = true;
+    restartActions.hidden = true;
+    feedback.hidden = true;
+    advance.hidden = true;
+    statementCard.hidden = false;
+    axis.hidden = false;
+    summary.hidden = true;
+    summary.querySelectorAll('.summary-dot').forEach(d => d.remove());
+    summarySr.innerHTML = '';
+    syncStops();
+    showStatement(true);
+  });
+
+  // ===== BOOT ====================================================
+  buildAxis();
+  syncStops();
+  showStatement(false);
+</script>
+
+</body>
+</html>

@@ -535,7 +535,6 @@
   let completionFired = false;
   const found = {};   // person key -> Set of found barrier keys
   const tried = {};   // person key -> Set of wrong barrier keys tried
-  const foundGlobal = new Set(); // barrier keys anchored anywhere
 
   const docLines = document.getElementById('doc-lines');
   const counter = document.getElementById('counter');
@@ -626,10 +625,15 @@
       b.type = 'button';
       b.className = 'choice-btn';
       b.dataset.barrier = key;
-      const anchored = foundGlobal.has(key);
+      // The full bank is offered for every person. Barriers anchored to
+      // another person are NOT disabled here: each person is an
+      // independent judgment against the complete list, and every
+      // person-barrier pair has its own redirect feedback. Only picks
+      // already tried for THIS person disable (disabled-wrong-choice rule).
+      const foundHere = found[p.key] && found[p.key].has(key);
       const triedHere = tried[p.key] && tried[p.key].has(key);
-      b.disabled = anchored || triedHere;
-      const srNote = anchored ? ' (already identified)' : (triedHere ? ' (already tried here)' : '');
+      b.disabled = foundHere || triedHere;
+      const srNote = foundHere ? ' (already identified for this person)' : (triedHere ? ' (already tried for this person)' : '');
       b.innerHTML = `${escapeHtml(BARRIERS[key])}<span class="sr-only">${srNote}</span>`;
       b.addEventListener('click', () => onBarrier(p, key));
       pickChoices.appendChild(b);
@@ -683,7 +687,6 @@
     if (isCorrect) {
       if (!found[p.key]) found[p.key] = new Set();
       found[p.key].add(barrierKey);
-      foundGlobal.add(barrierKey);
       foundCount += 1;
       counter.textContent = `${foundCount} of ${TOTAL_BARRIERS} barriers identified`;
 
@@ -793,7 +796,6 @@
     phase = 'barriers';
     Object.keys(found).forEach(k => delete found[k]);
     Object.keys(tried).forEach(k => delete tried[k]);
-    foundGlobal.clear();
     completeCard.hidden = true;
     actions.hidden = true;
     feedback.hidden = true;

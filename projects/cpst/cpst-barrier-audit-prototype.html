@@ -367,6 +367,23 @@
     outline: 3px solid var(--interactive);
     outline-offset: 3px;
   }
+  .btn-primary {
+    background: var(--interactive);
+    color: var(--canvas);
+    padding: 12px 22px;
+    min-height: 44px;
+    font-size: 14px;
+    letter-spacing: 0.3px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary:hover { background: var(--structure); }
+  .btn-primary svg {
+    width: 14px; height: 14px;
+    stroke: currentColor; fill: none;
+    stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  }
   .btn-ghost {
     background: transparent;
     color: var(--interactive);
@@ -440,6 +457,13 @@
       <p class="answer-line" id="fb-answer" hidden></p>
       <p class="feedback-prose" id="fb-prose"></p>
       <p class="feedback-nudge" id="fb-nudge" hidden></p>
+    </div>
+
+    <div class="actions" id="advance" hidden>
+      <button type="button" class="btn btn-primary" id="continue">
+        <span>Continue</span>
+        <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="13 6 19 12 13 18"/></svg>
+      </button>
     </div>
 
     <div class="complete-card" id="complete" hidden>
@@ -616,7 +640,10 @@
 
   function buildBank() {
     const p = PEOPLE.find(x => x.key === activeKey);
-    pickPrompt.textContent = `What's getting in the way for ${p.name}?`;
+    const total = Object.keys(p.correct).length;
+    const left = total - (found[p.key] ? found[p.key].size : 0);
+    const countNote = left === 1 ? 'Find 1 barrier.' : `Find ${left} barriers.`;
+    pickPrompt.textContent = `What's getting in the way for ${p.name}? ${countNote}`;
     pickChoices.setAttribute('aria-label', `Name the barrier for ${p.name}`);
     pickChoices.classList.remove('single-col');
     pickChoices.innerHTML = '';
@@ -704,7 +731,7 @@
       const allFound = foundCount === TOTAL_BARRIERS;
       let nudge = null;
       if (allFound) {
-        nudge = null;
+        nudge = `All ${TOTAL_BARRIERS} barriers identified.`;
       } else if (done) {
         nudge = `That's everything for ${p.name}. Review another family member.`;
       } else {
@@ -713,8 +740,14 @@
       showFeedback(true, p.correct[barrierKey], BARRIERS[barrierKey], nudge);
 
       if (allFound) {
-        announce(`Correct. ${p.correct[barrierKey]} All ${TOTAL_BARRIERS} barriers identified.`);
-        startPrinciplePhase();
+        // Hold on the final verdict; the principle question waits for Continue.
+        activeKey = null;
+        pickArea.hidden = true;
+        pickChoices.innerHTML = '';
+        syncPeople();
+        document.getElementById('advance').hidden = false;
+        announce(`Correct. ${p.correct[barrierKey]} All ${TOTAL_BARRIERS} barriers identified. Select Continue for the closing question.`);
+        document.getElementById('continue').focus();
       } else if (done) {
         activeKey = null;
         pickArea.hidden = true;
@@ -790,6 +823,16 @@
     completeText.focus();
   }
 
+  document.getElementById('continue').addEventListener('click', () => {
+    document.getElementById('advance').hidden = true;
+    feedback.hidden = true;
+    fbNudge.hidden = true;
+    startPrinciplePhase();
+    announce(PRINCIPLE_QUESTION);
+    const first = pickChoices.querySelector('.choice-btn');
+    if (first) first.focus();
+  });
+
   document.getElementById('restart').addEventListener('click', () => {
     activeKey = null;
     foundCount = 0;
@@ -801,6 +844,7 @@
     feedback.hidden = true;
     pickArea.hidden = true;
     pickChoices.innerHTML = '';
+    document.getElementById('advance').hidden = true;
     hint.hidden = false;
     counter.textContent = `0 of ${TOTAL_BARRIERS} barriers identified`;
     buildDoc();

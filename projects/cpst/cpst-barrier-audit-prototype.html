@@ -666,6 +666,10 @@
     const p = PEOPLE.find(x => x.key === key);
     if (!p || personDone(p)) return;
     activeKey = key;
+    // Clear the previous person's verdict panel so their feedback
+    // doesn't read as part of the newly selected person's review.
+    feedback.hidden = true;
+    fbNudge.hidden = true;
     syncPeople();
     buildBank();
     const first = pickChoices.querySelector('.choice-btn:not([disabled])');

@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="CPST Foundational L3.6: What's Wrong with This Plan? Diagnose-and-repair prototype." />
+<title>CPST Foundational L3.6: Plan Audit (Prototype)</title>
+
+<!--
+  CPST Foundational 3.6: What's Wrong with This Plan? DIAGNOSE-AND-REPAIR PROTOTYPE (v3).
+  Version: 2026-06-04 (v1: diagnose only. v2: correction beat added. v3: "Find the
+  next error" nudge appears after each resolved correction, per Kristen)
+  Pattern: plan audit (diagnose-and-repair template candidate). The learner examines
+  the treatment plan document, flags the lines that contain errors, then chooses the
+  correction for each. The plan line rewrites in place when corrected; the closing
+  image is the fully corrected plan.
+  Source: engagement-text.md L3.6 (Kim Dupre). Error feedback verbatim. Restores the
+  E-specific distractor feedback the native multi-select build had to fold into a
+  generic incorrect string (see l3.6-multiselect-rewrite.md).
+
+  PACING (deliberate): flagging an error gives only a confirmation. Kim's full
+  feedback is withheld until AFTER the learner picks the correct fix, because her
+  prose names the fix. Order per error: diagnose (find the line), prescribe (choose
+  the correction), then her explanation lands as confirmation.
+
+  CONTENT MAPPING:
+  - Kim's options A-D = the four plan lines. Kim's distractor E = the Qualifying
+    Diagnosis line (the sound line); flagging it fires her E feedback verbatim.
+
+  *** AUTHORED CONTENT FOR KIM'S REVIEW ***
+  Kim's source has no correction beat. The following strings were written in her
+  voice, grounded in her own feedback prose and the DMAS scope language (LMHP
+  develops and authorizes; BHT implements):
+  - All correction options (three per error, twelve total)
+  - All wrong-fix redirect feedback (two per error, eight total)
+  Everything else (error feedback, E feedback, profile, plan values) is verbatim Kim.
+
+  DOCUMENTED DIVERGENCES from the card-flip sibling:
+  - No aria-live on the visible feedback panel; one sr-only live region composes a
+    single announcement per action.
+  - The document persists across flags; DOM updates are local.
+  - The "Error" pill on flagged lines uses --reconsider-ink (names the flaw in the
+    plan content); the "Corrected" pill uses --best-ink (names the repaired state).
+    The feedback panel's verdicts judge the learner's action; the pills describe the
+    document. Two channels, distinct on purpose.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --best-ink: #15803D;
+    --reconsider-ink: #B45309;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible { outline: none; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+  .frame {
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    border: 1.5px solid var(--hairline);
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .counter {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+
+  /* Profile: tinted statement-card vocabulary. Moves to Rise prose in
+     production; here for prototype review. */
+  .profile {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+  }
+  .profile-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .profile-text {
+    font-size: 15px;
+    line-height: 1.6;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .hint {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  /* ===== The plan document ===== */
+  .doc {
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .doc-header {
+    background: var(--structure);
+    color: var(--canvas);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .doc-lines {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .doc-lines li + li { border-top: 1px solid var(--hairline); }
+
+  .line-btn {
+    appearance: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--canvas);
+    border: 0;
+    padding: 14px 18px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 200ms ease, opacity 200ms ease;
+    position: relative;
+  }
+  .line-btn:hover:not([disabled]) { background: var(--tint); }
+  .line-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: -3px;
+  }
+  .line-btn[disabled] { cursor: not-allowed; }
+  /* The sound line, once flagged: dimmed, identity preserved. */
+  .line-btn.is-cleared { opacity: 0.45; }
+  /* While the learner is choosing a fix, untouched lines dim slightly
+     to spotlight the line under repair. */
+  .line-btn.is-waiting { opacity: 0.55; }
+  .line-btn.is-found, .line-btn.is-fixed { cursor: default; }
+
+  .line-field {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .line-value {
+    display: block;
+    font-size: 15.5px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .line-was {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-bottom: 3px;
+  }
+  .line-pill {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 2px 10px;
+  }
+  .line-pill.pill-error {
+    color: var(--canvas);
+    background: var(--reconsider-ink);
+  }
+  .line-pill.pill-corrected {
+    color: var(--canvas);
+    background: var(--best-ink);
+  }
+  .line-pill.pill-sound {
+    color: var(--muted);
+    border: 1px solid var(--hairline);
+    background: var(--canvas);
+  }
+
+  /* ===== Feedback panel (sibling vocabulary) ===== */
+  .feedback {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-left-width: 4px;
+    border-left-color: var(--interactive);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 22px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .feedback.is-best   { border-left-color: var(--best-ink); }
+  .feedback.is-reconsider { border-left-color: var(--reconsider-ink); }
+  .feedback[hidden] { display: none; }
+
+  .state-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .state-glyph { font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .state-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .is-best .state-glyph, .is-best .state-label { color: var(--best-ink); }
+  .is-reconsider .state-glyph, .is-reconsider .state-label { color: var(--reconsider-ink); }
+
+  .answer-line {
+    margin: 0 0 12px;
+    color: var(--structure);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+  .feedback-prose {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  /* The nudge after a resolved correction: eyebrow-weight prompt that
+     points the learner back up to the document. */
+  .feedback-nudge {
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 0.3px;
+  }
+  .feedback-nudge[hidden] { display: none; }
+
+  /* ===== Fix options (choice-row vocabulary from the card-flip sibling) ===== */
+  .fix-area[hidden] { display: none; }
+  .fix-prompt {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 0 0 10px;
+  }
+  .choice-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .choice-btn {
+    appearance: none;
+    background: var(--canvas);
+    color: var(--structure);
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    padding: 16px 18px;
+    min-height: 52px;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  }
+  .choice-btn:hover:not([disabled]) {
+    background: var(--structure);
+    color: var(--canvas);
+    box-shadow: 0 4px 14px -4px rgba(22,25,62,0.35);
+  }
+  .choice-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .choice-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--canvas);
+    color: var(--structure);
+    box-shadow: none;
+  }
+
+  @keyframes settleIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .complete-card {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .complete-card[hidden] { display: none; }
+  .complete-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .complete-result {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--structure);
+    letter-spacing: -0.1px;
+    line-height: 1.4;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+  .actions[hidden] { display: none; }
+  .btn {
+    appearance: none;
+    border: 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
+  }
+  .btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--interactive);
+    border: 1px solid var(--hairline);
+    padding: 10px 16px;
+    min-height: 40px;
+    font-size: 13px;
+  }
+  .btn-ghost:hover {
+    background: var(--tint);
+    border-color: var(--interactive);
+  }
+
+  @media (max-width: 600px) {
+    .frame { border-radius: 10px; padding: 20px; }
+    .profile { padding: 16px 18px; }
+    .line-btn { padding: 12px 14px; }
+    .line-pill { position: static; display: inline-block; margin-top: 6px; }
+    .choice-btn { padding: 14px 16px; font-size: 14px; min-height: 48px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <section class="frame" aria-label="What's wrong with this plan activity">
+
+    <span class="counter" id="counter">0 of 4 errors corrected</span>
+
+    <div class="profile">
+      <span class="profile-label">Profile</span>
+      <p class="profile-text">Tamika is a 24-year-old with a diagnosis of Major Depressive Disorder with Psychotic Features. She lives alone and has struggled to maintain basic routines since losing her job three months ago. She rarely leaves her home, has stopped responding to family, and has missed several psychiatric appointments. She has been in outpatient therapy for four months with no measurable progress. Her therapist reports that Tamika needs more frequent contact and real-world support to make meaningful gains. Last month she called a crisis line twice. She is willing to engage but needs someone to come to her.</p>
+    </div>
+
+    <p class="hint" id="hint">Four errors are in this plan. Select each line you believe contains one, then choose its correction.</p>
+
+    <div class="doc">
+      <div class="doc-header">Tamika's Treatment Plan as Written</div>
+      <ul class="doc-lines" id="doc-lines">
+        <!-- lines injected here -->
+      </ul>
+    </div>
+
+    <div class="feedback" id="feedback" hidden>
+      <div class="state-row">
+        <span class="state-glyph" id="fb-glyph" aria-hidden="true"></span>
+        <span class="state-label" id="fb-label"></span>
+      </div>
+      <p class="answer-line" id="fb-answer" hidden></p>
+      <p class="feedback-prose" id="fb-prose"></p>
+      <p class="feedback-nudge" id="fb-nudge" hidden>Find the next error in the plan above.</p>
+    </div>
+
+    <div class="fix-area" id="fix-area" hidden>
+      <p class="fix-prompt" id="fix-prompt"></p>
+      <div class="choice-row" id="fix-choices" role="group" aria-label="Choose the correction"></div>
+    </div>
+
+    <div class="complete-card" id="complete" hidden>
+      <span class="complete-label">Complete</span>
+      <p class="complete-result" tabindex="-1" id="complete-text">You found and corrected all four errors. The plan above now reflects appropriate tier intensity, a complete component list, proactive crisis planning, and role assignments that match scope of practice.</p>
+    </div>
+    <div class="actions" id="actions" hidden>
+      <button type="button" class="btn btn-ghost" id="restart">Start over</button>
+    </div>
+
+    <div class="sr-only" aria-live="polite" id="announce"></div>
+  </section>
+</main>
+
+<script>
+  // ===== CONTENT =================================================
+  // Plan lines, error feedback, and E feedback verbatim from Kim's
+  // L3.6 source. Correction options and wrong-fix redirect feedback
+  // are AUTHORED IN KIM'S VOICE for her review (see file header).
+  const LINES = [
+    {
+      key: "diagnosis",
+      field: "Qualifying Diagnosis",
+      value: "Major Depressive Disorder with Psychotic Features",
+      error: false,
+      soundFeedback: "Major Depressive Disorder with Psychotic Features is a qualifying diagnosis for CPST. It falls within the mood disorder category explicitly included in the CPST criteria. This is not an error in the treatment plan. Look more carefully at what the plan actually says about tier, components, crisis planning, and role assignments."
+    },
+    {
+      key: "tier",
+      field: "Tier",
+      value: "Tier 1",
+      error: true,
+      explain: "Tier: Tamika has impairment across multiple domains, has made no progress in outpatient therapy after four months, and has had two crisis contacts in the past month. Those indicators align more closely with Tier 2 intensity, which would need to be confirmed through a comprehensive assessment.",
+      fixes: [
+        {
+          text: "Keep Tier 1, but increase session frequency",
+          correct: false,
+          feedback: "Frequency is not the gap. Look at what the profile shows: impairment across multiple domains, no progress after four months of outpatient therapy, and two crisis contacts in the past month. That is a tier-intensity mismatch, not a scheduling problem."
+        },
+        {
+          text: "Tier 2, pending confirmation through a comprehensive assessment",
+          correct: true
+        },
+        {
+          text: "Tier 2, effective immediately, no assessment needed",
+          correct: false,
+          feedback: "The intensity indicators do point to a higher tier, but tier placement is confirmed through a comprehensive assessment, not assigned from a profile review alone."
+        }
+      ]
+    },
+    {
+      key: "components",
+      field: "Components",
+      value: "Restorative Life Skills Training, Care Coordination",
+      error: true,
+      explain: "Components: Restorative Life Skills Training and Care Coordination are appropriate, but the plan is incomplete. Tamika’s crisis contacts indicate the need for a crisis mitigation plan and crisis support. Given her limited progress in outpatient therapy and need for repeated real-world support, psychotherapy and rehabilitative skills practice would need to be considered and either included or clinically ruled out based on assessment findings.",
+      fixes: [
+        {
+          text: "Replace Restorative Life Skills Training with Psychotherapy",
+          correct: false,
+          feedback: "Restorative Life Skills Training is appropriate for Tamika. The problem with this component list is what is missing, not what is there."
+        },
+        {
+          text: "Add all five CPST components so nothing is missed",
+          correct: false,
+          feedback: "Components are selected based on assessed need, not bundled by default. Some components may be clinically ruled out for Tamika; the plan should reflect that reasoning, not skip it."
+        },
+        {
+          text: "Keep both components, add Crisis Support, and evaluate Psychotherapy and Rehabilitative Skills Practice based on assessment findings",
+          correct: true
+        }
+      ]
+    },
+    {
+      key: "crisis",
+      field: "Crisis Mitigation Plan",
+      value: "Not included — Tamika has not expressed active suicidal ideation",
+      error: true,
+      explain: "Crisis Mitigation Plan: Every CPST client receives a crisis mitigation plan — not only those with active suicidal ideation. Tamika has called a crisis line twice in the past month. That pattern signals a need for proactive crisis prevention planning regardless of whether she has expressed active suicidal ideation. The absence of a crisis plan here is a significant gap.",
+      fixes: [
+        {
+          text: "Include a crisis mitigation plan; every CPST client receives one",
+          correct: true
+        },
+        {
+          text: "Include a crisis plan only if Tamika reports active suicidal ideation",
+          correct: false,
+          feedback: "That is the same reasoning the plan already used. Crisis mitigation planning is proactive, and Tamika's two crisis-line calls in the past month signal the need now, not after a disclosure."
+        },
+        {
+          text: "Refer Tamika to the crisis line for ongoing support",
+          correct: false,
+          feedback: "The crisis line is an external resource, not a substitute for a crisis mitigation plan inside the treatment plan itself. Tamika has already used the crisis line twice; the plan needs to get ahead of the next call."
+        }
+      ]
+    },
+    {
+      key: "role",
+      field: "Role Assignment",
+      value: "The BHT will develop and authorize Tamika's treatment plan and conduct care coordination with her psychiatrist",
+      error: true,
+      explain: "Role Assignment: A BHT does not develop, authorize, or sign the treatment plan, and does not independently lead care coordination with outside practitioners. The BHT's role is to implement the treatment plan through direct skill practice and community-based support. Assigning these responsibilities to a BHT misrepresents both the BHT's scope and CPST's collaborative structure.",
+      fixes: [
+        {
+          text: "The BHT develops the plan, and the LMHP signs off on it afterward",
+          correct: false,
+          feedback: "Development is not within the BHT scope either, with or without a signature at the end. Plan development and authorization sit with the LMHP."
+        },
+        {
+          text: "The LMHP develops and authorizes the treatment plan; the BHT implements it through direct skill practice and community-based support",
+          correct: true
+        },
+        {
+          text: "The BHT authorizes the plan but coordinates care jointly with the psychiatrist",
+          correct: false,
+          feedback: "Authorization is outside the BHT scope of practice entirely. Adjusting the coordination piece does not fix who is authorizing the plan."
+        }
+      ]
+    }
+  ];
+
+  const TOTAL_ERRORS = LINES.filter(l => l.error).length;
+
+  // ===== STATE ===================================================
+  let fixedCount = 0;
+  let pendingKey = null;
+  let completionFired = false;
+
+  const docLines = document.getElementById('doc-lines');
+  const counter = document.getElementById('counter');
+  const feedback = document.getElementById('feedback');
+  const fbGlyph = document.getElementById('fb-glyph');
+  const fbLabel = document.getElementById('fb-label');
+  const fbAnswer = document.getElementById('fb-answer');
+  const fbProse = document.getElementById('fb-prose');
+  const fbNudge = document.getElementById('fb-nudge');
+  const fixArea = document.getElementById('fix-area');
+  const fixPrompt = document.getElementById('fix-prompt');
+  const fixChoices = document.getElementById('fix-choices');
+  const completeCard = document.getElementById('complete');
+  const completeText = document.getElementById('complete-text');
+  const actions = document.getElementById('actions');
+  const announcer = document.getElementById('announce');
+
+  // ===== COMPLETION TRIGGER ======================================
+  function fireCompletion() {
+    if (completionFired) return;
+    completionFired = true;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'complete' }, '*');
+      }
+    } catch (e) { /* parent not reachable; ignore */ }
+  }
+
+  // ===== HELPERS =================================================
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+  function announce(msg) {
+    announcer.textContent = '';
+    window.setTimeout(() => { announcer.textContent = msg; }, 60);
+  }
+  function lineBtn(key) {
+    return docLines.querySelector(`[data-key="${key}"]`);
+  }
+
+  // ===== BUILD ===================================================
+  function buildDoc() {
+    docLines.innerHTML = '';
+    LINES.forEach(line => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <button type="button" class="line-btn" data-key="${line.key}">
+          <span class="line-field">${escapeHtml(line.field)}</span>
+          <span class="line-value">${escapeHtml(line.value)}</span>
+          <span class="sr-only" data-srstate></span>
+        </button>
+      `;
+      docLines.appendChild(li);
+    });
+    docLines.querySelectorAll('.line-btn').forEach(b => {
+      b.addEventListener('click', () => onFlag(b.dataset.key));
+    });
+  }
+
+  // ===== STATE SYNC ==============================================
+  function syncLines() {
+    docLines.querySelectorAll('.line-btn').forEach(b => {
+      const isResolved = b.classList.contains('is-fixed') || b.classList.contains('is-cleared');
+      if (pendingKey !== null) {
+        b.disabled = true;
+        b.classList.toggle('is-waiting', b.dataset.key !== pendingKey && !isResolved);
+      } else {
+        b.classList.remove('is-waiting');
+        b.disabled = isResolved;
+      }
+    });
+  }
+
+  // ===== FEEDBACK ================================================
+  function showFeedback(correct, prose, answerText) {
+    feedback.hidden = false;
+    feedback.classList.toggle('is-best', correct);
+    feedback.classList.toggle('is-reconsider', !correct);
+    fbNudge.hidden = true;
+    fbGlyph.textContent = correct ? '✓' : '↻';
+    fbLabel.textContent = correct ? 'Correct' : 'Reconsider';
+    if (correct && answerText) {
+      fbAnswer.hidden = false;
+      fbAnswer.textContent = answerText;
+    } else {
+      fbAnswer.hidden = true;
+      fbAnswer.textContent = '';
+    }
+    fbProse.textContent = prose;
+  }
+
+  // ===== FIX OPTIONS =============================================
+  function showFixes(line) {
+    fixPrompt.textContent = `Choose the correction for ${line.field}.`;
+    fixChoices.setAttribute('aria-label', `Choose the correction for ${line.field}`);
+    fixChoices.innerHTML = '';
+    line.fixes.forEach((fix, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice-btn';
+      b.dataset.index = String(i);
+      b.textContent = fix.text;
+      b.addEventListener('click', () => onFix(line, i));
+      fixChoices.appendChild(b);
+    });
+    fixArea.hidden = false;
+    const first = fixChoices.querySelector('.choice-btn');
+    if (first) first.focus();
+  }
+
+  // ===== EVENTS ==================================================
+  function onFlag(key) {
+    if (pendingKey !== null) return;
+    const line = LINES.find(l => l.key === key);
+    const btn = lineBtn(key);
+    if (!line || btn.disabled) return;
+
+    if (line.error) {
+      pendingKey = key;
+      btn.classList.add('is-found');
+      const pill = document.createElement('span');
+      pill.className = 'line-pill pill-error';
+      pill.setAttribute('aria-hidden', 'true');
+      pill.textContent = 'Error';
+      pill.dataset.pill = 'error';
+      btn.appendChild(pill);
+      btn.querySelector('[data-srstate]').textContent = ' (error found, correction needed)';
+      syncLines();
+      showFeedback(true, 'This line has an error. Choose the correction below.', `${line.field} has an error`);
+      showFixes(line);
+      announce(`Correct. ${line.field} has an error. Choose the correction.`);
+    } else {
+      btn.disabled = true;
+      btn.classList.add('is-cleared');
+      const pill = document.createElement('span');
+      pill.className = 'line-pill pill-sound';
+      pill.setAttribute('aria-hidden', 'true');
+      pill.textContent = 'Not an error';
+      btn.appendChild(pill);
+      btn.querySelector('[data-srstate]').textContent = ' (not an error)';
+      showFeedback(false, line.soundFeedback);
+      announce(`Reconsider. ${line.soundFeedback}`);
+    }
+  }
+
+  function onFix(line, index) {
+    const fix = line.fixes[index];
+    const choiceBtn = fixChoices.querySelector(`[data-index="${index}"]`);
+
+    if (fix.correct) {
+      // Heal the document line.
+      const btn = lineBtn(line.key);
+      const valueEl = btn.querySelector('.line-value');
+      const wasText = line.value;
+      valueEl.innerHTML = `<span class="line-was" aria-hidden="true">${escapeHtml(wasText)}</span>${escapeHtml(fix.text)}`;
+      const pill = btn.querySelector('[data-pill="error"]');
+      if (pill) {
+        pill.className = 'line-pill pill-corrected';
+        pill.textContent = 'Corrected';
+      }
+      btn.classList.remove('is-found');
+      btn.classList.add('is-fixed');
+      btn.querySelector('[data-srstate]').textContent = ` (corrected: ${fix.text})`;
+
+      fixedCount += 1;
+      pendingKey = null;
+      counter.textContent = `${fixedCount} of ${TOTAL_ERRORS} errors corrected`;
+      fixArea.hidden = true;
+      fixChoices.innerHTML = '';
+      syncLines();
+      // Kim's full explanation lands here, after the repair.
+      showFeedback(true, line.explain, fix.text);
+
+      if (fixedCount === TOTAL_ERRORS) {
+        announce(`Correct. ${line.explain} All ${TOTAL_ERRORS} errors corrected.`);
+        renderComplete();
+      } else {
+        fbNudge.hidden = false;
+        announce(`Correct. ${line.explain} ${fixedCount} of ${TOTAL_ERRORS} errors corrected. Find the next error in the plan.`);
+        const nextLine = docLines.querySelector('.line-btn:not([disabled])');
+        if (nextLine) nextLine.focus();
+      }
+    } else {
+      choiceBtn.disabled = true;
+      showFeedback(false, fix.feedback);
+      announce(`Reconsider. ${fix.feedback} Pick a different correction.`);
+      const firstAvailable = fixChoices.querySelector('.choice-btn:not([disabled])');
+      if (firstAvailable) firstAvailable.focus();
+    }
+  }
+
+  function renderComplete() {
+    completeCard.hidden = false;
+    actions.hidden = false;
+    docLines.querySelectorAll('.line-btn:not([disabled])').forEach(b => {
+      b.disabled = true;
+    });
+    fireCompletion();
+    completeText.focus();
+  }
+
+  document.getElementById('restart').addEventListener('click', () => {
+    fixedCount = 0;
+    pendingKey = null;
+    completeCard.hidden = true;
+    actions.hidden = true;
+    feedback.hidden = true;
+    fixArea.hidden = true;
+    fixChoices.innerHTML = '';
+    counter.textContent = `0 of ${TOTAL_ERRORS} errors corrected`;
+    buildDoc();
+    const first = docLines.querySelector('.line-btn');
+    if (first) first.focus();
+  });
+
+  // ===== BOOT ====================================================
+  buildDoc();
+</script>
+
+</body>
+</html>

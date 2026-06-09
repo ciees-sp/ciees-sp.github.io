@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="CPST Recovery L3.2: Systems in Action — System Audit (Prototype)." />
+<title>CPST Recovery L3.2: System Audit (Prototype)</title>
+
+<!--
+  CPST Recovery L3.2: Systems in Action — Day-on-Caseload Audit (Prototype).
+  Sibling of l3.6-plan-audit-prototype.html. Same diagnose-and-repair chassis,
+  scoped to the actions a frontline practitioner (QMHP / BHT / peer recovery
+  specialist) can take, not agency policy. The learner audits a week of practice notes,
+  flags the practitioner-level fragmentation moves, then prescribes the
+  practitioner-level fix (warm handoff, lateral communication, transition
+  planning, peer-in-the-room planning). System-level levers (policy, funding,
+  org structure) live in the lesson body — they're not in the activity because
+  the audience can't act on them.
+
+  Pacing (deliberate): flagging an error gives only a confirmation. The full
+  explanation is withheld until AFTER the learner picks the correct fix, because
+  that prose names the fix. Order per error: diagnose (find the line), prescribe
+  (choose the correction), then the explanation lands as confirmation.
+
+  Architecture notes:
+  - One sr-only live region composes a single announcement per action; no
+    aria-live on the visible feedback panel.
+  - The document persists across flags; DOM updates are local.
+  - The "Error" pill on flagged lines uses --reconsider-ink (names the flaw in the
+    plan content); the "Corrected" pill uses --best-ink (names the repaired state).
+    The feedback panel's verdicts judge the learner's action; the pills describe
+    the document. Two channels, distinct on purpose.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --best-ink: #15803D;
+    --reconsider-ink: #B45309;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible { outline: none; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+  .frame {
+    position: relative;
+    width: 100%;
+    max-width: 720px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    border: 1.5px solid var(--hairline);
+    padding: 72px 28px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .counter {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    display: inline-flex;
+    align-items: center;
+    background: var(--tint);
+    color: var(--interactive);
+    border: 1px solid var(--hairline);
+    border-radius: 100px;
+    padding: 5px 13px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  /* ===== The plan document ===== */
+  .doc {
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 420px;
+    width: 100%;
+    align-self: center;
+  }
+  .doc-header {
+    background: var(--structure);
+    color: var(--canvas);
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+  }
+  .doc-lines {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .doc-lines li + li { border-top: 1px solid var(--hairline); }
+
+  .line-btn {
+    appearance: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: var(--canvas);
+    border: 0;
+    padding: 14px 18px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 200ms ease, opacity 200ms ease;
+    position: relative;
+  }
+  .line-btn:hover:not([disabled]) { background: var(--tint); }
+  .line-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: -3px;
+  }
+  .line-btn[disabled] { cursor: not-allowed; }
+  /* The sound line, once flagged: dimmed, identity preserved. */
+  .line-btn.is-cleared { opacity: 0.45; }
+  /* Confirmed-correct line (learner flagged a sound line): stays at full
+     opacity since the plan content is right; the button is just locked. */
+  .line-btn.is-confirmed { cursor: default; }
+  /* While the learner is choosing a fix, untouched lines dim slightly
+     to spotlight the line under repair. */
+  .line-btn.is-waiting { opacity: 0.55; }
+  .line-btn.is-found, .line-btn.is-fixed { cursor: default; }
+
+  .line-field {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .line-value {
+    display: block;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .line-was {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: line-through;
+    margin-bottom: 3px;
+  }
+  .line-pill {
+    position: absolute;
+    top: 14px;
+    right: 18px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    border-radius: 100px;
+    padding: 2px 10px;
+  }
+  .line-pill.pill-error {
+    color: var(--canvas);
+    background: var(--reconsider-ink);
+  }
+  .line-pill.pill-corrected {
+    color: var(--canvas);
+    background: var(--best-ink);
+  }
+  .line-pill.pill-sound {
+    color: var(--muted);
+    border: 1px solid var(--hairline);
+    background: var(--canvas);
+  }
+
+  /* ===== Feedback panel ===== */
+  .feedback {
+    background: var(--canvas);
+    border: 1.5px solid var(--hairline);
+    border-left-width: 4px;
+    border-left-color: var(--interactive);
+    border-radius: 0 10px 10px 0;
+    padding: 20px 22px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .feedback.is-best   { border-left-color: var(--best-ink); }
+  /* Simple mode: hide the verdict glyph + label and use the prose alone
+     (used at flag stage where verdict labels created cognitive dissonance
+     against the document-state pills). */
+  .feedback.is-simple .state-row { display: none; }
+  .feedback.is-reconsider { border-left-color: var(--reconsider-ink); }
+  .feedback[hidden] { display: none; }
+
+  .state-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+  .state-glyph { font-size: 20px; font-weight: 700; line-height: 1; flex-shrink: 0; }
+  .state-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .is-best .state-glyph, .is-best .state-label { color: var(--best-ink); }
+  .is-reconsider .state-glyph, .is-reconsider .state-label { color: var(--reconsider-ink); }
+
+  .answer-line {
+    margin: 0 0 12px;
+    color: var(--structure);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: -0.2px;
+    line-height: 1.25;
+    text-wrap: pretty;
+  }
+  .feedback-prose {
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  /* The nudge after a resolved correction: eyebrow-weight prompt that
+     points the learner back up to the document. */
+  .feedback-nudge {
+    margin: 14px 0 0;
+    padding-top: 12px;
+    border-top: 1px solid var(--hairline);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 0.3px;
+  }
+  .feedback-nudge[hidden] { display: none; }
+
+  /* ===== Fix options ===== */
+  .fix-area[hidden] { display: none; }
+  .fix-prompt {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--structure);
+    margin: 0 0 14px;
+    line-height: 1.4;
+  }
+  .choice-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .choice-btn {
+    appearance: none;
+    background: var(--canvas);
+    color: var(--structure);
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    padding: 16px 18px;
+    min-height: 52px;
+    width: 100%;
+    text-align: left;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.45;
+    letter-spacing: 0.1px;
+    cursor: pointer;
+    transition: background 200ms ease, color 200ms ease, box-shadow 200ms ease;
+  }
+  .choice-btn:hover:not([disabled]) {
+    background: var(--structure);
+    color: var(--canvas);
+    box-shadow: 0 4px 14px -4px rgba(22,25,62,0.35);
+  }
+  .choice-btn:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .choice-btn[disabled] {
+    opacity: 0.45;
+    cursor: not-allowed;
+    background: var(--canvas);
+    color: var(--structure);
+    box-shadow: none;
+  }
+
+  @keyframes settleIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .complete-card {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 20px 22px;
+    animation: settleIn 280ms cubic-bezier(.2,.7,.2,1);
+  }
+  .complete-card[hidden] { display: none; }
+  .complete-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .complete-result {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--structure);
+    letter-spacing: -0.1px;
+    line-height: 1.4;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 600px) {
+    .frame { border-radius: 10px; padding: 64px 20px 32px; }
+    .counter { top: 14px; right: 14px; padding: 5px 12px; font-size: 11px; }
+    .line-btn { padding: 12px 14px; }
+    .line-pill { position: static; display: inline-block; margin-top: 6px; }
+    .choice-btn { padding: 14px 16px; font-size: 14px; min-height: 48px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <section class="frame" aria-labelledby="activity-title">
+
+    <h3 id="activity-title" class="sr-only">Spot the missed moves in Dana's week</h3>
+    <span class="counter" id="counter" aria-label="0 of 5 missed moves repaired">0 of 5 repaired</span>
+
+    <div class="doc">
+      <div class="doc-header">Caseload Notes — Dana Whitfield, QMHP</div>
+      <ul class="doc-lines" id="doc-lines">
+        <!-- lines injected here -->
+      </ul>
+    </div>
+
+    <div class="feedback" id="feedback" hidden>
+      <div class="state-row">
+        <span class="state-glyph" id="fb-glyph" aria-hidden="true"></span>
+        <span class="state-label" id="fb-label"></span>
+      </div>
+      <p class="answer-line" id="fb-answer" hidden></p>
+      <p class="feedback-prose" id="fb-prose"></p>
+      <p class="feedback-nudge" id="fb-nudge" hidden>Find the next missed move in your week.</p>
+    </div>
+
+    <div class="fix-area" id="fix-area" hidden>
+      <p class="fix-prompt" id="fix-prompt"></p>
+      <div class="choice-row" id="fix-choices" role="group" aria-label="Choose the correction"></div>
+    </div>
+
+    <div class="complete-card" id="complete" hidden>
+      <span class="complete-label">Complete</span>
+      <p class="complete-result" tabindex="-1" id="complete-text">All five missed moves repaired. Each one is now a warm handoff, a peer in the room, a direct message to the team, a walk-with-her call, or a real transition plan.</p>
+    </div>
+
+    <div class="sr-only" aria-live="polite" id="announce"></div>
+  </section>
+</main>
+
+<script>
+  // ===== CONTENT =================================================
+  // Agency snapshot fields, fragmentation explanations, strengthening
+  // fix options, and wrong-fix redirect feedback. Five fragmentation
+  // moves to flag; one strengthening practice as a decoy.
+  const LINES = [
+    {
+      key: "sara_intake",
+      field: "Mon 9:15a — Sara, intake",
+      value: "New intake. Provided a printed list of community recovery resources; instructed Sara to follow up with any that look applicable.",
+      error: true,
+      explain: "Sara is brand new and doesn't yet know which community resources will fit her. Handing her a list at intake puts the work on her at the moment she has the least bandwidth for it. A warm handoff means picking one resource together and walking the connection forward.",
+      fixedValue: "New intake. Identified Greenfield Peer Center as a likely fit for Sara; arranged to make the call together at the next session and follow up after.",
+      fixes: [
+        {
+          text: "Print a more comprehensive list with phone numbers, websites, and intake hours",
+          correct: false,
+          feedback: "A better list is still a cold handoff. Sara needs you to make the introduction with her, not a better document."
+        },
+        {
+          text: "Pick one resource that fits her situation, make the call together at the next session, and follow up to see how it went",
+          correct: true
+        },
+        {
+          text: "Email the list to her as a follow-up so she has it digitally",
+          correct: false,
+          feedback: "Email is still just a list. A warm handoff means you and Sara reaching out to the resource together."
+        }
+      ]
+    },
+    {
+      key: "marcus_plan",
+      field: "Mon 2:00p — Marcus, plan review",
+      value: "Plan review with Marcus. Confirmed goals: housing stability, employment, weekly individual sessions. Marcus also engaged with peer recovery specialist at partner organization.",
+      error: true,
+      explain: "The peer isn't part of the plan. They're mentioned as someone Marcus already works with, separate from CPST. Peer support works best when the peer is in the room building the plan with Marcus, not handed the finished version later.",
+      fixedValue: "Plan review with Marcus. Confirmed goals: housing stability, employment, weekly individual sessions. Marcus's peer recovery specialist will be invited to the next plan review to participate in shaping the plan.",
+      fixes: [
+        {
+          text: "Send the peer recovery specialist a copy of Marcus's plan once it's finalized",
+          correct: false,
+          feedback: "Sending the finished plan still leaves the peer out of the planning. The peer needs to be in the room while you're building it."
+        },
+        {
+          text: "Encourage Marcus to share his plan with his peer recovery specialist between sessions",
+          correct: false,
+          feedback: "Asking Marcus to do this puts the work back on him. The peer should be brought in by you, not by him."
+        },
+        {
+          text: "Invite the peer recovery specialist into the next plan review so they're shaping the plan with Marcus, not receiving it after",
+          correct: true
+        }
+      ]
+    },
+    {
+      key: "garcia_intake",
+      field: "Tue 10:00a — Garcia family, first meeting",
+      value: "Initial meeting with the Garcia family. Identified natural supports during intake: grandmother involved in daily care, and a neighbor who provides transportation.",
+      error: false,
+      soundFeedback: "Asking about natural supports at intake is a strengthening practice. Look for the moves where the work is being handed back to the individual instead."
+    },
+    {
+      key: "anna_chart",
+      field: "Tue 3:30p — Anna, chart entry",
+      value: "Anna reported medication side effects affecting sleep and concentration. Documented in chart for review at next psychiatry appointment.",
+      error: true,
+      explain: "Charting alone isn't communicating. The psychiatrist might not see this for weeks, and Anna's side effects need attention now. Team communication works when you reach out directly, not when you wait.",
+      fixedValue: "Anna reported medication side effects affecting sleep and concentration. Sent direct message to her psychiatrist today with the specific concern and observations; awaiting reply.",
+      fixes: [
+        {
+          text: "Add a sticky-note flag on Anna's chart so the psychiatrist sees it sooner",
+          correct: false,
+          feedback: "A flag is still passive. The psychiatrist needs the message in their inbox, not waiting in the chart."
+        },
+        {
+          text: "Schedule an extra check-in with Anna before her next psychiatry appointment",
+          correct: false,
+          feedback: "An extra check-in helps Anna, but the psychiatrist still doesn't know. They need the information now."
+        },
+        {
+          text: "Send a direct message to the psychiatrist today with the specific concern and what was observed",
+          correct: true
+        }
+      ]
+    },
+    {
+      key: "tomas_team",
+      field: "Wed 9:30a — Tomas, team coordination",
+      value: "Sent direct message to Tomas's case manager regarding observed medication adherence pattern.",
+      error: false,
+      soundFeedback: "Reaching out directly to a teammate is the recovery-oriented move."
+    },
+    {
+      key: "kira_session",
+      field: "Wed 1:00p — Kira, session",
+      value: "Session opened with: \"What feels most important for us to talk about today?\"",
+      error: false,
+      soundFeedback: "Letting Kira start with what matters most to her is the person-driven opener. Look elsewhere for the cold handoffs."
+    },
+    {
+      key: "jess_housing",
+      field: "Thu 11:00a — Jess, housing planning",
+      value: "Reviewed three housing programs with Jess during today's session. Jess to follow up with all three this week.",
+      error: true,
+      explain: "Jess is being asked to follow up alone. Three cold leads at once is a lot, especially with housing on the line. Pick the one that fits her best and make the first call with her.",
+      fixedValue: "Reviewed three housing programs with Jess; identified the closest fit. Planned to sit with Jess and make the first call together at next session, then follow up to support the next step.",
+      fixes: [
+        {
+          text: "Provide Jess with a printout of the three programs with contact information",
+          correct: false,
+          feedback: "A better printout is still a cold handoff. Jess needs you to make the first call with her, not better paper."
+        },
+        {
+          text: "Schedule a follow-up session next week to see how the calls went",
+          correct: false,
+          feedback: "A check-in after still leaves Jess on her own for the calls. The help has to happen before, not after."
+        },
+        {
+          text: "Pick the program that fits her most clearly, sit with her while she calls them, and follow up after to support the next step",
+          correct: true
+        }
+      ]
+    },
+    {
+      key: "devon_close",
+      field: "Fri 2:00p — Devon, final session",
+      value: "Final session per treatment plan completion. Case closed in system.",
+      error: true,
+      explain: "Devon's treatment is done, but his recovery isn't. Closing the case without a transition plan leaves him without next steps. He needs a bridge to peer support, community resources, or lower-intensity services before the case closes.",
+      fixedValue: "Final session per treatment plan completion. Transition plan developed jointly with Devon: warm handoffs to peer recovery specialist and community resources arranged before close.",
+      fixes: [
+        {
+          text: "Add a 30-day follow-up call after closing the case",
+          correct: false,
+          feedback: "A single follow-up call is better than nothing, but it's not a transition plan. Devon needs a real bridge to what's next."
+        },
+        {
+          text: "Schedule a discharge group session two weeks before close",
+          correct: false,
+          feedback: "A discharge group is one event. Devon needs warm handoffs to peer support, community resources, or lower-intensity services so he's not on his own after his last session."
+        },
+        {
+          text: "Before closing the case, develop a transition plan with Devon that includes warm introductions to peer support and community resources, made before close",
+          correct: true
+        }
+      ]
+    },
+    {
+      key: "supervision",
+      field: "Fri 4:30p — Supervision",
+      value: "Brought forward an observed pattern of clients disengaging post-treatment. Discussed potential adjustments to transition planning.",
+      error: false,
+      soundFeedback: "Bringing a pattern to supervision is the right move. Some of this won't change at your level, but supervision is where you can name it."
+    }
+  ];
+
+  const TOTAL_ERRORS = LINES.filter(l => l.error).length;
+
+  // ===== STATE ===================================================
+  let fixedCount = 0;
+  let pendingKey = null;
+  let completionFired = false;
+
+  const docLines = document.getElementById('doc-lines');
+  const counter = document.getElementById('counter');
+  const feedback = document.getElementById('feedback');
+  const fbGlyph = document.getElementById('fb-glyph');
+  const fbLabel = document.getElementById('fb-label');
+  const fbAnswer = document.getElementById('fb-answer');
+  const fbProse = document.getElementById('fb-prose');
+  const fbNudge = document.getElementById('fb-nudge');
+  const fixArea = document.getElementById('fix-area');
+  const fixPrompt = document.getElementById('fix-prompt');
+  const fixChoices = document.getElementById('fix-choices');
+  const completeCard = document.getElementById('complete');
+  const completeText = document.getElementById('complete-text');
+  const announcer = document.getElementById('announce');
+
+  // ===== COMPLETION TRIGGER ======================================
+  function fireCompletion() {
+    if (completionFired) return;
+    completionFired = true;
+    try {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'complete' }, '*');
+      }
+    } catch (e) { /* parent not reachable; ignore */ }
+  }
+
+  // ===== HELPERS =================================================
+  function escapeHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+  function announce(msg) {
+    announcer.textContent = '';
+    window.setTimeout(() => { announcer.textContent = msg; }, 60);
+  }
+  function lineBtn(key) {
+    return docLines.querySelector(`[data-key="${key}"]`);
+  }
+
+  // ===== BUILD ===================================================
+  function buildDoc() {
+    docLines.innerHTML = '';
+    LINES.forEach(line => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <button type="button" class="line-btn" data-key="${line.key}">
+          <span class="line-field">${escapeHtml(line.field)}</span>
+          <span class="line-value">${escapeHtml(line.value)}</span>
+          <span class="sr-only" data-srstate></span>
+        </button>
+      `;
+      docLines.appendChild(li);
+    });
+    docLines.querySelectorAll('.line-btn').forEach(b => {
+      b.addEventListener('click', () => onFlag(b.dataset.key));
+    });
+  }
+
+  // ===== STATE SYNC ==============================================
+  function syncLines() {
+    docLines.querySelectorAll('.line-btn').forEach(b => {
+      const isResolved = b.classList.contains('is-fixed') || b.classList.contains('is-cleared') || b.classList.contains('is-confirmed');
+      if (pendingKey !== null) {
+        b.disabled = true;
+        b.classList.toggle('is-waiting', b.dataset.key !== pendingKey && !isResolved);
+      } else {
+        b.classList.remove('is-waiting');
+        b.disabled = isResolved;
+      }
+    });
+  }
+
+  // ===== FEEDBACK ================================================
+  function showFeedback(correct, prose, answerText, labels, opts) {
+    labels = labels || { success: 'Correct', fail: 'Reconsider' };
+    opts = opts || {};
+    feedback.hidden = false;
+    feedback.classList.toggle('is-best', correct);
+    feedback.classList.toggle('is-reconsider', !correct);
+    feedback.classList.toggle('is-simple', !!opts.simple);
+    fbNudge.hidden = true;
+    fbGlyph.textContent = correct ? '✓' : '↻';
+    fbLabel.textContent = correct ? labels.success : labels.fail;
+    if (correct && answerText) {
+      fbAnswer.hidden = false;
+      fbAnswer.textContent = answerText;
+    } else {
+      fbAnswer.hidden = true;
+      fbAnswer.textContent = '';
+    }
+    fbProse.innerHTML = prose;
+  }
+
+  // ===== FIX OPTIONS =============================================
+  function showFixes(line) {
+    fixPrompt.textContent = `Choose the correct response for ${line.field}.`;
+    fixPrompt.hidden = false;
+    fixChoices.setAttribute('aria-label', `Choose the correct response for ${line.field}`);
+    fixChoices.innerHTML = '';
+    line.fixes.forEach((fix, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'choice-btn';
+      b.dataset.index = String(i);
+      b.textContent = fix.text;
+      b.addEventListener('click', () => onFix(line, i));
+      fixChoices.appendChild(b);
+    });
+    fixArea.hidden = false;
+    const first = fixChoices.querySelector('.choice-btn');
+    if (first) first.focus();
+  }
+
+  // ===== EVENTS ==================================================
+  function onFlag(key) {
+    if (pendingKey !== null) return;
+    const line = LINES.find(l => l.key === key);
+    const btn = lineBtn(key);
+    if (!line || btn.disabled) return;
+
+    if (line.error) {
+      pendingKey = key;
+      btn.classList.add('is-found');
+      const pill = document.createElement('span');
+      pill.className = 'line-pill pill-error';
+      pill.setAttribute('aria-hidden', 'true');
+      pill.textContent = 'Error';
+      pill.dataset.pill = 'error';
+      btn.appendChild(pill);
+      btn.querySelector('[data-srstate]').textContent = ' (error found, correction needed)';
+      syncLines();
+      showFeedback(true, '<strong>You\u2019re right.</strong> This is a missed move.', null, null, { simple: true });
+      showFixes(line);
+      announce(`You\u2019re right, this is a missed move. Pick what should have happened instead.`);
+    } else {
+      btn.disabled = true;
+      btn.classList.add('is-confirmed');
+      const pill = document.createElement('span');
+      pill.className = 'line-pill pill-corrected';
+      pill.setAttribute('aria-hidden', 'true');
+      pill.textContent = 'Correct';
+      btn.appendChild(pill);
+      btn.querySelector('[data-srstate]').textContent = ' (no error — this line is correct)';
+      showFeedback(false, '<strong>That statement is appropriate here.</strong> ' + line.soundFeedback, null, null, { simple: true });
+      fbNudge.hidden = false;
+      announce(`That statement is appropriate here. ${line.soundFeedback} Find the next missed move in your week.`);
+    }
+  }
+
+  function onFix(line, index) {
+    const fix = line.fixes[index];
+    const choiceBtn = fixChoices.querySelector(`[data-index="${index}"]`);
+
+    if (fix.correct) {
+      // Heal the document line.
+      const btn = lineBtn(line.key);
+      const valueEl = btn.querySelector('.line-value');
+      const wasText = line.value;
+      const healText = line.fixedValue || fix.text;
+      valueEl.innerHTML = `<span class="line-was" aria-hidden="true">${escapeHtml(wasText)}</span>${escapeHtml(healText)}`;
+      const pill = btn.querySelector('[data-pill="error"]');
+      if (pill) {
+        pill.className = 'line-pill pill-corrected';
+        pill.textContent = 'Corrected';
+      }
+      btn.classList.remove('is-found');
+      btn.classList.add('is-fixed');
+      btn.querySelector('[data-srstate]').textContent = ` (corrected: ${fix.text})`;
+
+      fixedCount += 1;
+      pendingKey = null;
+      counter.textContent = `${fixedCount} of ${TOTAL_ERRORS} repaired`;
+      counter.setAttribute('aria-label', `${fixedCount} of ${TOTAL_ERRORS} missed moves repaired`);
+      fixArea.hidden = true;
+      fixChoices.innerHTML = '';
+      syncLines();
+      // Full explanation lands here, after the repair.
+      showFeedback(true, line.explain, fix.text);
+
+      if (fixedCount === TOTAL_ERRORS) {
+        announce(`Correct. ${line.explain} All ${TOTAL_ERRORS} errors corrected.`);
+        renderComplete();
+      } else {
+        fbNudge.hidden = false;
+        announce(`Correct. ${line.explain} ${fixedCount} of ${TOTAL_ERRORS} errors corrected. Find the next missed move in your week.`);
+        const nextLine = docLines.querySelector('.line-btn:not([disabled])');
+        if (nextLine) nextLine.focus();
+      }
+    } else {
+      choiceBtn.disabled = true;
+      showFeedback(false, fix.feedback);
+      announce(`Reconsider. ${fix.feedback} Pick a different correction.`);
+      const firstAvailable = fixChoices.querySelector('.choice-btn:not([disabled])');
+      if (firstAvailable) firstAvailable.focus();
+    }
+  }
+
+  function renderComplete() {
+    completeCard.hidden = false;
+    docLines.querySelectorAll('.line-btn:not([disabled])').forEach(b => {
+      b.disabled = true;
+    });
+    fireCompletion();
+    completeText.focus();
+  }
+
+  // ===== BOOT ====================================================
+  buildDoc();
+</script>
+
+</body>
+</html>

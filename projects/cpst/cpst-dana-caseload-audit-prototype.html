@@ -386,7 +386,7 @@
       </div>
       <p class="answer-line" id="fb-answer" hidden></p>
       <p class="feedback-prose" id="fb-prose"></p>
-      <p class="feedback-nudge" id="fb-nudge" hidden>Find the next missed move in your week.</p>
+      <p class="feedback-nudge" id="fb-nudge" hidden>Find the next missed move in Dana's week.</p>
     </div>
 
     <div class="fix-area" id="fix-area" hidden>
@@ -709,7 +709,7 @@
       btn.querySelector('[data-srstate]').textContent = ' (no error — this line is correct)';
       showFeedback(false, '<strong>That statement is appropriate here.</strong> ' + line.soundFeedback, null, null, { simple: true });
       fbNudge.hidden = false;
-      announce(`That statement is appropriate here. ${line.soundFeedback} Find the next missed move in your week.`);
+      announce(`That statement is appropriate here. ${line.soundFeedback} Find the next missed move in Dana's week.`);
     }
   }
 
@@ -748,7 +748,7 @@
         renderComplete();
       } else {
         fbNudge.hidden = false;
-        announce(`Correct. ${line.explain} ${fixedCount} of ${TOTAL_ERRORS} errors corrected. Find the next missed move in your week.`);
+        announce(`Correct. ${line.explain} ${fixedCount} of ${TOTAL_ERRORS} errors corrected. Find the next missed move in Dana's week.`);
         const nextLine = docLines.querySelector('.line-btn:not([disabled])');
         if (nextLine) nextLine.focus();
       }

@@ -267,13 +267,6 @@
 
   /* ===== Fix options ===== */
   .fix-area[hidden] { display: none; }
-  .fix-prompt {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--structure);
-    margin: 0 0 14px;
-    line-height: 1.4;
-  }
   .choice-row {
     display: grid;
     grid-template-columns: 1fr;
@@ -397,7 +390,6 @@
     </div>
 
     <div class="fix-area" id="fix-area" hidden>
-      <p class="fix-prompt" id="fix-prompt"></p>
       <div class="choice-row" id="fix-choices" role="group" aria-label="Choose the correction"></div>
     </div>
 
@@ -582,7 +574,6 @@
   const fbProse = document.getElementById('fb-prose');
   const fbNudge = document.getElementById('fb-nudge');
   const fixArea = document.getElementById('fix-area');
-  const fixPrompt = document.getElementById('fix-prompt');
   const fixChoices = document.getElementById('fix-choices');
   const completeCard = document.getElementById('complete');
   const completeText = document.getElementById('complete-text');
@@ -670,8 +661,6 @@
 
   // ===== FIX OPTIONS =============================================
   function showFixes(line) {
-    fixPrompt.textContent = `Choose the correct response for ${line.field}.`;
-    fixPrompt.hidden = false;
     fixChoices.setAttribute('aria-label', `Choose the correct response for ${line.field}`);
     fixChoices.innerHTML = '';
     line.fixes.forEach((fix, i) => {

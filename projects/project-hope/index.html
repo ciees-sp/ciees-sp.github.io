@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Still on the Horizon · A Project HOPE-VA Farewell</title>
+<meta name="description" content="A farewell round for the Project HOPE-VA partnership, 2023–2026. Fifteen questions, one sunrise.">
+<meta property="og:title" content="Still on the Horizon ☀">
+<meta property="og:description" content="A farewell round for the Project HOPE-VA partnership. 15 questions, one sunrise. How many can you get?">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ciees-sp.github.io/projects/project-hope/">
+<meta property="og:image" content="https://projecthopevirginia.org/wp-content/uploads/2025/04/project-hope-3.png">
+<meta property="og:image:alt" content="The Project HOPE Virginia logo: a gold apple inside a green house outline.">
+<link rel="icon" href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="62" r="26" fill="%23EEB221"/><path d="M8 88h84" stroke="%23135740" stroke-width="10" stroke-linecap="round"/></svg>'>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   STILL ON THE HORIZON · landing-page edition
+   CIEES Special Projects · June 2026
+   The sky is the progress bar. The sun rises as you answer.
+   ========================================================================== */
+:root{
+  --green:#135740; --green-deep:#0C3B2B; --green-dark:#0A2E22; --green-mist:#1E6B50;
+  --gold:#EEB221; --gold-bright:#FFD867; /* brighter companion gold for small text */ --gold-deep:#D99A0B; --gold-soft:#B8965B;
+  --cream:#F6F3EA; --white:#FFF; --ink:#2B2F26; --ink-soft:#52564B;
+  --terra:#B25337;
+  --radius:18px; --radius-sm:12px;
+  --shadow:0 14px 40px rgba(7,32,23,.35);
+  --shadow-soft:0 8px 26px rgba(7,32,23,.16);
+  --maxw:1120px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important} /* the hidden attribute always wins, even over display rules */
+html{scroll-behavior:smooth}
+body{
+  font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  color:var(--white);background:var(--green-dark);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+/* ---------- the sky (five stacked layers, cross-faded) ---------- */
+.sky{position:fixed;inset:0;z-index:-3;opacity:0;transition:opacity 1.6s ease}
+.sky.on{opacity:1}
+.sky-dawn  {background:linear-gradient(180deg,#071F17 0%,#0A2E22 42%,#10402F 78%,#1A4A35 100%)}
+.sky-early {background:linear-gradient(180deg,#0A2E22 0%,#0F4431 45%,#1A5C42 80%,#2A6B4C 100%)}
+.sky-golden{background:linear-gradient(180deg,#0E4431 0%,#16523C 40%,#2E6B4A 72%,#7A6B2E 100%)}
+.sky-high  {background:linear-gradient(180deg,#135740 0%,#1E6B50 48%,#3A7E5C 80%,#A08A3A 100%)}
+.sky-day   {background:linear-gradient(180deg,#1E7A58 0%,#2E8E68 55%,#6FA376 85%,#D9B24A 100%)}
+/* sun + glow */
+.sunfield{position:fixed;left:0;right:0;bottom:0;height:100vh;z-index:-2;pointer-events:none;overflow:hidden}
+.sun{
+  position:absolute;left:50%;bottom:-8vh;width:min(34vh,300px);height:min(34vh,300px);
+  transform:translate(-50%, 26vh) scale(.9);
+  transition:transform .9s cubic-bezier(.22,.8,.3,1);
+}
+.sun .disc{
+  width:100%;height:100%;border-radius:50%;
+  background:radial-gradient(circle at 38% 32%,#FFE08A 0%,var(--gold) 55%,var(--gold-deep) 100%);
+  box-shadow:0 0 70px rgba(238,178,33,.55),0 0 220px rgba(238,178,33,.28);
+}
+/* explicit box + origin: Safari mis-sizes auto-dimensioned SVGs under
+   percentage inset and can spin them around the wrong point */
+.sun .rays{
+  position:absolute;left:-18%;top:-18%;width:136%;height:136%;
+  transform-origin:50% 50%;opacity:0;transition:opacity 2s ease;
+}
+.sun.full .rays{opacity:.9;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.sun.celebrating .disc{animation:sunpulse 1.6s cubic-bezier(.3,.7,.3,1) 2}
+@keyframes sunpulse{
+  45%{transform:scale(1.14);box-shadow:0 0 110px rgba(238,178,33,.85),0 0 320px rgba(238,178,33,.45)}
+}
+.glowline{
+  position:absolute;left:0;right:0;bottom:0;height:24vh;
+  background:linear-gradient(180deg,transparent, rgba(238,178,33,.14));
+}
+/* dark ground under the bright horizon, so text scrolling through the
+   bottom of the viewport always has contrast backing */
+.groundscrim{
+  position:fixed;left:0;right:0;bottom:0;height:30vh;z-index:-1;pointer-events:none;
+  background:linear-gradient(180deg,transparent,rgba(7,31,23,.62) 45%,rgba(7,31,23,.9) 100%);
+}
+/* ---------- a11y chrome ---------- */
+.skip{
+  position:fixed;left:50%;top:-80px;transform:translateX(-50%);z-index:200;
+  background:var(--gold);color:var(--ink);font-weight:800;font-size:15px;
+  padding:.9em 1.6em;border-radius:0 0 14px 14px;text-decoration:none;
+  transition:top .25s ease;box-shadow:var(--shadow);
+}
+.skip:focus{top:0;outline:3px solid var(--white);outline-offset:-6px}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:4px}
+main:focus, .qcard:focus{outline:none} /* skip-link landing targets, not interactive */
+.visually-hidden{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* ---------- nav ---------- */
+header.nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(9,38,28,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(238,178,33,.25);
+}
+.nav-in{
+  max-width:var(--maxw);margin:0 auto;padding:10px clamp(16px,4vw,28px);
+  display:flex;align-items:center;gap:14px;
+}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--white);min-width:0}
+.brand img{height:40px;width:auto}
+.brand .b-fallback{display:none;font-weight:800;color:var(--gold);letter-spacing:.06em}
+.brand b{font-size:15px;font-weight:800;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand small{display:block;font-size:10.5px;font-weight:600;letter-spacing:.18em;color:var(--gold-bright);text-transform:uppercase}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.scorechip{
+  display:flex;align-items:center;gap:8px;background:var(--cream);color:var(--ink);
+  border-radius:999px;padding:7px 14px;font-weight:800;font-size:14px;box-shadow:var(--shadow-soft);
+}
+.scorechip .mini-sun{width:16px;height:16px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE08A,var(--gold));flex:0 0 auto}
+.scorechip .pulse{animation:bump .45s ease}
+@keyframes bump{40%{transform:scale(1.3)}}
+.qbar{height:3px;background:rgba(255,255,255,.14)}
+.qbar span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold-bright));transition:width .6s ease;box-shadow:0 0 10px rgba(238,178,33,.8)}
+/* ---------- layout primitives ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(18px,4.5vw,30px)}
+section{position:relative}
+.kicker{
+  display:inline-flex;align-items:center;gap:.7em;
+  font-size:clamp(12px,1.2vw,14px);font-weight:800;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--gold-bright);
+}
+.kicker::before{content:"";width:26px;height:2px;background:var(--gold);border-radius:2px}
+h1{font-size:clamp(46px,8.2vw,108px);font-weight:900;line-height:.98;letter-spacing:-.022em;margin:.32em 0 .25em}
+h2{font-size:clamp(30px,4.4vw,54px);font-weight:900;line-height:1.04;letter-spacing:-.015em;margin:.4em 0 .3em}
+h3{font-weight:800}
+.accent{color:var(--gold)}
+.lede{font-size:clamp(16px,1.8vw,21px);line-height:1.6;max-width:58ch;opacity:.94}
+/* ---------- hero ---------- */
+.hero{min-height:100svh;display:flex;flex-direction:column;justify-content:center;padding:120px 0 90px;text-align:center}
+.hero .wrap{display:flex;flex-direction:column;align-items:center}
+.hero-badge{height:clamp(120px,17vh,176px);margin-bottom:1.6rem;filter:drop-shadow(0 16px 34px rgba(0,0,0,.4))}
+.hero-badge img{height:100%;width:auto}
+.badge-fallback{
+  display:none;flex-direction:column;gap:.15em;background:var(--white);color:var(--green);
+  border-radius:14px;padding:1.1em 1.9em;font-weight:900;letter-spacing:.16em;
+}
+.badge-fallback .big{font-size:2em;letter-spacing:.03em}
+.badge-fallback .sm{color:var(--gold-soft);font-size:.82em}
+.cta-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:2.2rem}
+.btn{
+  display:inline-flex;align-items:center;gap:.6em;border-radius:999px;text-decoration:none;
+  font-weight:800;font-size:clamp(15px,1.5vw,17px);letter-spacing:.03em;cursor:pointer;
+  transition:transform .16s ease, box-shadow .2s ease, background .2s ease;border:2px solid transparent;
+  font-family:inherit;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-gold{background:var(--gold);color:var(--ink);padding:.95em 2em;box-shadow:0 10px 28px rgba(238,178,33,.35)}
+.btn-gold:hover{background:var(--gold-bright)}
+.btn-ghost{border-color:rgba(255,255,255,.55);color:var(--white);padding:.95em 1.7em;background:rgba(7,32,23,.55)}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright)}
+.statline{
+  display:flex;flex-wrap:wrap;gap:.4em 0;justify-content:center;margin-top:3.4rem;
+  font-size:13.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(255,255,255,.85);list-style:none;
+}
+.statline li{display:inline-flex;align-items:center}
+.statline li + li::before{content:"·";color:var(--gold);margin:0 .9em;font-size:1.2em}
+.scroll-cue{margin-top:3.4rem;opacity:.7;font-size:13px;letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+.scroll-cue::after{content:"↓";display:block;font-size:20px;margin-top:6px;animation:dip 1.8s ease infinite}
+@keyframes dip{50%{transform:translateY(7px)}}
+/* ---------- quiz sections ---------- */
+.round{padding:clamp(70px,11vh,120px) 0 clamp(50px,8vh,90px)}
+.round-head{display:flex;align-items:center;gap:clamp(16px,3vw,26px);margin-bottom:1rem}
+.rnum{
+  flex:0 0 auto;width:clamp(64px,7vw,86px);height:clamp(64px,7vw,86px);border-radius:50%;
+  background:var(--gold);color:var(--ink);font-size:clamp(28px,3.4vw,42px);font-weight:900;
+  display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow);
+}
+.round-head .years{font-size:13px;font-weight:700;letter-spacing:.22em;color:var(--gold-bright);text-transform:uppercase}
+.round-head h2{margin:.08em 0 0}
+.round .blurb{font-size:clamp(15px,1.6vw,19px);opacity:.92;max-width:56ch;line-height:1.55;margin-top:.4rem}
+/* question card */
+.qcard{
+  background:rgba(9,36,27,.8);border:1px solid rgba(238,178,33,.28);
+  border-radius:var(--radius);padding:clamp(20px,3.4vw,34px);
+  margin-top:clamp(20px,3vh,28px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  opacity:0;transform:translateY(34px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.8,.3,1);
+}
+.qcard.inview{opacity:1;transform:none}
+.qtop{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.qtag{font-size:12px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-bright)}
+.qstate{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.08em;opacity:.75}
+.qstate.done{color:var(--gold-bright);opacity:1}
+.qcard h3{font-size:clamp(19px,2.3vw,27px);line-height:1.3;max-width:34ch}
+.optgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:1.3rem}
+.optbtn{
+  display:flex;align-items:center;gap:13px;text-align:left;width:100%;
+  background:var(--cream);color:var(--ink);border:2.5px solid transparent;border-radius:var(--radius-sm);
+  padding:14px 16px;font:inherit;font-size:clamp(14.5px,1.45vw,18px);font-weight:600;line-height:1.32;
+  cursor:pointer;transition:transform .15s ease,border-color .2s ease,opacity .3s ease,box-shadow .2s ease;
+}
+.optbtn:hover:not([aria-disabled="true"]){transform:translateY(-2px);box-shadow:var(--shadow-soft);border-color:var(--gold)}
+.optbtn[aria-disabled="true"]{cursor:default}
+.optbtn .l{
+  flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:var(--green);color:var(--white);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px;
+  transition:background .2s ease,color .2s ease;
+}
+.qcard.answered .optbtn{opacity:.42}
+.qcard.answered .optbtn.is-correct{
+  opacity:1;border-color:var(--gold);box-shadow:0 0 0 4px rgba(238,178,33,.22),var(--shadow-soft);
+  transform:scale(1.015);
+}
+.qcard.answered .optbtn.is-correct .l{background:var(--gold);color:var(--ink)}
+.qcard.answered .optbtn.is-wrongpick{opacity:.85;border-color:var(--terra)}
+.qcard.answered .optbtn.is-wrongpick .l{background:var(--terra)}
+.optbtn.shake{animation:shake .4s ease}
+@keyframes shake{20%{transform:translateX(-6px)}50%{transform:translateX(5px)}80%{transform:translateX(-3px)}}
+.verdict{display:flex;align-items:center;gap:10px;margin-top:1.1rem;font-weight:800;font-size:15.5px;min-height:24px}
+.verdict .vc{color:var(--gold-bright)}
+.verdict .vw{color:#FFB59B}
+.qdetail{
+  margin-top:.55rem;font-size:clamp(14px,1.4vw,17px);font-style:italic;line-height:1.55;
+  color:rgba(255,255,255,.92);max-width:62ch;
+}
+/* ---------- memory bands (cream editorial) ---------- */
+.memory{background:var(--cream);color:var(--ink);padding:clamp(70px,11vh,120px) 0;position:relative;z-index:2}
+.memory .kicker{color:var(--green)}
+.memory .kicker::before{background:var(--green)}
+.memory h2{color:var(--green)}
+.memory .lede{color:var(--ink-soft);opacity:1}
+.era-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,2.5vw,26px);margin-top:2.4rem}
+.era{
+  background:var(--white);border-radius:var(--radius);padding:clamp(12px,1.8vw,20px);
+  box-shadow:var(--shadow-soft);transition:transform .25s ease;
+}
+.era:hover{transform:translateY(-6px) rotate(-.4deg)}
+.era img{width:100%;height:auto;aspect-ratio:.9;object-fit:contain;border-radius:10px;background:#F1EEE3}
+.era .era-fallback{display:none;aspect-ratio:.9;border-radius:10px;background:var(--green);color:var(--white);align-items:center;justify-content:center;font-weight:800;padding:1em;text-align:center}
+.era figcaption{margin-top:1em;font-weight:800;font-size:clamp(15px,1.6vw,19px);color:var(--green)}
+.era .esub{display:block;font-weight:500;font-size:13.5px;color:var(--ink-soft);font-style:italic;margin-top:.3em;line-height:1.45}
+.memory .note{max-width:62ch;font-size:clamp(15px,1.6vw,18px);font-style:italic;color:var(--ink-soft);line-height:1.65;margin-top:2.2rem}
+/* spotlight card */
+.spotlight{
+  background:var(--white);border:1px solid #E4DEC9;border-left:6px solid var(--gold);
+  border-radius:var(--radius-sm);box-shadow:var(--shadow-soft);
+  max-width:680px;margin-top:2.2rem;overflow:hidden;
+}
+.spotlight .ihead{
+  display:flex;align-items:center;gap:10px;padding:12px 18px;background:#FBF9F2;
+  border-bottom:1px solid #ECE7D4;font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);
+}
+.spotlight .ihead .st{margin-left:auto;background:var(--green);color:#fff;border-radius:999px;padding:.35em 1em;letter-spacing:.1em}
+.spotlight .ibody{padding:18px;font-size:clamp(14.5px,1.5vw,17px);line-height:1.6;color:var(--ink)}
+.spotlight .ibody b{color:var(--green)}
+.factrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(12px,2vw,22px);margin-top:2.4rem;list-style:none}
+.fbox{background:var(--white);border-radius:var(--radius);padding:clamp(18px,2.4vw,26px);box-shadow:var(--shadow-soft)}
+.fbox .n{display:block;font-size:clamp(28px,3.6vw,46px);font-weight:900;color:var(--green)}
+.fbox .t{display:block;font-size:14px;line-height:1.45;color:var(--ink-soft);margin-top:.45em;font-weight:600}
+/* podcast wall */
+.podgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,1.6vw,16px);margin-top:2.4rem;list-style:none}
+.pod{
+  background:var(--white);border-radius:var(--radius-sm);padding:16px 14px;box-shadow:var(--shadow-soft);
+  font-size:clamp(12.5px,1.2vw,14.5px);line-height:1.4;transition:transform .2s ease;
+}
+.pod:hover{transform:translateY(-4px)}
+.pod .ep{display:block;font-weight:900;color:var(--green);font-size:.82em;letter-spacing:.16em}
+.pod .ep::after{content:"";display:inline-block;width:18px;height:3px;background:var(--gold);border-radius:2px;margin-left:8px;vertical-align:middle}
+.pod .who{display:block;font-weight:800;color:var(--green);margin-top:.35em}
+.pod .org{display:block;color:var(--ink-soft);font-style:italic;margin-top:.2em}
+/* ---------- finale ---------- */
+.finale{padding:clamp(90px,14vh,150px) 0;text-align:center}
+.finale .wrap{
+  background:rgba(7,32,23,.66);border:1px solid rgba(238,178,33,.35);
+  border-radius:28px;padding:clamp(36px,6vw,70px) clamp(20px,4.5vw,60px);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  box-shadow:var(--shadow);
+}
+.finale .lede{margin:0 auto}
+.score-ring{
+  width:clamp(170px,24vw,230px);height:clamp(170px,24vw,230px);margin:2.2rem auto 0;position:relative;
+}
+.score-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.score-ring .track{stroke:rgba(255,255,255,.18)}
+.score-ring .arc{stroke:var(--gold);stroke-linecap:round;transition:stroke-dashoffset 1.6s cubic-bezier(.2,.8,.3,1)}
+.score-ring .mid{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.1em;
+}
+.score-ring .big{font-size:clamp(44px,6vw,64px);font-weight:900;line-height:1}
+.score-ring .of{font-size:14px;font-weight:700;letter-spacing:.18em;opacity:.8;text-transform:uppercase}
+.titleband{
+  display:inline-block;margin-top:1.6rem;background:var(--gold);color:var(--ink);
+  font-weight:900;font-size:clamp(17px,2vw,23px);letter-spacing:.04em;
+  padding:.6em 1.6em;border-radius:999px;box-shadow:0 10px 30px rgba(238,178,33,.4);
+}
+.share-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:1.8rem}
+.toast{
+  position:fixed;left:50%;bottom:26px;transform:translate(-50%,80px);z-index:150;
+  background:var(--cream);color:var(--ink);font-weight:800;font-size:14.5px;
+  padding:.9em 1.6em;border-radius:999px;box-shadow:var(--shadow);transition:transform .35s cubic-bezier(.2,.8,.3,1);
+}
+.toast.show{transform:translate(-50%,0)}
+.legacy-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(12px,1.8vw,20px);margin-top:3.4rem;list-style:none}
+.legacy{
+  background:rgba(255,255,255,.07);border:1px solid rgba(238,178,33,.5);border-radius:var(--radius);
+  padding:clamp(18px,2.4vw,28px) 14px;
+}
+.legacy .n{display:block;font-size:clamp(30px,3.8vw,52px);font-weight:900;color:var(--gold-bright)}
+.legacy .t{display:block;font-size:13.5px;line-height:1.45;margin-top:.5em;opacity:.93;font-weight:600}
+.closing{margin:3.2rem auto 0;font-size:clamp(16px,1.9vw,22px);line-height:1.65;max-width:54ch}
+.closing-2{margin-top:1.3rem}
+.signoff{margin-top:2.4rem;font-style:italic;font-size:clamp(15px,1.7vw,20px);line-height:1.6}
+.signoff strong{font-style:normal;letter-spacing:.02em;color:var(--gold-bright)}
+/* ---------- footer ---------- */
+footer{
+  background:var(--green-deep);border-top:1px solid rgba(238,178,33,.3);
+  padding:clamp(50px,8vh,80px) 0 40px;position:relative;z-index:2;
+}
+footer h2{font-size:clamp(20px,2.4vw,28px);color:var(--gold-bright);margin-bottom:.7em}
+.a11y-prose{font-size:clamp(15px,1.6vw,18px);line-height:1.75;max-width:62ch;opacity:.95}
+.urdu-line{margin-top:1.4rem;font-size:clamp(14px,1.5vw,16.5px);font-weight:600}
+.urdu-btn{
+  font:inherit;font-weight:800;color:var(--gold-bright);background:none;border:none;
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;
+}
+.urdu-btn:hover{color:var(--white)}
+.urdu-status{display:inline-flex;align-items:center;gap:.6em;font-style:italic;opacity:.95}
+.spinner{
+  width:14px;height:14px;border-radius:50%;flex:0 0 auto;
+  border:2.5px solid rgba(255,216,103,.35);border-top-color:var(--gold-bright);
+  animation:spinround .9s linear infinite;
+}
+@keyframes spinround{to{transform:rotate(360deg)}}
+.foot-meta{
+  margin-top:2.6rem;padding-top:1.4rem;border-top:1px solid rgba(255,255,255,.14);
+  display:flex;flex-wrap:wrap;gap:8px 26px;font-size:12.5px;opacity:.78;line-height:1.6;
+}
+/* ---------- floating "see your sunrise" ---------- */
+.float-cta{
+  position:fixed;right:18px;bottom:18px;z-index:90;transform:translateY(120px);
+  transition:transform .4s cubic-bezier(.2,.8,.3,1);
+}
+.float-cta.show{transform:none}
+#confetti{position:fixed;inset:0;z-index:120;pointer-events:none}
+/* ---------- responsive ---------- */
+@media (max-width:880px){
+  .optgrid{grid-template-columns:1fr}
+  .era-row{grid-template-columns:1fr;max-width:380px;margin-left:auto;margin-right:auto}
+  .factrow{grid-template-columns:1fr;max-width:420px}
+  .podgrid{grid-template-columns:repeat(2,1fr)}
+  .legacy-grid{grid-template-columns:repeat(2,1fr)}
+  .brand b{font-size:13px}
+}
+/* reduced motion, honored silently via the OS setting (no toggle, no fuss):
+   animations and transitions stop, and the celebration becomes an instant
+   still scatter of confetti and apples — same joy, zero movement.
+   The canvas stays visible: it draws the still version. */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none !important;transition:none !important}
+  .qcard{opacity:1;transform:none}
+}
+</style>
+</head>
+<body data-phase="0">
+
+<a class="skip" href="#q-1">Skip to the first question (you found the secret door)</a>
+
+<div class="sky sky-dawn on"   data-sky="0" aria-hidden="true"></div>
+<div class="sky sky-early"     data-sky="1" aria-hidden="true"></div>
+<div class="sky sky-golden"    data-sky="2" aria-hidden="true"></div>
+<div class="sky sky-high"      data-sky="3" aria-hidden="true"></div>
+<div class="sky sky-day"       data-sky="4" aria-hidden="true"></div>
+
+<div class="sunfield" aria-hidden="true">
+  <div class="glowline"></div>
+  <div class="groundscrim"></div>
+  <div class="sun" id="sun">
+    <svg class="rays" viewBox="0 0 200 200">
+      <g stroke="#EEB221" stroke-width="4.5" stroke-linecap="round" opacity=".85">
+        <line x1="100" y1="2" x2="100" y2="26"/><line x1="100" y1="174" x2="100" y2="198"/>
+        <line x1="2" y1="100" x2="26" y2="100"/><line x1="174" y1="100" x2="198" y2="100"/>
+        <line x1="31" y1="31" x2="48" y2="48"/><line x1="152" y1="152" x2="169" y2="169"/>
+        <line x1="31" y1="169" x2="48" y2="152"/><line x1="152" y1="48" x2="169" y2="31"/>
+      </g>
+    </svg>
+    <div class="disc"></div>
+  </div>
+</div>
+
+<canvas id="confetti" aria-hidden="true"></canvas>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#top" aria-label="Still on the Horizon, back to top">
+      <img src="https://projecthopevirginia.org/wp-content/uploads/2024/03/hope-logo.svg" alt=""
+           onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+      <span class="b-fallback" aria-hidden="true">HOPE☀</span>
+      <span><b>Still on the Horizon</b><small>A Project HOPE-VA farewell</small></span>
+    </a>
+    <div class="nav-right">
+      <p class="scorechip" id="scorechip">
+        <span class="mini-sun" aria-hidden="true"></span>
+        <span class="visually-hidden">Your score: </span><span id="scoretext">0 / 15</span>
+      </p>
+    </div>
+  </div>
+  <div class="qbar" aria-hidden="true"><span id="qbarfill"></span></div>
+</header>
+
+<main id="top" tabindex="-1">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="wrap">
+      <div class="hero-badge">
+        <img src="https://projecthopevirginia.org/wp-content/uploads/2024/03/hope-logo.svg"
+             alt="Project HOPE Virginia logo: a gold apple inside a green house outline, with Virginia rising like a sunrise inside the O of HOPE"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="badge-fallback" role="img" aria-label="Project HOPE Virginia">
+          <span class="sm">PROJECT</span><span class="big">HOPE</span><span class="sm">VIRGINIA</span>
+        </div>
+      </div>
+      <p class="kicker">2023 – 2026 · The Project HOPE-VA partnership</p>
+      <h1 id="hero-h">Still on the<br><span class="accent">Horizon</span></h1>
+      <p class="lede">Three years. Four phases. One website, one app, eight podcasts, 131 logos,
+        and a partnership worth celebrating. Fifteen questions stand between you and the sunrise.
+        Answer as you scroll; the sky keeps score.</p>
+      <div class="cta-row">
+        <a class="btn btn-gold" href="#round-1">Begin Round 1 <span aria-hidden="true">☀</span></a>
+      </div>
+      <!-- [html-validate-disable-next no-redundant-role: list-style:none strips list semantics in Safari/VoiceOver; explicit role restores it] -->
+      <ul class="statline" role="list" aria-label="The partnership by the numbers">
+        <li>3 years</li><li>4 phases</li><li>1 website</li><li>1 app</li>
+        <li>8 podcasts</li><li>131 logos</li><li>∞ HOPE Hearts</li>
+      </ul>
+      <p class="scroll-cue" aria-hidden="true">Scroll</p>
+    </div>
+  </section>
+
+  <!-- rounds + memory bands injected by JS into this mount -->
+  <div id="game"></div>
+
+  <!-- ============ FINALE ============ -->
+  <section class="finale" id="finale" aria-labelledby="finale-h">
+    <div class="wrap">
+      <p class="kicker">June 30, 2026 · our chapter closes. The work doesn’t.</p>
+      <h2 id="finale-h">Your <span class="accent">sunrise</span></h2>
+      <p class="lede" id="finale-lede">Your score rises with every answer. Perfection optional.</p>
+
+      <div class="score-ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <circle class="track" cx="60" cy="60" r="52" fill="none" stroke-width="9"/>
+          <circle class="arc" id="scorearc" cx="60" cy="60" r="52" fill="none" stroke-width="9"
+                  stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <p class="mid"><span class="visually-hidden">Your score: </span><span class="big" id="bigscore">0</span>
+          <span class="of">of 15</span></p>
+      </div>
+
+      <div><span class="titleband" id="titleband" hidden></span></div>
+
+      <div class="share-row">
+        <button class="btn btn-gold" id="sharebtn" type="button">Copy my score for the chat</button>
+        <button class="btn btn-ghost" id="rainbtn" type="button" hidden>Make it rain <span aria-hidden="true">☀</span></button>
+        <button class="btn btn-ghost" id="replaybtn" type="button">Play again</button>
+      </div>
+
+      <!-- [html-validate-disable-next no-redundant-role: list-style:none strips list semantics in Safari/VoiceOver; explicit role restores it] -->
+      <ul class="legacy-grid" role="list" aria-label="What the partnership leaves behind">
+        <li class="legacy"><span class="n" data-count="157">157</span><span class="t">McKinney-Vento liaisons equipped with training</span></li>
+        <li class="legacy"><span class="n" data-count="4000" data-suffix="+">4,000+</span><span class="t">educators and stakeholders reached</span></li>
+        <li class="legacy"><span class="n" data-count="24">24</span><span class="t">trainings built: 12 modules, 2 courses, 10 quick guides</span></li>
+        <li class="legacy"><span class="n" data-count="20000" data-suffix="+">20,000+</span><span class="t">Virginia students identified each year. The reason for all of it.</span></li>
+      </ul>
+
+      <p class="closing">Thank you, <strong>Project HOPE-VA</strong>, for trusting us with your mission and
+        inviting us into your ground-breaking work for Virginia’s students and families experiencing
+        homelessness. That is a partnership we’ll brag about for years. And thank you to the
+        <strong>TechArk</strong> team. You built it all and then made sure Virginia noticed.
+        Ideas are easy. You made them real, and you made them seen.</p>
+      <p class="closing closing-2">Together, we raised the sun a little higher for Virginia’s students
+        and families, and for the staff who support them. Not every job can say that.</p>
+      <p class="signoff">With gratitude,<br><strong>The Special Projects Team</strong></p>
+    </div>
+  </section>
+
+  <a class="btn btn-gold float-cta" id="floatcta" href="#finale" hidden>See your sunrise <span aria-hidden="true">→</span></a>
+  <div class="toast" id="toast" role="status"></div>
+  <div class="visually-hidden" aria-live="polite" id="announcer"></div>
+</main>
+
+<!-- ============ FOOTER (the receipts) ============ -->
+<footer aria-labelledby="foot-h">
+  <div class="wrap">
+    <h2 id="foot-h">Accessibility statement</h2>
+    <p class="a11y-prose">WCAG 2.1 AA conformant, lovingly over-audited. Contrast so healthy it may burn your
+      retinas; blink as needed. Keyboard users may find a secret door. Screen reader users get every joke.
+      The apples are decorative. The gratitude is not.</p>
+    <p class="urdu-line">
+      <button type="button" id="urduBtn" class="urdu-btn">Translate this page into Urdu</button>
+      <span class="urdu-status" id="urduStatus" hidden>
+        <span class="spinner" aria-hidden="true"></span>
+        <span id="urduMsg">Translating…</span>
+      </span>
+    </p>
+    <div class="foot-meta">
+      <span>Made with love by CIEES Special Projects and their intern, Claude · June 2026</span>
+      <span>The humans let Claude Fable out of the box for this one. It built a sunrise and never came back. Last seen somewhere on the horizon.</span>
+      <span>Typeset in Montserrat.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ==========================================================================
+   DATA — edit questions here
+   ========================================================================== */
+const ROUNDS = [
+  {n:1, name:'Origins', years:'1994 – 2022',
+   blurb:'Before the partnership: how Project HOPE-Virginia came to be.'},
+  {n:2, name:'The Build', years:'2023 – 2024',
+   blurb:'Logos, learning modules, and the making of a brand-new digital home.'},
+  {n:3, name:'Going Public & Growing', years:'2024 – 2025',
+   blurb:'The site goes live, and momentum takes it from there: new tools, a mobile app, and a podcast full of Hope Heroes.'},
+  {n:4, name:'Family Album', years:'2023 – 2026',
+   blurb:'The things that happened off the project plan.'}
+];
+
+const QUESTIONS = [
+  {round:1, q:'In 1994, Dr. James Stronge became Virginia’s homeless education coordinator and adopted a name already in use by a local program. Which one?',
+   options:['Virginia Beach’s','Richmond’s','Roanoke’s','Norfolk’s'], answer:0,
+   detail:'H.O.P.E. stands for Homeless Office for Programs in Education. Borrowed from Virginia Beach in 1994, kept ever since.'},
+  {round:1, q:'Dr. Popp joined Project HOPE-Virginia in 1995, in what role?',
+   options:['State coordinator','Graduate assistant','Outside consultant','Podcast guest'], answer:1,
+   detail:'Graduate assistant in 1995, doctorate along the way, state coordinator by 2003. Now that’s an origin story.'},
+  {round:1, q:'In 2024, Dr. Popp received which honor from the National Association for the Education of Homeless Children and Youth?',
+   options:['The Golden Apple Award','National Liaison of the Year','The Sandra M. Neese Lifetime Achievement Award','The McKinney-Vento Medal'], answer:2,
+   detail:'Three decades of service to Virginia’s students and families. Congratulations, Dr. Popp.'},
+
+  {round:2, q:'Something is hiding inside the O of HOPE in the 2023 logo. What is it?',
+   options:['A graduation cap','An apple','A map of Virginia','A golden heart'], answer:2,
+   detail:'From their own history page: “the map of Virginia is embedded in HOPE, which could be interpreted as a sunrise. Project HOPE-Virginia considers its work to still be on the horizon, with more efforts and more support to students across the commonwealth.”'},
+  {round:2, q:'So that every school division could have its own version, how many logo variations did the designers create?',
+   options:['33','76','131','207'], answer:2,
+   detail:'One per division, roughly fifteen minutes each. Thirty-five hours of pure logo from the TechArk design team.'},
+  {round:2, q:'projecthopevirginia.org officially launched in…',
+   options:['January 2024','May 2024','August 2024','May 2025'], answer:1,
+   detail:'By its first full month, site conversions were up 8,305%. That is not a typo.'},
+  {round:2, q:'How many McKinney-Vento Quick Guide videos live in the Learning Library?',
+   options:['6','8','10','12'], answer:2,
+   detail:'Ten quick guides plus two full training modules, complete with quizzes, certificates, and digital badges.'},
+
+  {round:3, q:'How many languages can the website be translated into?',
+   options:['5','9','12','26'], answer:2,
+   detail:'The printed awareness materials come in thirteen, counting English. Amharic to Vietnamese.'},
+  {round:3, q:'Which of these was NOT one of the four interactive tools the new site added?',
+   options:['The Liaison Portal','The Success Stories interactive map','The Making Ends Meet simulation','The HOPE-VA Karaoke Booth'], answer:3,
+   detail:'The real four: Liaison Portal, Liaison Finder, Success Stories map, and Making Ends Meet. Karaoke remains a Phase 5 dream.'},
+  {round:3, q:'The site’s poverty simulation is called “Making Ends Meet.” The beloved in-person original was named after which candy?',
+   options:['Lifesavers','Smarties','100 Grand','Dum-Dums'], answer:1,
+   detail:'The Smarties Simulation went digital and got a grown-up name. The lessons stayed just as impactful.'},
+  {round:3, q:'The Project HOPE-VA mobile app was designed to put one of these in every pocket. Which?',
+   options:['The Liaison Finder','The EHCY enrollment dashboard','The Smarties Simulation','Kate’s podcast outtakes'], answer:0,
+   detail:'Designed and built by TechArk so a family on the move can find their local McKinney-Vento contact in seconds, wherever they are.'},
+  {round:3, q:'How many podcast episodes have been released so far?',
+   options:['5','8','11','14'], answer:1,
+   detail:'Eight episodes, hosted by Kate Miller. Every guest a certified Hope Hero.'},
+
+  {round:4, q:'While all of this was being built, how many babies and grandbabies arrived on the project team?',
+   options:['1','2','3','5'], answer:2,
+   detail:'Laura, Veronique, and Melanie all welcomed new family. The project’s youngest stakeholders.'},
+  {round:4, q:'Kate’s son had quite the theatrical career during the project. Which role did he NOT play?',
+   options:['Charlie, of Chocolate Factory fame','Julius Caesar','Tiny Tim'], answer:1,
+   detail:'Charlie and Tiny Tim, yes. The Roman Senate will simply have to wait.'},
+  {round:4, q:'On the Liaison Portal, what do liaisons send each other to say “well done”?',
+   options:['Gold Stars','Apple Badges','Sunrise Stickers','HOPE Hearts'], answer:3,
+   detail:'Kudos that post straight to a liaison’s profile, for everyone to see. As it should be.'}
+];
+
+const ERAS = [
+  {src:'https://projecthopevirginia.org/wp-content/uploads/2025/04/project-hope-1.png', cap:'The original', sub:'late 1990s · a student on the rooftop, arms up',
+   alt:'The original black-and-white Project HOPE Virginia logo: a student with arms raised standing on a house-shaped roofline.'},
+  {src:'https://projecthopevirginia.org/wp-content/uploads/2025/04/project-hope-2.png', cap:'The graduate', sub:'2014 · same student, new graduation cap',
+   alt:'The 2014 green and yellow Project HOPE Virginia logo: the same raised-arms student, now wearing a graduation cap.'},
+  {src:'https://projecthopevirginia.org/wp-content/uploads/2025/04/project-hope-3.png', cap:'The sunrise', sub:'2023 · Virginia rising inside the O',
+   alt:'The current Project HOPE Virginia logo: a gold apple inside a green house outline, with a gold map of Virginia inside the letter O of HOPE.'}
+];
+
+const PODCAST = [
+  {ep:'EP 1', who:'Lisa Ann Abernathey', org:'Henrico County'},
+  {ep:'EP 2', who:'Damion Wilson & Dustin Schwandt', org:'Virginia Beach'},
+  {ep:'EP 3', who:'Angela Graciani', org:'ForKids'},
+  {ep:'EP 4', who:'Dr. Ryan Sykes', org:'POPScholar · Chesapeake'},
+  {ep:'EP 5', who:'Barbara Duffield', org:'SchoolHouse Connection'},
+  {ep:'EP 6', who:'Paige Walters', org:'Montgomery County'},
+  {ep:'EP 7', who:'Michelle Patton Swisher', org:'Spotsylvania County'},
+  {ep:'EP 8', who:'Taundwa Jeffries', org:'VA Head Start Collaboration'}
+];
+
+/* ==========================================================================
+   BUILD THE PAGE
+   ========================================================================== */
+const game = document.getElementById('game');
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const LETTERS = ['A','B','C','D'];
+let qIndex = 0;
+
+function memoryBand(afterRound){
+  if (afterRound === 1) return `
+  <section class="memory" id="memory-eras" aria-labelledby="m1-h">
+    <div class="wrap">
+      <p class="kicker">Memory lane · 01</p>
+      <h2 id="m1-h">Three logos, three eras</h2>
+      <p class="lede">Every era of this program drew the same promise a little differently.</p>
+      <div class="era-row">
+        ${ERAS.map(e => `
+        <figure class="era">
+          <img src="${e.src}" alt="${esc(e.alt)}" loading="lazy"
+               onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+          <div class="era-fallback">${esc(e.cap)}</div>
+          <figcaption>${esc(e.cap)}<span class="esub">${esc(e.sub)}</span></figcaption>
+        </figure>`).join('')}
+      </div>
+      <p class="note">Thirty years, one constant: a student, a home, and the color of hope.</p>
+    </div>
+  </section>`;
+  if (afterRound === 2) return `
+  <section class="memory" id="memory-launch" aria-labelledby="m2-h">
+    <div class="wrap">
+      <p class="kicker">Memory lane · 02</p>
+      <h2 id="m2-h">Launch summer, 2024</h2>
+      <p class="lede">The site went live in May. The internet noticed immediately.</p>
+      <ul class="factrow" role="list" aria-label="Launch summer by the numbers">
+        <li class="fbox"><span class="n">8,305%</span><span class="t">jump in site conversions in the first full month live</span></li>
+        <li class="fbox"><span class="n">4</span><span class="t">social channels launched in a single spring</span></li>
+        <li class="fbox"><span class="n">3,175</span><span class="t">visitors counted in the very first traffic report</span></li>
+      </ul>
+      <div class="spotlight">
+        <div class="ihead"><span aria-hidden="true">★</span> First hits · spring 2024 <span class="st">26%+ ENGAGEMENT</span></div>
+        <div class="ibody">The account’s first breakout post is a graphic with one sobering line:
+        <b>1 in 30 teens experiences homelessness.</b> Close behind it, the posts explaining the
+        “doubled-up” definition pull engagement rates north of 26%, which in education social media
+        is roughly Beatlemania.</div>
+      </div>
+      <p class="note">And by August 2025, the referral logs listed a brand-new traffic source: ChatGPT.
+        The site got so findable, even the robots started citing it.</p>
+    </div>
+  </section>`;
+  if (afterRound === 3) return `
+  <section class="memory" id="memory-pod" aria-labelledby="m3-h">
+    <div class="wrap">
+      <p class="kicker">Memory lane · 03</p>
+      <h2 id="m3-h">The Hope Heroes</h2>
+      <p class="lede">Eight episodes of “Empowering Voices in Homeless Education,” hosted by Kate Miller.
+        Liaisons, advocates, and one assistant principal who lived the story he now changes for others.</p>
+      <ul class="podgrid" role="list" aria-label="All eight podcast episodes">
+        ${PODCAST.map(p => `
+        <li class="pod"><span class="ep">${esc(p.ep)}</span><span class="who">${esc(p.who)}</span><span class="org">${esc(p.org)}</span></li>`).join('')}
+      </ul>
+    </div>
+  </section>`;
+  return '';
+}
+
+let html = '';
+ROUNDS.forEach(r => {
+  html += `
+  <section class="round" id="round-${r.n}" aria-labelledby="r${r.n}-h">
+    <div class="wrap">
+      <div class="round-head">
+        <div class="rnum" aria-hidden="true">${r.n}</div>
+        <div>
+          <p class="years">Round ${r.n} · ${esc(r.years)}</p>
+          <h2 id="r${r.n}-h">${esc(r.name)}</h2>
+        </div>
+      </div>
+      <p class="blurb">${esc(r.blurb)}</p>`;
+  QUESTIONS.forEach((q, qi) => {
+    if (q.round !== r.n) return;
+    qIndex++;
+    html += `
+      <article class="qcard" id="q-${qIndex}" data-q="${qi}">
+        <div class="qtop">
+          <span class="qtag">Question ${qIndex} of ${QUESTIONS.length}</span>
+          <span class="qstate" data-state>unanswered</span>
+        </div>
+        <h3>${esc(q.q)}</h3>
+        <div class="optgrid">
+          ${q.options.map((o,oi) => `
+          <button class="optbtn" type="button" data-opt="${oi}">
+            <span class="l" aria-hidden="true">${LETTERS[oi]}</span><span>${esc(o)}</span>
+          </button>`).join('')}
+        </div>
+        <p class="verdict" data-verdict></p>
+        <p class="qdetail" data-detail hidden>${esc(q.detail)}</p>
+      </article>`;
+  });
+  html += `</div></section>`;
+  html += memoryBand(r.n);
+});
+game.innerHTML = html;
+document.getElementById('q-1').setAttribute('tabindex', '-1'); /* skip-link target */
+
+/* ==========================================================================
+   STATE
+   ========================================================================== */
+const TOTAL = QUESTIONS.length;
+let state = { answers:{} };
+try {
+  const saved = JSON.parse(localStorage.getItem('soth-state') || 'null');
+  if (saved && saved.answers) state = { answers: saved.answers }; /* older saves may carry an rm flag; ignored by design */
+} catch(e){ /* private mode etc: play in memory */ }
+
+function persist(){ try { localStorage.setItem('soth-state', JSON.stringify(state)); } catch(e){} }
+
+const announcer = document.getElementById('announcer');
+const scoretext = document.getElementById('scoretext');
+const scorechip = document.getElementById('scorechip');
+const qbarfill = document.getElementById('qbarfill');
+const sun = document.getElementById('sun');
+const floatcta = document.getElementById('floatcta');
+
+function answeredCount(){ return Object.keys(state.answers).length; }
+function score(){ return Object.entries(state.answers).filter(([qi,c]) => QUESTIONS[qi].answer === +c).length; }
+
+/* sky + sun react to progress, staged by scroll position: the top of the
+   page is always dawn (hero contrast guaranteed); your earned sky and sun
+   height reveal as you scroll down into the page */
+let scrollDamp = 0;
+function phaseFor(n){ return n >= TOTAL ? 4 : n >= 12 ? 3 : n >= 7 ? 2 : n >= 3 ? 1 : 0; }
+function paint(){
+  const n = answeredCount(), s = score(), p = n / TOTAL;
+  scoretext.textContent = s + ' / ' + TOTAL;
+  qbarfill.style.width = (p * 100) + '%';
+  const earned = phaseFor(n);
+  const ph = scrollDamp < .3 ? 0 : scrollDamp < .55 ? Math.min(earned, 1) : earned;
+  document.querySelectorAll('.sky').forEach(el => el.classList.toggle('on', +el.dataset.sky === ph));
+  const rise = p * scrollDamp;
+  sun.style.transform = `translate(-50%, ${26 - rise * 78}vh) scale(${.9 + rise * .75})`;
+  sun.classList.toggle('full', n === TOTAL && scrollDamp > .55);
+  /* the floating cta is either fully present or fully gone: never an
+     invisible tab stop */
+  const showFloat = n === TOTAL && !finaleOnScreen;
+  floatcta.hidden = !showFloat;
+  requestAnimationFrame(() => floatcta.classList.toggle('show', showFloat));
+}
+let finaleOnScreen = false;
+let scrollQueued = false;
+function onScroll(){
+  scrollQueued = false;
+  scrollDamp = Math.min(1, Math.max(0, (scrollY - innerHeight * .12) / (innerHeight * .9)));
+  paint();
+}
+addEventListener('scroll', () => {
+  if (!scrollQueued){ scrollQueued = true; requestAnimationFrame(onScroll); }
+}, { passive:true });
+onScroll();
+history.scrollRestoration = 'auto'; /* normal refreshes keep their place; only replay forces the top */
+
+/* ==========================================================================
+   ANSWERING
+   ========================================================================== */
+function settle(card, qi, chosen, fresh){
+  const q = QUESTIONS[qi];
+  card.classList.add('answered');
+  card.querySelectorAll('.optbtn').forEach(b => {
+    const oi = +b.dataset.opt;
+    /* aria-disabled + tabindex=-1: settled options announce as dimmed and stay
+       readable in browse mode, but leave the tab order so keyboard users go
+       straight to the next question. The just-clicked button keeps its focus. */
+    b.setAttribute('aria-disabled', 'true');
+    b.setAttribute('tabindex', '-1');
+    /* state as hidden text, not aria-label: the visible words stay the
+       accessible name, and the verdict travels as content */
+    if (oi === q.answer){
+      b.classList.add('is-correct');
+      b.insertAdjacentHTML('beforeend', '<span class="visually-hidden">, correct answer</span>');
+    }
+    if (oi === chosen && chosen !== q.answer){
+      b.classList.add('is-wrongpick');
+      b.insertAdjacentHTML('beforeend', '<span class="visually-hidden">, your pick, incorrect</span>');
+    }
+  });
+  const right = chosen === q.answer;
+  const stateEl = card.querySelector('[data-state]');
+  stateEl.textContent = right ? '☀ +1' : 'settled';
+  stateEl.classList.add('done');
+  const verdict = card.querySelector('[data-verdict]');
+  verdict.innerHTML = right
+    ? '<span class="vc">Correct.</span>'
+    : `<span class="vw">Not quite.</span>&nbsp; The answer: ${esc(q.options[q.answer])}`;
+  const det = card.querySelector('[data-detail]');
+  det.hidden = false;
+  if (fresh){
+    if (right){
+      const r = card.getBoundingClientRect();
+      burst(r.left + r.width/2, Math.max(120, r.top + 60));
+      const st = scoretext.parentElement.querySelector('.mini-sun');
+      st.classList.remove('pulse'); void st.offsetWidth; st.classList.add('pulse');
+    } else {
+      const pick = card.querySelector('.is-wrongpick');
+      if (pick){ pick.classList.add('shake'); }
+    }
+    /* one live region, one announcement — and it carries the joke,
+       so the detail line isn't a sighted-only perk */
+    announcer.textContent = (right ? 'Correct. ' : 'Not quite. The answer is ' + q.options[q.answer] + '. ')
+      + q.detail + ' ' + score() + ' of ' + TOTAL + ' so far.';
+  }
+}
+
+document.querySelectorAll('.qcard').forEach(card => {
+  const qi = +card.dataset.q;
+  if (qi in state.answers) settle(card, qi, +state.answers[qi], false);
+  card.querySelectorAll('.optbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (qi in state.answers) return;
+      state.answers[qi] = +btn.dataset.opt;
+      persist();
+      settle(card, qi, +btn.dataset.opt, true);
+      paint();
+      if (finaleSeen) updateFinale(false);
+      /* the grand celebration waits for the finale to come into view, so the
+         rain falls on the score reveal, not on question fifteen. (If the finale
+         is somehow already on screen, fire now — never strand the moment.) */
+      if (answeredCount() === TOTAL && finaleOnScreen) celebrate();
+    });
+  });
+});
+
+/* reveal-on-scroll */
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting){ e.target.classList.add('inview'); io.unobserve(e.target); }
+}), { threshold:.18 });
+document.querySelectorAll('.qcard').forEach(c => io.observe(c));
+
+/* finale visibility: hide the floating cta there, and tally whatever has
+   been answered so far the moment the finale scrolls into view */
+new IntersectionObserver(es => es.forEach(e => {
+  finaleOnScreen = e.isIntersecting;
+  if (e.isIntersecting){
+    const first = !finaleSeen;
+    finaleSeen = true;
+    updateFinale(first);
+    if (first) document.querySelectorAll('.legacy .n').forEach(el =>
+      animateNum(el, +el.dataset.count, 1800, el.dataset.suffix || ''));
+    if (answeredCount() === TOTAL) celebrate();
+  }
+  paint();
+}), { threshold:.18 }).observe(document.getElementById('finale'));
+
+/* ==========================================================================
+   FINALE
+   ========================================================================== */
+const ARC = 2 * Math.PI * 52;
+let finaleSeen = false;
+let celebrated = false; /* once per page visit: completing live OR arriving at the finale with a finished game both earn the rain */
+function bandFor(s){
+  if (s >= 13) return 'Certified Hope Hero';
+  if (s >= 9)  return 'Honorary Liaison';
+  if (s >= 5)  return 'A Glimmer of HOPE';
+  return 'Keeper of HOPE';
+}
+function finaleLede(){
+  const n = answeredCount();
+  if (n === 0) return 'Nothing answered yet. Scroll up and play a little; the sun rises as you go.';
+  if (n < TOTAL) return n + ' of ' + TOTAL + ' answered so far. Your sunrise updates as you go, and the rest of the questions are still up there waiting.';
+  return 'Fifteen questions, three years of memories, one verdict:';
+}
+function updateFinale(animate){
+  const s = score();
+  document.getElementById('finale-lede').textContent = finaleLede();
+  document.getElementById('scorearc').style.strokeDashoffset = ARC * (1 - s / TOTAL);
+  if (animate) animateNum(document.getElementById('bigscore'), s, 1200);
+  else document.getElementById('bigscore').textContent = s;
+  const tb = document.getElementById('titleband');
+  if (answeredCount() > 0){ tb.textContent = '☀ ' + bandFor(s); tb.hidden = false; }
+  document.getElementById('rainbtn').hidden = answeredCount() !== TOTAL;
+}
+/* rain on demand: nobody should ever miss their own celebration */
+document.getElementById('rainbtn').addEventListener('click', () => {
+  if (motionOff()){ stillCelebration(); return; }
+  burst(innerWidth/2, innerHeight*.32);
+  rain();
+  setTimeout(rain, 1300);
+  sun.classList.add('celebrating');
+  setTimeout(() => sun.classList.remove('celebrating'), 3400);
+});
+function celebrate(){
+  if (celebrated) return;
+  celebrated = true;
+  announcer.textContent = 'All questions answered. Final score: ' + score() + ' of ' + TOTAL + '. ' + bandFor(score()) + '.';
+  /* the signature finish: an instant burst, golden rain in two waves,
+     and one proud pulse of the sun. Starts NOW — joy should not buffer.
+     Reduced-motion users get the same moment, held perfectly still. */
+  setTimeout(() => {
+    if (motionOff()){ stillCelebration(); return; }
+    burst(innerWidth/2, innerHeight*.32);
+    rain();
+    setTimeout(rain, 1300);
+    sun.classList.add('celebrating');
+    setTimeout(() => sun.classList.remove('celebrating'), 3400);
+  }, 150);
+}
+function motionOff(){ return matchMedia('(prefers-reduced-motion: reduce)').matches; }
+/* the motion-free celebration: confetti and apples appear in place, hold, and clear */
+function stillCelebration(){
+  sizeCv();
+  const colors = ['#EEB221','#FFD867','#FFFFFF','#1E6B50','#B8965B'];
+  for (let i = 0; i < 130; i++){
+    const x = Math.random()*cv.width, y = Math.random()*cv.height*.88;
+    cx.save(); cx.translate(x,y); cx.rotate(Math.random()*Math.PI);
+    cx.globalAlpha = .9;
+    if (i % 4 === 0){ drawApple({ r: 5.5 + Math.random()*5 }); }
+    else { cx.fillStyle = colors[i % colors.length];
+      cx.fillRect(-4, -6, 6 + Math.random()*5, 8 + Math.random()*7); }
+    cx.restore();
+  }
+  setTimeout(() => cx.clearRect(0,0,cv.width,cv.height), 4200);
+}
+function animateNum(el, target, dur, suffix=''){
+  if (motionOff()){ el.textContent = target.toLocaleString() + suffix; return; }
+  const t0 = performance.now();
+  (function tick(t){
+    const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(target * e).toLocaleString() + suffix;
+    if (p < 1) requestAnimationFrame(tick);
+  })(t0);
+}
+/* returning visitors: the finale observer repaints from saved state on view */
+
+/* share + replay */
+const toast = document.getElementById('toast');
+let toastT;
+function showToast(msg){
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(() => toast.classList.remove('show'), 3200);
+}
+document.getElementById('sharebtn').addEventListener('click', async () => {
+  const s = score();
+  const row = QUESTIONS.map((q,i) => state.answers[i] === undefined ? '⬜'
+    : +state.answers[i] === q.answer ? '🟩' : '🟧').join('');
+  const text = `☀ Still on the Horizon · ${s}/${TOTAL} · ${bandFor(s)}\n${row}`;
+  try { await navigator.clipboard.writeText(text); showToast('Copied. Go flood the chat ☀'); }
+  catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showToast('Copied. Go flood the chat ☀'); }
+    catch(e2){ showToast(text); }
+    ta.remove();
+  }
+});
+document.getElementById('replaybtn').addEventListener('click', () => {
+  state.answers = {}; persist();
+  /* a fresh game starts at dawn: defeat the browser's scroll restoration */
+  history.scrollRestoration = 'manual';
+  scrollTo({ top:0, behavior:'instant' });
+  requestAnimationFrame(() => location.reload());
+});
+
+/* ==========================================================================
+   THE URDU TRANSLATION (any day now)
+   ========================================================================== */
+const URDU_MSGS = ['Translating…','Still translating…','Loading all thirteen languages…',
+  'Negotiating with the grammar…','Any minute now…','Still translating…'];
+document.getElementById('urduBtn').addEventListener('click', function(){
+  this.hidden = true;
+  const status = document.getElementById('urduStatus');
+  const msg = document.getElementById('urduMsg');
+  status.hidden = false;
+  announcer.textContent = 'Translating. Estimated completion: eventually.';
+  let i = 0;
+  setInterval(() => { i = (i + 1) % URDU_MSGS.length; if (i === 0) i = 1; msg.textContent = URDU_MSGS[i]; }, 5000);
+});
+
+/* ==========================================================================
+   CONFETTI
+   ========================================================================== */
+const cv = document.getElementById('confetti'), cx = cv.getContext('2d');
+let pieces = [], animating = false;
+function sizeCv(){ cv.width = innerWidth; cv.height = innerHeight; }
+sizeCv(); addEventListener('resize', sizeCv);
+function burst(x, y){
+  if (motionOff()) return; /* per-answer feedback still lands via styles, text, and announcer */
+  const colors = ['#EEB221','#FFD867','#FFFFFF','#1E6B50','#B8965B'];
+  for (let i = 0; i < 90; i++){
+    pieces.push({ kind:'rect', x: x + (Math.random()-.5)*140, y: y + (Math.random()-.5)*40,
+      vx:(Math.random()-.5)*8, vy:Math.random()*-7-2.5, g:.24,
+      w:5+Math.random()*7, h:7+Math.random()*9,
+      rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.3,
+      c:colors[i % colors.length], life:1, decay:.009 });
+  }
+  if (!animating) animate();
+}
+/* completion spectacle: a slow golden rain across the full width,
+   with tiny brand apples drifting down among the confetti */
+function rain(){
+  /* spawn in a tight band just above the viewport with a brisk fall:
+     the first pieces are on screen within a third of a second.
+     (v1 spawned up to 0.8 viewports high with a slow drift — gorgeous
+     in theory, invisible in practice: the sky stayed empty for the
+     three seconds a human actually looks.) */
+  const colors = ['#EEB221','#FFD867','#FFFFFF','#1E6B50','#B8965B'];
+  for (let i = 0; i < 170; i++){
+    pieces.push({ kind:'rect', x: Math.random()*innerWidth, y: -10 - Math.random()*280,
+      vx:(Math.random()-.5)*1.6, vy:3.2+Math.random()*3.4, g:.03,
+      w:5+Math.random()*7, h:7+Math.random()*9,
+      rot:Math.random()*Math.PI, vr:(Math.random()-.5)*.12,
+      c:colors[i % colors.length], life:1, decay:.0035 });
+  }
+  for (let i = 0; i < 56; i++){
+    pieces.push({ kind:'apple', x: Math.random()*innerWidth, y: -20 - Math.random()*320,
+      vx:(Math.random()-.5)*1.2, vy:2.8+Math.random()*2.6, g:.028,
+      r:5.5+Math.random()*5, rot:(Math.random()-.5)*.7, vr:(Math.random()-.5)*.06,
+      life:1, decay:.0035 });
+  }
+  if (!animating) animate();
+}
+function drawApple(p){
+  cx.fillStyle = '#EEB221';
+  cx.beginPath(); cx.arc(0, 0, p.r, 0, Math.PI*2); cx.fill();
+  cx.fillStyle = '#FFD867';
+  cx.beginPath(); cx.arc(-p.r*.32, -p.r*.32, p.r*.34, 0, Math.PI*2); cx.fill();
+  cx.strokeStyle = '#0C3B2B'; cx.lineWidth = Math.max(1, p.r*.18);
+  cx.beginPath(); cx.moveTo(0, -p.r*.9); cx.quadraticCurveTo(p.r*.22, -p.r*1.35, p.r*.18, -p.r*1.5); cx.stroke();
+  cx.fillStyle = '#1E6B50';
+  cx.beginPath(); cx.ellipse(p.r*.5, -p.r*1.25, p.r*.5, p.r*.24, -.55, 0, Math.PI*2); cx.fill();
+}
+function animate(){
+  animating = true;
+  cx.clearRect(0,0,cv.width,cv.height);
+  pieces.forEach(p => {
+    p.vy += p.g; p.x += p.vx; p.y += p.vy; p.rot += p.vr; p.life -= p.decay;
+    cx.save(); cx.translate(p.x,p.y); cx.rotate(p.rot);
+    cx.globalAlpha = Math.max(0,p.life);
+    if (p.kind === 'apple'){ drawApple(p); }
+    else { cx.fillStyle = p.c; cx.fillRect(-p.w/2,-p.h/2,p.w,p.h); }
+    cx.restore();
+  });
+  pieces = pieces.filter(p => p.life > 0 && p.y < cv.height + 50);
+  if (pieces.length) requestAnimationFrame(animate);
+  else { animating = false; cx.clearRect(0,0,cv.width,cv.height); }
+}
+
+paint();
+</script>
+</body>
+</html>

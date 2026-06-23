@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<style>
+  :root{
+    --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --color-text-primary:#2C2C2A;
+    --color-text-secondary:#5F5E5A;
+    --color-text-tertiary:#888780;
+    --color-border-tertiary:#D3D1C7;
+    --color-background-secondary:#ECEAE3;
+  }
+  html,body{margin:0;padding:0;background:#ffffff}
+  #shot{display:inline-block;background:#ffffff;padding:26px 28px}
+
+  .cx{font-family:var(--font-sans);color:var(--color-text-primary);width:760px;font-size:13px;line-height:1.4}
+  .cx-title{font-size:19px;font-weight:700;letter-spacing:-.01em;margin-bottom:13px}
+
+  .cx-intro{margin:0 0 20px;font-size:12.5px;line-height:1.5;color:var(--color-text-secondary);max-width:720px}
+  .cx-intro p{margin:0 0 9px}
+  .cx-intro p:last-child{margin-bottom:0}
+  .cx-intro a{color:#4A3FAC;font-weight:600;text-decoration:underline}
+
+  .cont{margin-bottom:18px}
+  .cont-axis{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+  .ax-l,.ax-r{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--color-text-tertiary);white-space:nowrap}
+  .ax-line{flex:1;height:1px;background:#D6D4CC;position:relative}
+  .ax-line:after{content:"";position:absolute;right:0;top:-3px;border-left:6px solid #D6D4CC;border-top:3.5px solid transparent;border-bottom:3.5px solid transparent}
+  .cont-row{display:grid;grid-template-columns:repeat(4,1fr)}
+  .cstep{display:flex;flex-direction:column}
+  .cbar{height:12px}
+  .cstep:first-child .cbar{border-radius:6px 0 0 6px}
+  .cstep:last-child .cbar{border-radius:0 6px 6px 0}
+  .cbar.spine{background:#7F77DD}
+  .cbar.blue{background:#85B7EB}
+  .cbar.green{background:#5DCAA5}
+  .cbar.amber{background:#EF9F27}
+  .clab{font-size:11px;font-weight:600;color:var(--color-text-secondary);padding:7px 10px 0 0;line-height:1.3}
+
+  .colhead{display:grid;grid-template-columns:128px 1fr 1fr;gap:8px;padding-bottom:6px}
+  .ch{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text-secondary)}
+  .ch span{font-weight:500;opacity:.7}
+
+  .sec{display:grid;grid-template-columns:128px 1fr;gap:8px;margin-bottom:8px;align-items:stretch}
+  .sname{background:#E9E5FB;border:1px solid #CBC4F2;border-radius:9px;padding:10px;display:flex;flex-direction:column;justify-content:center;font-size:13px;font-weight:700;line-height:1.26;color:#433B9C}
+  .seb{font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:#857BC6;margin-bottom:2px}
+  .snote{font-size:10.5px;font-weight:500;color:#6B61B0;margin-top:4px;line-height:1.3}
+  .snote b{font-weight:700;color:#4A3FAC}
+
+  .rows{display:flex;flex-direction:column;justify-content:center;gap:6px}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:8px;border-radius:9px;padding:9px;border:1px solid}
+  .row.blue{background:#EAF2FB;border-color:#CADFF5}
+  .row.green{background:#E6F5EF;border-color:#BCE6D5}
+  .row.amber{background:#FBF0DC;border-color:#F2D49A}
+
+  .cell{display:flex;flex-wrap:wrap;align-items:center;gap:3px 6px;align-content:flex-start}
+  .eb{flex-basis:100%;font-size:9.5px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--color-text-tertiary);margin-bottom:1px}
+  .lesson{flex-basis:100%;font-weight:600;font-size:12.5px;color:var(--color-text-primary)}
+  .obj{font-size:10px;font-weight:600;padding:1.5px 6px;border-radius:20px;background:rgba(255,255,255,.72);color:var(--color-text-secondary);border:1px solid rgba(0,0,0,.10);margin-top:3px}
+</style>
+</head>
+<body>
+<div id="shot">
+<div class="cx">
+  <div class="cx-title">Parallel Module Architecture</div>
+
+  <div class="cx-intro">
+    <p>The SMI and SED modules use a parallel module architecture, organized around a shared instructional spine. Across both modules, learners move from understanding and recognizing, to considering factors that affect care and understanding treatment, to learning their role in collaborative, person-centered care.</p>
+    <p>This shared structure is intended to support the <a href="https://ciees-sp.github.io/projects/cpst/cpst-learner-personas.html" target="_blank" rel="noopener">CPST learner personas</a> and the range of QMHP and BHT learners who may take the modules. It is designed to help learners know where they are in the module, compare adult and youth service needs more easily, and build one transferable way of thinking across SMI and SED. Some lessons use the same core instruction when the practice principle carries across both populations. Other lessons use the same instructional frame while changing the content inside that frame. For example, both &ldquo;Understanding&rdquo; lessons define who qualifies, explain the criteria, and clarify the learner&rsquo;s role, but include different definitions and criteria for SMI and SED. A small number of lessons are population-specific by design, such as the treatment section&rsquo;s different focus on medication management for SMI and family engagement for SED.</p>
+    <p>As reviewers consider revisions, it may be helpful to distinguish between content-specific edits and structural edits. Content-specific edits may apply to one population only. Changes to the instructional spine, lesson sequence, or recurring instructional pattern may need to be considered across both modules so the parallel design remains intact and learners continue to receive an aligned experience across the series.</p>
+  </div>
+
+  <div class="cont">
+    <div class="cont-axis"><span class="ax-l">More aligned</span><span class="ax-line"></span><span class="ax-r">More population-specific</span></div>
+    <div class="cont-row">
+      <div class="cstep"><div class="cbar spine"></div><div class="clab">Shared Spine</div></div>
+      <div class="cstep"><div class="cbar blue"></div><div class="clab">Shared Core Instruction</div></div>
+      <div class="cstep"><div class="cbar green"></div><div class="clab">Shared Instructional Frame</div></div>
+      <div class="cstep"><div class="cbar amber"></div><div class="clab">Population-Specific Instruction</div></div>
+    </div>
+  </div>
+
+  <div class="colhead">
+    <div></div>
+    <div class="ch">SMI <span>&middot; DMAS</span></div>
+    <div class="ch">SED <span>&middot; DBHDS</span></div>
+  </div>
+
+  <div class="sec">
+    <div class="sname"><div class="seb">Section</div>Understanding<div class="snote"><b>Serious Mental Illness</b> (SMI) / <b>Serious Emotional Disturbance</b> (SED)</div></div>
+    <div class="rows">
+      <div class="row green">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Understanding SMI</div><span class="obj">Obj 1</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Understanding SED</div><span class="obj">Obj 1</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sname"><div class="seb">Section</div>Recognizing Symptoms &amp;<div class="snote"><b>Diagnoses</b> (SMI) / <b>Functioning</b> (SED)</div></div>
+    <div class="rows">
+      <div class="row amber">
+        <div class="cell"><div class="eb">Lessons</div><div class="lesson">Psychotic Disorders</div><div class="lesson">Mood Disorders</div><span class="obj">Obj 2</span></div>
+        <div class="cell"><div class="eb">Lessons</div><div class="lesson">Functional Impairment and Symptom Groups</div><div class="lesson">Functioning in School Settings</div><span class="obj">Obj 1</span><span class="obj">Obj 3</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sname"><div class="seb">Section</div>Factors That Affect Care</div>
+    <div class="rows">
+      <div class="row green">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Co-Occurring Substance Use</div><span class="obj">Obj 3</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Co-Occurring Conditions</div><span class="obj">Obj 4</span></div>
+      </div>
+      <div class="row green">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Stigma and Its Effects</div><span class="obj">Obj 4</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Stigma and Its Effects</div><span class="obj">Obj 2</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sname"><div class="seb">Section</div>Treatment &amp; Supports</div>
+    <div class="rows">
+      <div class="row green">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Evidence-Based Practices</div><span class="obj">Obj 5</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Evidence-Based Practices</div><span class="obj">Obj 1</span></div>
+      </div>
+      <div class="row amber">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Medication Management</div><span class="obj">Obj 6</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Engaging Families</div><span class="obj">Obj 5</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <div class="sname"><div class="seb">Section</div>Putting It Into Practice</div>
+    <div class="rows">
+      <div class="row blue">
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Collaborative &amp; Person-Centered Care</div><span class="obj">Obj 7</span></div>
+        <div class="cell"><div class="eb">Lesson</div><div class="lesson">Collaborative &amp; Person-Centered Care</div><span class="obj">Obj 6</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+</body>
+</html>

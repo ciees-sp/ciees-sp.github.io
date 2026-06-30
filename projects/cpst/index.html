@@ -84,6 +84,10 @@
   main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:40px 32px 8px;}
   .legend{font-size:13px;color:var(--muted);margin-bottom:22px;}
 
+  .relnotes{background:var(--tint,#EDF4F7);border-left:4px solid var(--interactive,#0B6A8A);border-radius:12px;padding:18px 22px;margin-bottom:24px;}
+  .relnotes-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--interactive,#0B6A8A);margin-bottom:10px;}
+  .relnotes ul{margin:0;padding-left:18px;}
+  .relnotes li{font-size:14px;color:var(--text,#1B1B1F);margin:6px 0;line-height:1.55;}
   .modules{display:flex;flex-direction:column;gap:12px;}
 
   .module{
@@ -103,7 +107,7 @@
   .meta{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
   .ver{display:inline-block;background:var(--tint,#EDF4F7);color:var(--structure,#16193E);padding:2px 9px;border-radius:20px;text-transform:none;vertical-align:middle;}
   .ver.up{background:var(--accent,#48AEE1);color:#fff;}
-  .note{font-size:15px;color:var(--muted);}
+  .note{font-size:13px;font-weight:600;color:var(--interactive,#0B6A8A);}
   .arrow{margin-left:auto;color:var(--interactive,#0B6A8A);font-size:22px;flex-shrink:0;padding-left:8px;}
 
   /* ── Footer ── */
@@ -135,6 +139,13 @@
   </header>
 
   <main>
+    <section class="relnotes" aria-label="Release notes">
+      <div class="relnotes-label">Release Notes</div>
+      <ul>
+        <li>Module titles have been standardized across the series. The unified title will be applied to each module with its next update.</li>
+        <li>A closing Module Wrap-Up lesson&mdash;a module summary plus a Reflect &amp; Commit activity&mdash;is included in new builds and will be added to the remaining modules as they are revised.</li>
+      </ul>
+    </section>
     <p class="legend" id="legend">Every link below opens that module&rsquo;s current version. When a module is revised, a dated note appears under its title.</p>
     <div class="modules" id="modules"></div>
     <noscript>This index needs JavaScript to display the module list. Each review module is available directly at <strong>/projects/cpst/&lt;module&gt;-review/</strong>.</noscript>
@@ -145,17 +156,18 @@
   <script>
     /* ---- VERSION REGISTRY — edit here (see rules in the CSS comment above) ---- */
     const MODULES = [
-      { slug:'ethics-review',          title:'Professional Ethics in Community-Based Behavioral Health Services',                         added:'2026-05-04', version:'1.0', updated:'2026-05-04', note:'Initial release.' },
-      { slug:'listening-review',       title:'Foundational Listening Skills for Community-Based Behavioral Health Practice',               added:'2026-05-29', version:'1.0', updated:'2026-05-29', note:'Initial release.' },
-      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'Initial release.' },
-      { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Initial release.' },
-      { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Initial release.' },
-      { slug:'recovery-review',        title:'Foundations of Recovery-Oriented Practice for Community-Based Behavioral Health',            added:'2026-06-15', version:'1.0', updated:'2026-06-15', note:'Initial release.' },
-      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'Initial release.' },
-      { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'Initial release.' },
-      { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'Initial release.' },
-      { slug:'measurement-review',     title:'Foundational Measurement and Monitoring Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'Initial release.' },
-      /* Add the final two modules here as objects, same shape. */
+      { slug:'ethics-review',          title:'Professional Ethics in Community-Based Behavioral Health Services',                         added:'2026-05-04', version:'1.0', updated:'2026-05-04', note:'Revisions in progress.' },
+      { slug:'listening-review',       title:'Foundational Listening Skills for Community-Based Behavioral Health Practice',               added:'2026-05-29', version:'1.0', updated:'2026-05-29', note:'Revisions in progress.' },
+      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'' },
+      { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Revisions in progress.' },
+      { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Revisions in progress.' },
+      { slug:'recovery-review',        title:'Foundations of Recovery-Oriented Practice for Community-Based Behavioral Health',            added:'2026-06-15', version:'1.0', updated:'2026-06-15', note:'Revisions in progress.' },
+      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'' },
+      { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'' },
+      { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'' },
+      { slug:'measurement-review',     title:'Foundational Measurement and Monitoring Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'' },
+      { slug:'crisis-review',      title:'Foundational Crisis Management Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'' },
+      /* Add new modules here as objects, same shape. */
     ];
 
     const MO = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
@@ -171,7 +183,7 @@
       a.className = 'module';
       a.href = './'+mod.slug+'/';
       a.setAttribute('aria-label', mod.title+' — version '+mod.version+', '+when);
-      var noteHtml = isUpdated ? ('<span class="note">'+mod.note+'</span>') : '';
+      var noteHtml = mod.note ? ('<span class="note">'+mod.note+'</span>') : '';
       a.innerHTML =
         '<span class="info">'+
           '<span class="title">'+mod.title+'</span>'+

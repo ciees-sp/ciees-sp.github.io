@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Foundational Review Modules | CIEES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* =====================================================================
+     CPST REVIEW MODULES — VERSION REGISTRY  (single source of truth)
+     ---------------------------------------------------------------------
+     To ADD a module:    add an object to the MODULES array in the script
+                         at the bottom of this file.
+     To UPDATE a module: change its `version`, `updated` date, and `note`.
+
+     VERSIONING RULES (what the client sees):
+       - Everything launches at v1.0. Pre-launch re-uploads do NOT change
+         the public version — the client only ever sees v1.0 at launch.
+       - MAJOR update (client requested a real content change):
+           bump the whole number   1.0 -> 2.0   + set `updated` + `note`.
+       - MINOR update (we caught/corrected something ourselves):
+           bump the decimal         1.0 -> 1.1   + set `updated` + `note`.
+
+     FIELDS:
+       slug     folder under /projects/cpst/   (the live course)
+       title    official course title (shown to client)
+       added    date first posted — NEVER changes   (YYYY-MM-DD)
+       version  current public version
+       updated  date of the current version (= added while at v1.0)
+       note     one line: what the latest version changed (client-facing)
+     ===================================================================== */
+
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+
+  :root{
+    --navy:#1E3A5C; --medium-blue:#2D5F8A; --light-blue:#E8EFF5;
+    --amber:#E0A020; --amber-light:#E8AC30;
+    --warm:#F6F3EE; --ink:#1C1C28; --white:#FFFFFF; --muted:#4F586A;
+    --font-display:'Instrument Sans','Segoe UI',system-ui,sans-serif;
+    --font-body:'Instrument Sans','Segoe UI',system-ui,sans-serif;
+    --font-mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+    --radius:14px;
+    --shadow-sm:0 1px 3px rgba(28,28,40,.07);
+    --shadow-md:0 8px 24px rgba(28,28,40,.13);
+    --t:220ms ease;
+  }
+
+  html{font-size:16px;}
+  body{
+    background:var(--warm,#F6F3EE);
+    color:var(--ink,#1C1C28);
+    font-family:var(--font-body);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    display:flex;flex-direction:column;
+  }
+
+  /* ── Hero ── */
+  .hero{
+    background:var(--navy,#1E3A5C);
+    color:var(--white);
+    padding:3.25rem 2rem 3rem;
+  }
+  .hero-inner{max-width:920px;margin:0 auto;}
+  .hero img{height:30px;width:auto;margin-bottom:1.75rem;opacity:.95;}
+  .overline{
+    font-family:var(--font-mono);
+    font-size:.72rem;font-weight:500;
+    letter-spacing:.16em;text-transform:uppercase;
+    color:var(--amber-light,#E8AC30);
+    margin-bottom:.85rem;
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2rem,5vw,3.15rem);
+    line-height:1.04;letter-spacing:-.01em;
+    color:var(--white);
+  }
+  .rule{display:block;width:52px;height:3px;background:var(--amber,#E0A020);margin:1.4rem 0;}
+  .hero p{
+    color:rgba(255,255,255,.86);
+    max-width:48ch;font-size:1.02rem;
+  }
+  .stat{
+    font-family:var(--font-mono);
+    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
+    color:rgba(255,255,255,.72);
+    margin-top:1.6rem;
+  }
+
+  /* ── Main ── */
+  main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:2.75rem 2rem 1rem;}
+  .legend{
+    font-family:var(--font-mono);
+    font-size:.74rem;letter-spacing:.04em;
+    color:var(--muted);
+    margin-bottom:1.6rem;
+  }
+
+  .modules{display:flex;flex-direction:column;gap:.85rem;}
+
+  .module{
+    display:flex;align-items:center;gap:1.1rem;
+    background:var(--white,#fff);
+    border:1px solid #E7E2D8;
+    border-left:4px solid transparent;
+    border-radius:var(--radius);
+    box-shadow:var(--shadow-sm);
+    padding:1.15rem 1.35rem;
+    text-decoration:none;color:inherit;
+    transition:transform var(--t),box-shadow var(--t),border-color var(--t);
+  }
+  .module:hover{
+    transform:translateY(-2px);
+    box-shadow:var(--shadow-md);
+    border-left-color:var(--amber,#E0A020);
+  }
+  .module:focus-visible{outline:3px solid var(--amber,#E0A020);outline-offset:3px;}
+
+  .num{
+    font-family:var(--font-mono);font-weight:500;
+    font-size:1.05rem;color:var(--amber,#E0A020);
+    min-width:1.8rem;text-align:center;flex-shrink:0;
+  }
+  .info{display:flex;flex-direction:column;gap:.28rem;min-width:0;}
+  .title{
+    font-family:var(--font-display);font-weight:600;
+    font-size:1.08rem;line-height:1.3;color:var(--navy,#1E3A5C);
+  }
+  .meta{
+    font-family:var(--font-mono);
+    font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--muted);
+  }
+  .meta .ver{color:var(--navy,#1E3A5C);font-weight:500;}
+  .meta .ver.up{color:var(--amber,#E0A020);}
+  .note{font-size:.9rem;color:var(--muted);}
+  .arrow{margin-left:auto;color:var(--amber,#E0A020);font-size:1.3rem;flex-shrink:0;padding-left:.5rem;}
+
+  /* ── Footer ── */
+  footer{
+    text-align:center;padding:2.5rem 2rem;margin-top:2.5rem;
+    font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
+    color:var(--muted);border-top:1px solid #E0DACE;
+  }
+
+  noscript{display:block;max-width:920px;margin:2rem auto;padding:0 2rem;color:var(--navy);}
+
+  @media (max-width:600px){
+    .hero{padding:2.25rem 1.25rem;}
+    main{padding:2rem 1.25rem 1rem;}
+    .module{padding:1rem 1.1rem;gap:.8rem;}
+    .num{font-size:.92rem;min-width:1.4rem;}
+    .title{font-size:1rem;}
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <img src="../../assets/logo-horizontal-white.png" alt="CIEES — Old Dominion University">
+      <div class="overline">Foundational CPST Series</div>
+      <h1>Review Modules</h1>
+      <span class="rule"></span>
+      <p>Current live review builds of the Foundational CPST course series for community-based behavioral health services. Select a module to open its latest version.</p>
+      <div class="stat" id="stat"></div>
+    </div>
+  </header>
+
+  <main>
+    <p class="legend" id="legend">Each module shows its current version and the date it was posted. Updated modules note what changed.</p>
+    <div class="modules" id="modules"></div>
+    <noscript>This index needs JavaScript to display the module list. Each review module is available directly at <strong>/projects/cpst/&lt;module&gt;-review/</strong>.</noscript>
+  </main>
+
+  <footer id="foot"></footer>
+
+  <script>
+    /* ---- VERSION REGISTRY — edit here (see rules in the CSS comment above) ---- */
+    const MODULES = [
+      { slug:'ethics-review',          title:'Professional Ethics in Community-Based Behavioral Health Services',                         added:'2026-05-04', version:'1.0', updated:'2026-05-04', note:'Initial release.' },
+      { slug:'listening-review',       title:'Foundational Listening Skills for Community-Based Behavioral Health Practice',               added:'2026-05-29', version:'1.0', updated:'2026-05-29', note:'Initial release.' },
+      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'Initial release.' },
+      { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Initial release.' },
+      { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Initial release.' },
+      { slug:'recovery-review',        title:'Foundations of Recovery-Oriented Practice for Community-Based Behavioral Health',            added:'2026-06-15', version:'1.0', updated:'2026-06-15', note:'Initial release.' },
+      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'Initial release.' },
+      { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'Initial release.' },
+      { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'Initial release.' },
+      /* Add the final two modules here as objects, same shape. */
+    ];
+
+    const M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmt(d){ const p=d.split('-').map(Number); return M[p[1]-1]+' '+p[2]+', '+p[0]; }
+
+    const sorted = MODULES.slice().sort(function(a,b){ return a.added.localeCompare(b.added); });
+    const list = document.getElementById('modules');
+
+    sorted.forEach(function(mod,i){
+      const isUpdated = mod.updated && mod.updated !== mod.added;
+      const when = isUpdated ? ('Updated '+fmt(mod.updated)) : ('Added '+fmt(mod.added));
+      const a = document.createElement('a');
+      a.className = 'module';
+      a.href = './'+mod.slug+'/';
+      a.setAttribute('aria-label', mod.title+' — version '+mod.version+', '+when);
+      a.innerHTML =
+        '<span class="num">'+String(i+1).padStart(2,'0')+'</span>'+
+        '<span class="info">'+
+          '<span class="title">'+mod.title+'</span>'+
+          '<span class="meta"><span class="ver'+(isUpdated?' up':'')+'">v'+mod.version+'</span> &middot; '+when.toUpperCase()+'</span>'+
+          '<span class="note">'+mod.note+'</span>'+
+        '</span>'+
+        '<span class="arrow" aria-hidden="true">&rarr;</span>';
+      list.appendChild(a);
+    });
+
+    document.getElementById('stat').textContent = sorted.length+' modules live · all v1.0';
+    const lastUpdated = sorted.map(function(m){return m.updated||m.added;}).sort().slice(-1)[0];
+    document.getElementById('foot').textContent =
+      sorted.length+' modules · Last updated '+fmt(lastUpdated)+' · CIEES · Old Dominion University';
+  </script>
+</body>
+</html>

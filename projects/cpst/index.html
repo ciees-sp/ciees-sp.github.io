@@ -6,10 +6,11 @@
 <title>CPST Foundational Review Modules | CIEES</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* =====================================================================
      CPST REVIEW MODULES — VERSION REGISTRY  (single source of truth)
+     Palette: Option A "Virginia Blue" (cpst-custom-code-style-guide.md)
      ---------------------------------------------------------------------
      To ADD a module:    add an object to the MODULES array in the script
                          at the bottom of this file.
@@ -35,127 +36,91 @@
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
   :root{
-    --navy:#1E3A5C; --medium-blue:#2D5F8A; --light-blue:#E8EFF5;
-    --amber:#E0A020; --amber-light:#E8AC30;
-    --warm:#F6F3EE; --ink:#1C1C28; --white:#FFFFFF; --muted:#4F586A;
-    --font-display:'Instrument Sans','Segoe UI',system-ui,sans-serif;
-    --font-body:'Instrument Sans','Segoe UI',system-ui,sans-serif;
-    --font-mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+    --structure:#16193E;  /* deep indigo — headers, dark panels, active   */
+    --interactive:#0B6A8A;/* teal — clickable, hover borders, focus rings */
+    --accent:#48AEE1;     /* light blue — secondary highlights            */
+    --tint:#EDF4F7;       /* pale blue-gray — subtle emphasis surfaces    */
+    --canvas:#FFFFFF;     /* white — card backgrounds                     */
+    --page:#F5F5F5;       /* page background                              */
+    --text:#1B1B1F;       /* near-black body                             */
+    --muted:#4A4E63;      /* slate — meta/secondary (~7.5:1 on white)     */
+    --hairline:#DCE0EA;   /* resting card borders                         */
+    --font:'Plus Jakarta Sans','Segoe UI',system-ui,-apple-system,sans-serif;
     --radius:14px;
-    --shadow-sm:0 1px 3px rgba(28,28,40,.07);
-    --shadow-md:0 8px 24px rgba(28,28,40,.13);
-    --t:220ms ease;
+    --shadow-sm:0 1px 3px rgba(22,25,62,.08);
+    --shadow-md:0 10px 28px rgba(22,25,62,.16);
+    --t:200ms ease;
   }
 
-  html{font-size:16px;}
   body{
-    background:var(--warm,#F6F3EE);
-    color:var(--ink,#1C1C28);
-    font-family:var(--font-body);
-    line-height:1.6;
+    background:var(--page,#F5F5F5);
+    color:var(--text,#1B1B1F);
+    font-family:var(--font);
+    font-size:15px;line-height:1.6;
     -webkit-font-smoothing:antialiased;
-    min-height:100vh;
-    display:flex;flex-direction:column;
+    min-height:100vh;display:flex;flex-direction:column;
   }
 
   /* ── Hero ── */
-  .hero{
-    background:var(--navy,#1E3A5C);
-    color:var(--white);
-    padding:3.25rem 2rem 3rem;
-  }
+  .hero{background:var(--structure,#16193E);color:#fff;padding:48px 32px 44px;}
   .hero-inner{max-width:920px;margin:0 auto;}
-  .hero img{height:30px;width:auto;margin-bottom:1.75rem;opacity:.95;}
+  .hero img{width:clamp(200px,42vw,270px);height:auto;display:block;margin-bottom:30px;}
   .overline{
-    font-family:var(--font-mono);
-    font-size:.72rem;font-weight:500;
-    letter-spacing:.16em;text-transform:uppercase;
-    color:var(--amber-light,#E8AC30);
-    margin-bottom:.85rem;
+    font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+    color:var(--accent,#48AEE1);margin-bottom:14px;
   }
   .hero h1{
-    font-family:var(--font-display);
-    font-weight:700;
-    font-size:clamp(2rem,5vw,3.15rem);
-    line-height:1.04;letter-spacing:-.01em;
-    color:var(--white);
+    font-weight:800;font-size:clamp(30px,5vw,46px);
+    line-height:1.08;letter-spacing:-.5px;color:#fff;
   }
-  .rule{display:block;width:52px;height:3px;background:var(--amber,#E0A020);margin:1.4rem 0;}
-  .hero p{
-    color:rgba(255,255,255,.86);
-    max-width:48ch;font-size:1.02rem;
-  }
+  .rule{display:block;width:54px;height:3px;background:var(--accent,#48AEE1);margin:22px 0;}
+  .hero p{color:rgba(255,255,255,.78);max-width:52ch;font-size:16px;}
   .stat{
-    font-family:var(--font-mono);
-    font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;
-    color:rgba(255,255,255,.72);
-    margin-top:1.6rem;
+    font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+    color:rgba(255,255,255,.6);margin-top:24px;
   }
 
   /* ── Main ── */
-  main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:2.75rem 2rem 1rem;}
-  .legend{
-    font-family:var(--font-mono);
-    font-size:.74rem;letter-spacing:.04em;
-    color:var(--muted);
-    margin-bottom:1.6rem;
-  }
+  main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:40px 32px 8px;}
+  .legend{font-size:13px;color:var(--muted);margin-bottom:22px;}
 
-  .modules{display:flex;flex-direction:column;gap:.85rem;}
+  .modules{display:flex;flex-direction:column;gap:12px;}
 
   .module{
-    display:flex;align-items:center;gap:1.1rem;
-    background:var(--white,#fff);
-    border:1px solid #E7E2D8;
+    display:flex;align-items:center;gap:18px;
+    background:var(--canvas,#fff);
+    border:1px solid var(--hairline,#DCE0EA);
     border-left:4px solid transparent;
-    border-radius:var(--radius);
-    box-shadow:var(--shadow-sm);
-    padding:1.15rem 1.35rem;
-    text-decoration:none;color:inherit;
+    border-radius:var(--radius);box-shadow:var(--shadow-sm);
+    padding:20px 24px;text-decoration:none;color:inherit;
     transition:transform var(--t),box-shadow var(--t),border-color var(--t);
   }
-  .module:hover{
-    transform:translateY(-2px);
-    box-shadow:var(--shadow-md);
-    border-left-color:var(--amber,#E0A020);
-  }
-  .module:focus-visible{outline:3px solid var(--amber,#E0A020);outline-offset:3px;}
+  .module:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-left-color:var(--interactive,#0B6A8A);}
+  .module:focus-visible{outline:3px solid var(--interactive,#0B6A8A);outline-offset:3px;}
 
-  .num{
-    font-family:var(--font-mono);font-weight:500;
-    font-size:1.05rem;color:var(--amber,#E0A020);
-    min-width:1.8rem;text-align:center;flex-shrink:0;
-  }
-  .info{display:flex;flex-direction:column;gap:.28rem;min-width:0;}
-  .title{
-    font-family:var(--font-display);font-weight:600;
-    font-size:1.08rem;line-height:1.3;color:var(--navy,#1E3A5C);
-  }
-  .meta{
-    font-family:var(--font-mono);
-    font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--muted);
-  }
-  .meta .ver{color:var(--navy,#1E3A5C);font-weight:500;}
-  .meta .ver.up{color:var(--amber,#E0A020);}
-  .note{font-size:.9rem;color:var(--muted);}
-  .arrow{margin-left:auto;color:var(--amber,#E0A020);font-size:1.3rem;flex-shrink:0;padding-left:.5rem;}
+  .num{font-weight:700;font-size:18px;color:var(--interactive,#0B6A8A);min-width:30px;text-align:center;flex-shrink:0;}
+  .info{display:flex;flex-direction:column;gap:7px;min-width:0;}
+  .title{font-weight:700;font-size:20px;letter-spacing:-.2px;line-height:1.25;color:var(--structure,#16193E);}
+  .meta{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
+  .ver{display:inline-block;background:var(--tint,#EDF4F7);color:var(--structure,#16193E);padding:2px 9px;border-radius:20px;text-transform:none;vertical-align:middle;}
+  .ver.up{background:var(--accent,#48AEE1);color:#fff;}
+  .note{font-size:15px;color:var(--muted);}
+  .arrow{margin-left:auto;color:var(--interactive,#0B6A8A);font-size:22px;flex-shrink:0;padding-left:8px;}
 
   /* ── Footer ── */
   footer{
-    text-align:center;padding:2.5rem 2rem;margin-top:2.5rem;
-    font-family:var(--font-mono);font-size:.72rem;letter-spacing:.04em;
-    color:var(--muted);border-top:1px solid #E0DACE;
+    text-align:center;padding:36px 32px;margin-top:36px;
+    font-size:13px;color:var(--muted);border-top:1px solid var(--hairline,#DCE0EA);
   }
 
-  noscript{display:block;max-width:920px;margin:2rem auto;padding:0 2rem;color:var(--navy);}
+  noscript{display:block;max-width:920px;margin:24px auto;padding:0 32px;color:var(--structure);}
 
   @media (max-width:600px){
-    .hero{padding:2.25rem 1.25rem;}
-    main{padding:2rem 1.25rem 1rem;}
-    .module{padding:1rem 1.1rem;gap:.8rem;}
-    .num{font-size:.92rem;min-width:1.4rem;}
-    .title{font-size:1rem;}
+    .hero{padding:34px 20px;}
+    main{padding:28px 20px 8px;}
+    .module{padding:16px 18px;gap:14px;}
+    .num{font-size:16px;min-width:24px;}
+    .title{font-size:17px;}
   }
 </style>
 </head>
@@ -165,7 +130,7 @@
     <div class="hero-inner">
       <img src="../../assets/logo-horizontal-white.png" alt="CIEES — Old Dominion University">
       <div class="overline">Foundational CPST Series</div>
-      <h1>Review Modules</h1>
+      <h1>Review modules</h1>
       <span class="rule"></span>
       <p>Current live review builds of the Foundational CPST course series for community-based behavioral health services. Select a module to open its latest version.</p>
       <div class="stat" id="stat"></div>
@@ -195,8 +160,8 @@
       /* Add the final two modules here as objects, same shape. */
     ];
 
-    const M = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
-    function fmt(d){ const p=d.split('-').map(Number); return M[p[1]-1]+' '+p[2]+', '+p[0]; }
+    const MO = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    function fmt(d){ const p=d.split('-').map(Number); return MO[p[1]-1]+' '+p[2]+', '+p[0]; }
 
     const sorted = MODULES.slice().sort(function(a,b){ return a.added.localeCompare(b.added); });
     const list = document.getElementById('modules');

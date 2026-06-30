@@ -66,7 +66,7 @@
   .hero-inner{max-width:920px;margin:0 auto;}
   .hero img{width:clamp(200px,42vw,270px);height:auto;display:block;margin-bottom:30px;}
   .overline{
-    font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;
+    font-size:13px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
     color:var(--accent,#48AEE1);margin-bottom:14px;
   }
   .hero h1{
@@ -98,7 +98,6 @@
   .module:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-left-color:var(--interactive,#0B6A8A);}
   .module:focus-visible{outline:3px solid var(--interactive,#0B6A8A);outline-offset:3px;}
 
-  .num{font-weight:700;font-size:18px;color:var(--interactive,#0B6A8A);min-width:30px;text-align:center;flex-shrink:0;}
   .info{display:flex;flex-direction:column;gap:7px;min-width:0;}
   .title{font-weight:700;font-size:20px;letter-spacing:-.2px;line-height:1.25;color:var(--structure,#16193E);}
   .meta{font-size:11px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;color:var(--muted);}
@@ -119,7 +118,6 @@
     .hero{padding:34px 20px;}
     main{padding:28px 20px 8px;}
     .module{padding:16px 18px;gap:14px;}
-    .num{font-size:16px;min-width:24px;}
     .title{font-size:17px;}
   }
 </style>
@@ -129,16 +127,15 @@
   <header class="hero">
     <div class="hero-inner">
       <img src="../../assets/logo-horizontal-white.png" alt="CIEES — Old Dominion University">
-      <div class="overline">Foundational CPST Series</div>
-      <h1>Review modules</h1>
+      <div class="overline">Foundational CPST Curriculum</div>
+      <h1>Modules in review</h1>
       <span class="rule"></span>
-      <p>Current live review builds of the Foundational CPST course series for community-based behavioral health services. Select a module to open its latest version.</p>
-      <div class="stat" id="stat"></div>
+      <p>Current builds of the Foundational CPST Curriculum series.</p>
     </div>
   </header>
 
   <main>
-    <p class="legend" id="legend">Each module shows its current version and the date it was posted. Updated modules note what changed.</p>
+    <p class="legend" id="legend">Every link below opens that module&rsquo;s current version. When a module is revised, a dated note appears under its title.</p>
     <div class="modules" id="modules"></div>
     <noscript>This index needs JavaScript to display the module list. Each review module is available directly at <strong>/projects/cpst/&lt;module&gt;-review/</strong>.</noscript>
   </main>
@@ -169,26 +166,25 @@
 
     sorted.forEach(function(mod,i){
       const isUpdated = mod.updated && mod.updated !== mod.added;
-      const when = isUpdated ? ('Updated '+fmt(mod.updated)) : ('Added '+fmt(mod.added));
+      const when = isUpdated ? ('Updated '+fmt(mod.updated)) : ('Posted '+fmt(mod.added));
       const a = document.createElement('a');
       a.className = 'module';
       a.href = './'+mod.slug+'/';
       a.setAttribute('aria-label', mod.title+' — version '+mod.version+', '+when);
+      var noteHtml = isUpdated ? ('<span class="note">'+mod.note+'</span>') : '';
       a.innerHTML =
-        '<span class="num">'+String(i+1).padStart(2,'0')+'</span>'+
         '<span class="info">'+
           '<span class="title">'+mod.title+'</span>'+
           '<span class="meta"><span class="ver'+(isUpdated?' up':'')+'">v'+mod.version+'</span> &middot; '+when.toUpperCase()+'</span>'+
-          '<span class="note">'+mod.note+'</span>'+
+          noteHtml+
         '</span>'+
         '<span class="arrow" aria-hidden="true">&rarr;</span>';
       list.appendChild(a);
     });
 
-    document.getElementById('stat').textContent = sorted.length+' modules live · all v1.0';
     const lastUpdated = sorted.map(function(m){return m.updated||m.added;}).sort().slice(-1)[0];
     document.getElementById('foot').textContent =
-      sorted.length+' modules · Last updated '+fmt(lastUpdated)+' · CIEES · Old Dominion University';
+      'Last updated '+fmt(lastUpdated)+' · CIEES · Old Dominion University';
   </script>
 </body>
 </html>

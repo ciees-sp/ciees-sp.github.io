@@ -165,11 +165,14 @@
         changelog:'All review feedback addressed (3 comments), therapeutic-relationship definitions refined, terminology aligned with Virginia guidance, unified title and Module Wrap-Up in place, reflection responses now record to your LMS.',
         nextUpdate:'question logic and gates on, alt text for images, video embed',
         reviewUrl:'https://360.articulate.com/review/content/3f75f77f-d581-4c73-8b87-a0c4599e6ca3/review' },
-      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'Module updates pushed to Year 2.' },
-      { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Module updates pushed to Year 2.' },
+      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'Module updates pushed to Year 2.', parked:true },
+      { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Module updates pushed to Year 2.', parked:true },
       { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Revisions in progress.' },
       { slug:'recovery-review',        title:'Foundations of Recovery-Oriented Practice for Community-Based Behavioral Health',            added:'2026-06-15', version:'1.0', updated:'2026-06-15', note:'Revisions in progress.' },
-      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'Revisions in progress.' },
+      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'2.0', updated:'2026-07-30',
+        changelog:'All review feedback addressed (10 comments), care-team roles in planning clarified, terminology aligned with Virginia guidance (3 corrections), unified title and Module Wrap-Up in place, reflection responses now record and are downloadable.',
+        nextUpdate:'question logic and gates on, alt text for images, video embed',
+        reviewUrl:'https://360.articulate.com/review/content/e5a04ffc-a0eb-4afa-8ee4-24d65d217715/review' },
       { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'Revisions in progress.' },
       { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'Revisions in progress.' },
       { slug:'measurement-review',     title:'Foundational Measurement and Monitoring Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'Revisions in progress.' },
@@ -180,7 +183,7 @@
     const MO = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
     function fmt(d){ const p=d.split('-').map(Number); return MO[p[1]-1]+' '+p[2]+', '+p[0]; }
 
-    const sorted = MODULES.slice().sort(function(a,b){ return a.added.localeCompare(b.added); });
+    const sorted = MODULES.slice().sort(function(a,b){ var ap=a.parked?1:0, bp=b.parked?1:0; if(ap!==bp) return ap-bp; return a.added.localeCompare(b.added); });
     const list = document.getElementById('modules');
 
     sorted.forEach(function(mod,i){

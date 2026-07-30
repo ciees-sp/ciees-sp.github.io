@@ -84,23 +84,23 @@
   main{flex:1;width:100%;max-width:920px;margin:0 auto;padding:40px 32px 8px;}
   .legend{font-size:13px;color:var(--muted);margin-bottom:22px;}
 
-  .relnotes{background:var(--tint,#EDF4F7);border-left:4px solid var(--interactive,#0B6A8A);padding:18px 22px;margin-bottom:24px;}
-  .relnotes-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--interactive,#0B6A8A);margin-bottom:10px;}
-  .relnotes ul{margin:0;padding-left:18px;}
-  .relnotes li{font-size:14px;color:var(--text,#1B1B1F);margin:6px 0;line-height:1.55;}
-  .modules{display:flex;flex-direction:column;gap:12px;}
+  .modules{display:flex;flex-direction:column;gap:20px;}
 
-  .module{
-    display:flex;align-items:center;gap:18px;
+  .module-block{
+    display:flex;flex-direction:column;
     background:var(--canvas,#fff);
     border:1px solid var(--hairline,#DCE0EA);
     border-left:4px solid transparent;
     border-radius:var(--radius);box-shadow:var(--shadow-sm);
-    padding:20px 24px;text-decoration:none;color:inherit;
+    overflow:hidden;
     transition:transform var(--t),box-shadow var(--t),border-color var(--t);
   }
-  .module:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-left-color:var(--interactive,#0B6A8A);}
-  .module:focus-visible{outline:3px solid var(--interactive,#0B6A8A);outline-offset:3px;}
+  .module-block:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-left-color:var(--interactive,#0B6A8A);}
+  .module{
+    display:flex;align-items:center;gap:18px;
+    padding:20px 24px;text-decoration:none;color:inherit;
+  }
+  .module:focus-visible{outline:3px solid var(--interactive,#0B6A8A);outline-offset:-3px;}
 
   .info{display:flex;flex-direction:column;gap:7px;min-width:0;}
   .title{font-weight:700;font-size:20px;letter-spacing:-.2px;line-height:1.25;color:var(--structure,#16193E);}
@@ -108,11 +108,12 @@
   .ver{display:inline-block;background:var(--tint,#EDF4F7);color:var(--structure,#16193E);padding:2px 9px;border-radius:20px;text-transform:none;vertical-align:middle;}
   .ver.up{background:var(--accent,#48AEE1);color:#fff;}
   .note{font-size:13px;font-weight:600;color:var(--interactive,#0B6A8A);}
-  .arrow{margin-left:auto;color:var(--interactive,#0B6A8A);font-size:22px;flex-shrink:0;padding-left:8px;}
+  .arrow{margin-left:auto;color:var(--interactive,#0B6A8A);font-size:22px;flex-shrink:0;padding-left:8px;transition:transform var(--t);}
+  .module-block:hover .arrow{transform:translateX(3px);}
 
-  /* per-module revision notes (Year One publish pattern) */
-  .module-block{display:flex;flex-direction:column;gap:8px;}
-  .module-block .relnotes{margin-bottom:0;}
+  /* change log — inside the same card, split by a hairline */
+  .relnotes{border-top:1px solid var(--hairline,#DCE0EA);padding:16px 24px 20px;}
+  .relnotes-label{font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--interactive,#0B6A8A);margin-bottom:8px;}
   .relnotes .cl{font-size:14px;color:var(--text,#1B1B1F);line-height:1.55;margin:0;}
   .relnotes .deferred{font-size:13px;color:var(--muted);margin-top:12px;}
   .relnotes .reviewlink{margin-top:10px;}
@@ -147,13 +148,6 @@
   </header>
 
   <main>
-    <section class="relnotes" aria-label="Release notes">
-      <div class="relnotes-label">Revision Notes</div>
-      <ul>
-        <li>Module titles have been standardized across the series. The unified title will be applied to each module with its next update.</li>
-        <li>A closing Module Wrap-Up lesson (a module summary plus a Reflect &amp; Commit activity) is included in new builds and will be added to the remaining modules as they are revised.</li>
-      </ul>
-    </section>
     <div class="modules" id="modules"></div>
     <noscript>This index needs JavaScript to display the module list. Each review module is available directly at <strong>/projects/cpst/&lt;module&gt;-review/</strong>.</noscript>
   </main>
@@ -171,15 +165,15 @@
         changelog:'All review feedback addressed (3 comments), therapeutic-relationship definitions refined, terminology aligned with Virginia guidance, unified title and Module Wrap-Up in place, reflection responses now record to your LMS.',
         nextUpdate:'question logic and gates on, alt text for images, video embed',
         reviewUrl:'https://360.articulate.com/review/content/3f75f77f-d581-4c73-8b87-a0c4599e6ca3/review' },
-      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'' },
+      { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'Revisions in progress.' },
       { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Revisions in progress.' },
       { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Revisions in progress.' },
       { slug:'recovery-review',        title:'Foundations of Recovery-Oriented Practice for Community-Based Behavioral Health',            added:'2026-06-15', version:'1.0', updated:'2026-06-15', note:'Revisions in progress.' },
-      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'' },
-      { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'' },
-      { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'' },
-      { slug:'measurement-review',     title:'Foundational Measurement and Monitoring Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'' },
-      { slug:'crisis-review',      title:'Foundational Crisis Management Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'' },
+      { slug:'person-centered-review', title:'Foundational Person-Centered Planning for Community-Based Behavioral Health Services',       added:'2026-06-22', version:'1.0', updated:'2026-06-22', note:'Revisions in progress.' },
+      { slug:'smi-review',             title:'Foundational Serious Mental Illness Skills for Community-Based Behavioral Health Services',   added:'2026-06-23', version:'1.0', updated:'2026-06-23', note:'Revisions in progress.' },
+      { slug:'sed-review',             title:'Foundational Serious Emotional Disturbance Skills for Community-Based Behavioral Health Services', added:'2026-06-29', version:'1.0', updated:'2026-06-29', note:'Revisions in progress.' },
+      { slug:'measurement-review',     title:'Foundational Measurement and Monitoring Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'Revisions in progress.' },
+      { slug:'crisis-review',      title:'Foundational Crisis Management Skills for Community-Based Behavioral Health Services', added:'2026-06-30', version:'1.0', updated:'2026-06-30', note:'Revisions in progress.' },
       /* Add new modules here as objects, same shape. */
     ];
 

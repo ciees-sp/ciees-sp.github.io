@@ -110,6 +110,15 @@
   .note{font-size:13px;font-weight:600;color:var(--interactive,#0B6A8A);}
   .arrow{margin-left:auto;color:var(--interactive,#0B6A8A);font-size:22px;flex-shrink:0;padding-left:8px;}
 
+  /* per-module revision notes (Year One publish pattern) */
+  .module-block{display:flex;flex-direction:column;gap:8px;}
+  .module-block .relnotes{margin-bottom:0;}
+  .relnotes .cl{font-size:14px;color:var(--text,#1B1B1F);line-height:1.55;margin:0;}
+  .relnotes .deferred{font-size:13px;color:var(--muted);margin-top:12px;}
+  .relnotes .reviewlink{margin-top:10px;}
+  .relnotes .reviewlink a{color:var(--interactive,#0B6A8A);font-weight:700;text-decoration:none;font-size:13px;}
+  .relnotes .reviewlink a:hover{text-decoration:underline;}
+
   /* ── Footer ── */
   footer{
     text-align:center;padding:36px 32px;margin-top:36px;
@@ -155,7 +164,10 @@
     /* ---- VERSION REGISTRY — edit here (see rules in the CSS comment above) ---- */
     const MODULES = [
       { slug:'ethics-review',          title:'Professional Ethics in Community-Based Behavioral Health Services',                         added:'2026-05-04', version:'1.0', updated:'2026-05-04', note:'Revisions in progress.' },
-      { slug:'listening-review',       title:'Foundational Listening Skills for Community-Based Behavioral Health Practice',               added:'2026-05-29', version:'1.0', updated:'2026-05-29', note:'Revisions in progress.' },
+      { slug:'listening-review',       title:'Foundational Listening Skills for Community-Based Behavioral Health Services',               added:'2026-05-29', version:'2.0', updated:'2026-07-30',
+        changelog:'All review feedback addressed (3 comments), therapeutic-relationship definitions refined, terminology aligned with Virginia guidance, unified title and Module Wrap-Up in place, reflection responses now record to your LMS.',
+        nextUpdate:'question logic and gates on, alt text for images, video embed',
+        reviewUrl:'https://360.articulate.com/review/content/3f75f77f-d581-4c73-8b87-a0c4599e6ca3/review' },
       { slug:'rehab-review',           title:'Foundational Rehabilitation Skills for Community-Based Behavioral Health Practice',          added:'2026-06-04', version:'1.0', updated:'2026-06-04', note:'' },
       { slug:'cpst-basics-review',     title:'Foundational Community Psychiatric Support and Treatment (CPST): Service Basics',            added:'2026-06-05', version:'1.0', updated:'2026-06-05', note:'Revisions in progress.' },
       { slug:'motivation-review',      title:'Enhancing Motivation in Community-Based Behavioral Health Practice',                         added:'2026-06-10', version:'1.0', updated:'2026-06-10', note:'Revisions in progress.' },
@@ -177,6 +189,8 @@
     sorted.forEach(function(mod,i){
       const isUpdated = mod.updated && mod.updated !== mod.added;
       const when = isUpdated ? ('Updated '+fmt(mod.updated)) : ('Posted '+fmt(mod.added));
+      const block = document.createElement('div');
+      block.className = 'module-block';
       const a = document.createElement('a');
       a.className = 'module';
       a.href = './'+mod.slug+'/';
@@ -189,7 +203,16 @@
           noteHtml+
         '</span>'+
         '<span class="arrow" aria-hidden="true">&rarr;</span>';
-      list.appendChild(a);
+      block.appendChild(a);
+      if (mod.changelog){
+        const rn = document.createElement('div');
+        rn.className = 'relnotes';
+        var nextHtml = mod.nextUpdate ? ('<p class="deferred"><strong>Next update:</strong> '+mod.nextUpdate+'</p>') : '';
+        var reviewHtml = mod.reviewUrl ? ('<p class="reviewlink"><a href="'+mod.reviewUrl+'" target="_blank" rel="noopener">Open in Review 360 to leave comments &rarr;</a></p>') : '';
+        rn.innerHTML = '<div class="relnotes-label">Change Log</div><p class="cl">'+mod.changelog+'</p>'+nextHtml+reviewHtml;
+        block.appendChild(rn);
+      }
+      list.appendChild(block);
     });
 
     const lastUpdated = sorted.map(function(m){return m.updated||m.added;}).sort().slice(-1)[0];

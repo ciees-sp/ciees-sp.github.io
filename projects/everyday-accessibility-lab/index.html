@@ -261,36 +261,47 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
   font-family: var(--display); font-weight: 800; font-size: 17px;
   letter-spacing: -.01em; white-space: nowrap;
 }
-/* Change spec v13 §A: the ticks, the chip and the hidden progress sentence are
-   replaced by one named bar — a single flex row of numbered step names, three
-   states and nothing else.  No lines, no fill, no check marks, no chip.  The
-   min-width is what forces the row to wrap onto its own line below about
-   1100 px; `.rail-in` already carries the flex-wrap that lets it. */
+/* Change spec v18 §C: the bar is three stages now — Intro, Practice, Tasks —
+   and the stage the learner is in opens in place, its word replaced by its own
+   sub-items.  A chevron sits between stages and a middle dot between
+   sub-items, both as `::before` decoration with an empty alternative so they
+   are drawn but never spoken.  Three looks and nothing else: `now` is dark,
+   600, with a 2 px accent rule 3 px below it; `done` is muted; `todo` is the
+   ordinary ink at 400.  No lines, no fill, no check marks, no chip. */
 .progress { flex: 1 1 auto; min-width: min(840px, 100%); }
-.steps-list {
-  display: flex; gap: 22px; align-items: baseline;
+.stages, .substeps {
+  display: flex; align-items: baseline; flex-wrap: wrap;
   list-style: none; margin: 0; padding: 0; white-space: nowrap;
-  /* One row wherever the row is wide enough to hold it.  The wrap is a safety
-     valve only: it is what keeps a narrow header from pushing the page into a
-     horizontal scroll when the web font has not loaded and the fallback face
-     sets the names wider than the design does. */
-  /* Change spec v14 §A: the bar shows every item at every width, so the wrap
-     is no longer a safety valve — it is the layout.  The list takes as many
-     lines as it needs and items never clip. */
-  flex-wrap: wrap; row-gap: 4px;
 }
-.steps-list li {
-  display: flex; align-items: baseline; gap: 7px;
-  /* a transparent rule on every item so the current item's underline does not
+.stages { gap: 10px; row-gap: 4px; }
+.substeps { gap: 8px; row-gap: 4px; }
+.stages > li, .substeps > li { display: flex; align-items: baseline; gap: 10px; }
+.substeps > li { gap: 8px; }
+.stages > li + li::before {
+  content: "\203A" / "";
+  color: var(--ink-3); font-size: 15px; line-height: 1;
+}
+.substeps > li + li::before {
+  content: "\00B7" / "";
+  color: var(--ink-3); font-size: 15px; line-height: 1;
+}
+.step-name {
+  font-family: var(--body); font-size: 14px; font-weight: 400; color: var(--ink);
+  /* a transparent rule under every item so the current item's marker does not
      move the row by 2 px when it changes screens */
   border-bottom: 2px solid transparent; padding-bottom: 3px;
 }
-.step-n { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
-.step-name { font-family: var(--body); font-size: 14px; font-weight: 400; color: var(--ink); }
-.steps-list li[data-state="now"] { border-bottom-color: var(--accent); }
-.steps-list li[data-state="now"] .step-name { font-weight: 600; color: var(--ink); }
-.steps-list li[data-state="done"] .step-n,
-.steps-list li[data-state="done"] .step-name { color: var(--ink-3); font-weight: 400; }
+li[data-state="now"] > .step-name { border-bottom-color: var(--accent); font-weight: 600; color: var(--ink); }
+li[data-state="done"] > .step-name { color: var(--ink-3); font-weight: 400; }
+/* The one interactive thing in the bar: a done task item, which reopens that
+   task's crosswalk for review.  At rest it is indistinguishable from any other
+   done item; hover and focus add the underline a link would have. */
+button.step-link {
+  background: none; border: 0; border-bottom: 2px solid transparent;
+  margin: 0; padding: 0 0 3px; text-align: left;
+  cursor: pointer; text-decoration: none;
+}
+button.step-link:hover, button.step-link:focus-visible { text-decoration: underline; }
 
 /* --- Buttons (System B: base .btn is the filled/primary look) ------------- */
 .btn {
@@ -368,6 +379,16 @@ main.is-cover { display: flex; flex-direction: column; }
   font-family: var(--body); font-size: clamp(19px, 2.4vw, 28px); line-height: 1.45;
   color: var(--ink-2); margin: 34px auto 0; max-width: 30ch;
 }
+/* Change spec v18 §A: one line under the subtitle for a learner arriving on a
+   phone or a tablet, and nobody else.  It is in the markup everywhere and shown
+   only where the device says the pointer is coarse and the window is small. */
+.cover-note { display: none; }
+@media (pointer: coarse) and (max-width: 900px) {
+  .cover-note {
+    display: block; font-family: var(--body); font-size: 17px; line-height: 1.45;
+    color: var(--ink-2); margin: 18px auto 0; max-width: 34ch;
+  }
+}
 .screen.cover .actions { margin-top: 44px; justify-content: center; }
 /* The static cover has no bar: a blinking caret that never blinks is noise. */
 .cover:not(.is-animated) .cover-bar { display: none; }
@@ -395,13 +416,16 @@ main.is-cover { display: flex; flex-direction: column; }
 .cover.is-animated .cover-eyebrow,
 .cover.is-animated .cover-h1,
 .cover.is-animated .cover-sub,
+.cover.is-animated .cover-note,
 .cover.is-animated .cover-start {
   animation-name: cover-rise; animation-timing-function: cubic-bezier(.33, 1, .68, 1);
   animation-fill-mode: both;
 }
 .cover.is-animated .cover-eyebrow { --dy: 22px; animation-delay: .15s; animation-duration: .6s; }
 .cover.is-animated .cover-h1 { --dy: 28px; animation-delay: .35s; animation-duration: .8s; }
-.cover.is-animated .cover-sub { --dy: 22px; animation-delay: 1.4s; animation-duration: .7s; }
+/* Change spec v18 §A: the note takes the subtitle's own rise timing. */
+.cover.is-animated .cover-sub,
+.cover.is-animated .cover-note { --dy: 22px; animation-delay: 1.4s; animation-duration: .7s; }
 .cover.is-animated .cover-start { --dy: 18px; animation-delay: 2.3s; animation-duration: .6s; }
 .cover.is-animated .cover-rule {
   animation: cover-draw .9s cubic-bezier(.65, 0, .35, 1) 1.1s both;
@@ -419,6 +443,52 @@ main.is-cover { display: flex; flex-direction: column; }
    both are written at the depth of the rule they have to beat. */
 .cover.is-animated .cover-start:focus-visible,
 .cover.is-animated .cover-start:focus { animation: none; opacity: 1; transform: none; }
+
+/* --- Change spec v18 §B: "Before you get started" ------------------------
+   A real ordered list of three checks, each opening with a bold lead.  The
+   column is wider than the shell's usual 68ch because the width-check line
+   inside the second check has to be able to sit on one row.
+   The width check itself is two fixed-width, non-wrapping spans in a wrapping
+   flex row: together they need about 940 px, so the second drops onto its own
+   row exactly when the column is narrower than that, whatever face the text is
+   set in.  It reads as one paragraph to a screen reader.
+   --------------------------------------------------------------------------*/
+.checks { max-width: 1000px; margin: 0; padding-left: 26px; }
+.checks > li { margin-top: 18px; color: var(--ink-2); font-size: 17px; }
+.checks > li:first-child { margin-top: 4px; }
+.checks > li::marker { color: var(--ink-3); }
+.checks p + p { margin-top: 10px; }
+.checks b { color: var(--ink); font-weight: 700; }
+.widthcheck {
+  display: flex; flex-wrap: wrap; column-gap: .35em;
+  margin-top: 10px; font-weight: 600; color: var(--ink);
+}
+.widthcheck span { flex: 0 0 470px; white-space: nowrap; overflow: visible; }
+
+/* --- Change spec v18 §D: the on-screen keys ------------------------------
+   A strip of three quiet buttons under the artifact, and a text-link toggle
+   above it.  The buttons are out of the tab order on purpose: they act on
+   whatever is focused inside the artifact, so they must never take that focus
+   themselves.  `.is-kbfocus` is the ring the strip paints on the element it
+   moved focus to, because a scripted focus() does not always light
+   :focus-visible. */
+.oskeys-slot:empty { display: none; }
+.oskeys-toggle {
+  display: inline-block; margin: 14px 0 0; padding: 4px 0;
+  background: none; border: 0; color: var(--accent);
+  font-family: var(--body); font-size: 15px; text-decoration: underline;
+  cursor: pointer;
+}
+.oskeys {
+  margin: 10px 0 0; display: flex; gap: 10px; flex-wrap: wrap;
+}
+.oskeys .oskey {
+  min-height: 44px; min-width: 96px; padding: 10px 18px;
+  font-size: 16px; font-weight: 700;
+}
+.is-kbfocus {
+  outline: 3px solid var(--focus); outline-offset: 2px; box-shadow: 0 0 0 2px var(--ink);
+}
 
 /* --- Change spec v12 §A: orientation 1 ----------------------------------
    Three pieces the shell had no equivalent for, built from the System B
@@ -678,9 +748,10 @@ main.is-cover { display: flex; flex-direction: column; }
 .frozen .vew .v-hero { padding: 24px 22px 12px; }
 .frozen .vew .v-ctawrap { padding-bottom: 24px; }
 .frozen .vew .v-learnwrap { padding-bottom: 24px; }
-/* Practice 1 keeps its screen on the whole time, so the frame is sized to the
-   notice rather than to the taller dark state it never enters. */
-#screen-lab-p1 .sr-sim { --doc-h: 300px; }
+/* Change spec v18 §F: Practice 1's document is an email now, drawn in the same
+   `doc-email` frame Task 1 uses, so the two screens' frames are the same
+   height.  The v17 rule that sized this frame to a short plain-text notice is
+   gone with it. */
 
 /* --- Crosswalk screen 2 · Your role --------------------------------------- */
 .rolebody p { color: var(--ink-2); }
@@ -724,9 +795,9 @@ blockquote.pull {
   font-weight: 500; line-height: 1.3;
 }
 
-/* --- Footer --------------------------------------------------------------- */
-.app-foot { border-top: 1px solid var(--line); background: var(--paper); }
-.app-foot p { max-width: 1180px; margin: 0 auto; padding: 18px 20px; font-size: 14px; color: var(--ink-2); }
+/* --- Change spec v18 §E: there is no footer.  `main` still takes the rest of
+   the viewport height (flex: 1 on a min-height: 100vh body), so the cover
+   still centres in everything below the rail. */
 
 /* --- Screen transitions (System B idiom; System B itself swaps instantly) -- */
 @keyframes screen-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -750,7 +821,15 @@ blockquote.pull {
      under the wordmark and wraps onto as many lines as it needs; every item
      is on screen at every width. */
   .progress { order: 3; flex-basis: 100%; min-width: 0; }
-  .steps-list { gap: 16px; row-gap: 4px; }
+  .stages { gap: 8px; row-gap: 4px; }
+  .substeps { gap: 7px; row-gap: 4px; }
+  .stages > li { gap: 8px; }
+  .substeps > li { gap: 7px; }
+  /* Change spec v18 §B: by this width the width check has already answered its
+     own question — the two spans are on separate rows — so they size to their
+     text instead of to the 470 px that would push the page into a horizontal
+     scroll.  The split point above 720 px is untouched. */
+  .widthcheck span { flex: 0 0 auto; max-width: 100%; white-space: normal; }
   /* Two columns do not fit at phone width; the control sits above what it does. */
   .controls { max-width: 100%; }
   .controls dl { display: flex; flex-direction: column; gap: 11px; }
@@ -796,6 +875,10 @@ blockquote.pull {
 .mock-email .em-head div { padding: 1px 0; }
 .mock-email .em-head b { color: #666; display: inline-block; width: 5.5em; font-weight: 600; }
 .mock-email .em-sub { font-size: 18px; font-weight: 600; color: #1A1A1A; margin-bottom: 10px; }
+/* Change spec v18 §F: Practice 1's body heading is a real h2, set like the
+   body heading in Task 1's repaired email (.em-details .d-h) and carrying the
+   paragraph rhythm of the message it opens. */
+.mock-email h2 { font-family: inherit; font-size: 17px; font-weight: 700; color: #1A1A1A; margin: 0 0 12px; line-height: 1.25; }
 .mock-email p { margin: 0 0 12px; }
 .mock-email img { display: block; max-width: 340px; width: 100%; height: auto; border: 1px solid #E1E1E1; }
 .mock-email .em-details { margin: 0 0 14px; }
@@ -1086,17 +1169,13 @@ blockquote.pull {
     <span class="wordmark">Everyday Accessibility Lab</span>
     <div class="progress">
       <nav class="steps" aria-label="Progress">
-        <ol class="steps-list" id="steps"></ol>
+        <ol class="stages" id="steps"></ol>
       </nav>
     </div>
   </div>
 </header>
 
 <main id="main" tabindex="-1"></main>
-
-<footer class="app-foot">
-  <p>Built by the Center for Implementation and Evaluation of Education Systems (CIEES), Old Dominion University. Virtual Education Workshops is fictional.</p>
-</footer>
 
 <div id="live" class="sr-only" aria-live="polite"></div>
 <script>
@@ -1124,6 +1203,15 @@ var FLYER_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRI
    and every repaired screen's `repairH1` / `repairLines` / `goalFixed` and
    four of the eight `feedback` sentences are replaced.  Those strings are the
    v17 spec verbatim and are listed in build-report-v17.md.
+   change-spec-v18.md then: renames the cover's eyebrow and rewrites its
+   subtitle (§A) and adds the cover note; adds the `before` screen's strings
+   (§B); replaces the progress bar's two item sets with three named stages and
+   their sub-items (§C); adds the on-screen key labels (§D); turns the Practice
+   1 document into an email and drops the To row from the two Task 1 emails
+   (§F); replaces every transition heading and paragraph, every task paragraph
+   and every repaired story and goal line (§H); and aligns Task 4's two legends
+   and two feedback sentences with the new wording (§I).  Those strings are the
+   v18 spec verbatim and are listed in build-report-v18.md.
    The Task 3 program and the Task 5 caption track are each written once; the
    broken and the repaired version of each artifact render from this same
    source with a flag.
@@ -1144,28 +1232,41 @@ var FACES = [
   { v: '5', emoji: '😣', label: 'Not successful at all' }
 ];
 
-/* ---------- The header progress bar (change spec v13 §A, v14 §A) ----------
-   Two item sets, one bar.  The practice bar runs from orientation through the
-   Practice Lab; the task bar runs from the Task 1 transition to the closing.
-   The five task names are the five task titles.  The strings live here so the
-   copy deck can list them.
-   Change spec v14 §A: the practice items are numbers only — each renders as a
-   single `.step-name` reading "Practice 1" with no separate `.step-n`, so the
-   number is never spoken or shown twice.
+/* ---------- The header progress bar (change spec v18 §C) ------------------
+   Three stages, each one word, and the current stage opens in place to show
+   its own sub-items.  Intro has no sub-items, so it never opens: it simply
+   shows as the current word.  The two item sets of the v13/v14 bar ("Practice
+   1/2/3" and the five task titles) are replaced by these — the task items are
+   numbered now, not titled, because a done one becomes a "Review Task {n}"
+   button and has to stay short.
    --------------------------------------------------------------------------*/
-var STEPS = {
+var STAGES = {
+  words: ['Intro', 'Practice', 'Tasks'],
   practice: [
     'Practice 1',
     'Practice 2',
     'Practice 3'
   ],
   tasks: [
-    'Check conference details',
-    'Register for the conference',
-    'Find your approved session',
-    'Check the registration form',
-    'Prepare to attend'
+    'Task 1',
+    'Task 2',
+    'Task 3',
+    'Task 4',
+    'Task 5'
   ]
+};
+
+/* ---------- The on-screen keys strip (change spec v18 §D) -----------------
+   Three buttons under the artifact on the keyboard screens, so a learner on a
+   touch device can move focus and activate a control without a keyboard.
+   --------------------------------------------------------------------------*/
+var OSKEYS = {
+  label: 'On-screen keys',
+  prev: 'Previous',
+  next: 'Next',
+  open: 'Open',
+  show: 'Using a touchscreen? Show on-screen keys',
+  hide: 'Hide on-screen keys'
 };
 
 /* ---------- The cover, one screen (change spec v15 §A) --------------------
@@ -1179,10 +1280,39 @@ var STEPS = {
    --------------------------------------------------------------------------*/
 var COVER = {
   id: 'cover',
-  eyebrow: 'Interactive Activity',
+  /* Change spec v18 §A: the eyebrow names the activity, the subtitle says
+     "affect", and the note below it appears only on a small touch screen. */
+  eyebrow: 'Everyday Accessibility Lab',
   h1: ['Access', 'in Action'],
-  sub: 'A hands-on look at how everyday digital decisions can impact access.',
+  sub: 'A hands-on look at how everyday digital decisions can affect access.',
+  note: 'This activity works best on a laptop or desktop with a keyboard.',
   button: 'Start'
+};
+
+/* ---------- "Before you get started", one screen (change spec v18 §B) -----
+   Between the cover and orientation 1.  A real <ol> of three checks, each
+   opening with a bold lead, and one width-check line inside the second item:
+   two spans that share a row while the column is wide enough to hold them and
+   drop onto two rows when it is not, so the learner can see for themselves
+   whether the window is wide enough.
+   --------------------------------------------------------------------------*/
+var BEFORE = {
+  id: 'before',
+  eyebrow: 'Before you get started',
+  h1: 'A few quick checks',
+  items: [
+    { lead: 'Browser.',
+      paras: ['Use a current version of Chrome, Edge, or Firefox. If you are on a Mac and using Safari, turn on keyboard access to links first: open the Safari menu and choose Settings, select the Advanced tab, and check “Press Tab to highlight each item on a webpage.”'] },
+    { lead: 'Screen.',
+      paras: ['This activity works best on a laptop or desktop. If the next line breaks across two lines, drag your window a little wider so every screen shows as intended.',
+        'If you are joining from a phone or tablet, on-screen buttons appear in the keyboard practice and in Task 2, so you can complete them without a keyboard.'],
+      /* The width check renders between the two paragraphs above. */
+      widthAfter: 0 },
+    { lead: 'Sound.',
+      paras: ['Turn your sound on. The screen reader practice and Task 1 use speech. If you cannot use sound, the activity still works: every announcement also appears as text on the screen.'] }
+  ],
+  width: ['When this sentence fits on one line,', 'your window is wide enough for this activity.'],
+  button: 'Continue'
 };
 
 /* ---------- Orientation, two screens (copy §01 / §02; spec v10 §C) --------
@@ -1201,7 +1331,8 @@ var ORIENTATION = [
        lead line and does the work the eyebrow used to. */
     eyebrow: null,
     h1: 'Access in Action',
-    subtitle: 'A hands-on look at how everyday digital decisions can impact access.',
+    /* Change spec v18 §A: "affect", as on the cover.  The title stays. */
+    subtitle: 'A hands-on look at how everyday digital decisions can affect access.',
     /* A string is a paragraph; { list: [...] } is a real <ul>. */
     paras: [
       'Most of us move through the digital world on autopilot. We scan a message, open a page, find what we need, and finish the task. When everything works, the design disappears.',
@@ -1312,17 +1443,19 @@ var LAB = {
    One short screen before each task carries the story and names what comes
    next.  TRANSITIONS[i] sits immediately before TASKS[i].
    --------------------------------------------------------------------------*/
+/* Change spec v18 §G: every transition carries the same eyebrow, "Conference
+   Update"; §H replaces every heading and every paragraph, verbatim. */
 var TRANSITIONS = [
-  { eyebrow: 'Task 1 of 5', h1: 'A friend forwards a flyer',
-    lines: ['Priya, a friend who coordinates family programs at the Regional Family Resource Network, sends you something. She is presenting at a conference this fall and thought of you the moment she saw the agenda. Open her email and see what she found.'] },
-  { eyebrow: 'Task 1 complete', h1: 'Mr. Okafor says yes',
-    lines: ['Mr. Okafor replies within the hour: approved, and register soon to hold your seat. You pull up the conference site before your first meeting eats the rest of your morning.'] },
-  { eyebrow: 'Task 2 complete', h1: 'Registration wants a session',
-    lines: ['The confirmation screen looks routine, until it asks which session your approval covers. You realize you have not checked the schedule since Priya mentioned her own talk, so you open the conference program to find it.'] },
-  { eyebrow: 'Task 3 complete', h1: 'The form is half done already',
-    lines: ['By the time you get back to your desk, a colleague has started your registration form as a favor, mostly right, but worth one careful check. Open it and make sure the conference link is headed to the right inbox.'] },
-  { eyebrow: 'Task 4 complete', h1: 'You are officially registered',
-    lines: ['Your confirmation lands a minute after the form goes through, joining link and all. Before Wednesday arrives, watch the short orientation video so you know what to have ready.'] }
+  { eyebrow: 'Conference Update', h1: 'Priya sends you a conference',
+    lines: ['Priya, a friend who works in family programs, forwards a conference she thinks you would be interested in. You would like to attend, so you send it to your supervisor, Mr. Okafor, for approval.'] },
+  { eyebrow: 'Conference Update', h1: 'Mr. Okafor says yes',
+    lines: ['Good news: Mr. Okafor approved your request and asked you to register while there is still space. You pull up the conference website while you have a few minutes.'] },
+  { eyebrow: 'Conference Update', h1: 'Find Priya’s session',
+    lines: ['Priya’s session is titled <b>Effective Communication Strategies</b>. You want to find it in the conference program so you can add the right time to your calendar.'] },
+  { eyebrow: 'Conference Update', h1: 'A colleague gives you a head start',
+    lines: ['A colleague has already filled in most of your registration form to save you some time. You give everything one careful review before it goes through.'] },
+  { eyebrow: 'Conference Update', h1: 'Your registration is confirmed',
+    lines: ['You received your registration confirmation email. The organizers included a short orientation video to help you prepare for the conference.'] }
 ];
 
 /* Change spec v16 §A: the five try-again screens are gone, and with them the
@@ -1352,23 +1485,28 @@ var CONTROLS = {
 
 /* ---------- Screen reader simulator documents ----------------------------- */
 var SR_DOCS = {
+  /* Change spec v18 §F: the practice document is an email now, drawn with the
+     same `.mock-email` markup and the same `doc-email` frame height Task 1
+     uses, so the two screen reader screens look like the same kind of thing.
+     The body heading is a real h2, and the announcement list gains the closing
+     line Task 1's documents have. */
   practice: {
-    id: 'practice', title: 'Office hours notice',
-    /* Spec v10 §D: the frame's title bar reads a context line, not a bare file
-       name.  The announced first line still names the file. */
-    file: 'Front desk notice · office-hours.txt',
+    id: 'practice', title: 'Office hours next week',
+    file: 'Office hours next week',
     blurb: 'A short notice. Use it to get used to the keys before the task.',
     keys: ['down', 'up', 'h', 'l'],
     lines: [
-      { t: 'Document. office-hours.txt. Page 1 of 1.' },
-      { t: 'Heading level 1. Office hours next week', h: true, sel: '#pr-h' },
+      { t: 'Email. Office hours next week. From Front Desk.' },
+      { t: 'Heading level 2. Office hours next week', h: true, sel: '#pr-h' },
       { t: 'The front desk opens at 8:30 a.m. Monday through Thursday.', sel: '#pr-1' },
       { t: 'On Friday the office closes at noon for staff training.', sel: '#pr-2' },
       { t: 'Link. Holiday schedule', link: 'Holiday schedule', sel: '#pr-3 a' },
-      { t: 'Questions? Reply to this message.', sel: '#pr-4' }
+      { t: 'Questions? Reply to this message.', sel: '#pr-4' },
+      { t: 'End of message.' }
     ],
-    html: '<div class="doc-plain">' +
-      '<p id="pr-h" style="font-weight:700;font-size:19px;margin-bottom:12px">Office hours next week</p>' +
+    html: '<div class="mock-email">' +
+      '<div class="em-head"><div><b>From</b> Front Desk</div><div><b>To</b> All staff</div><div><b>Subject</b> Office hours next week</div></div>' +
+      '<h2 id="pr-h">Office hours next week</h2>' +
       '<p id="pr-1">The front desk opens at 8:30 a.m. Monday through Thursday.</p>' +
       '<p id="pr-2">On Friday the office closes at noon for staff training.</p>' +
       '<p id="pr-3"><a href="#">Holiday schedule</a></p>' +
@@ -1390,7 +1528,7 @@ var SR_DOCS = {
       { t: 'End of message.' }
     ],
     html: '<div class="mock-email">' +
-      '<div class="em-head"><div><b>From</b> Priya Natarajan</div><div><b>To</b> you</div><div><b>Subject</b> Fwd: Save the date</div></div>' +
+      '<div class="em-head"><div><b>From</b> Priya Natarajan</div><div><b>Subject</b> Fwd: Save the date</div></div>' +
       '<p id="e1-body">Hi, thought of you. Flyer below.</p>' +
       '<img id="e1-img" src="' + FLYER + '" alt="">' +
       '<p id="e1-link"><a href="#">Click here</a></p>' +
@@ -1415,7 +1553,7 @@ var SR_DOCS = {
       { t: 'End of message.' }
     ],
     html: '<div class="mock-email">' +
-      '<div class="em-head"><div><b>From</b> Priya Natarajan</div><div><b>To</b> you</div><div><b>Subject</b> Fwd: Save the date</div></div>' +
+      '<div class="em-head"><div><b>From</b> Priya Natarajan</div><div><b>Subject</b> Fwd: Save the date</div></div>' +
       '<p id="e2-body">Hi, thought of you. Details below.</p>' +
       '<div class="em-details">' +
       '<p class="d-h" id="e2-h">Virtual Education Workshops. Uniting for student success.</p>' +
@@ -1661,7 +1799,7 @@ var TASKS = [
     key: 't1', n: 1, title: 'Check conference details', artifact: 'sr',
     /* change-spec-v17 §B / §C: the tool line is gone; para, repairH1,
        repairLines and goalFixed are the v17 spec verbatim. */
-    para: 'Priya sent you information about a conference she thought you might want to attend. Mr. Okafor is ready to review your request, but he needs the conference date before he can approve it. Use the screen reader commands to find the date in Priya’s email so the request can keep moving.',
+    para: 'Mr. Okafor is ready to review your request, but he needs the conference date before he can approve it. Use the screen reader commands to find the date in Priya’s email so the request can keep moving.',
     repairH1: 'Essential information in accessible text',
     repairLines: ['Priya realized the flyer would not work for everyone, so she sent a new email with the conference details included in the message.'],
     goalFixed: 'Use the screen reader to find the conference date in the updated email.',
@@ -1701,7 +1839,7 @@ var TASKS = [
   },
   {
     key: 't2', n: 2, title: 'Register for the conference', artifact: 'site',
-    para: 'Good news: Mr. Okafor approved your request and asked you to get registered while there is still space. You have a few minutes before your next commitment, so you pull up the conference website. Use the keyboard shortcuts below to navigate through the site and open the Registration page.',
+    para: 'The Register button is right there on the homepage. Use the keyboard shortcuts below to navigate through the conference website and open the Registration page.',
     repairH1: 'Logical focus order',
     repairLines: ['It sounds like you were not the only person having trouble with registration. The web team thinks they fixed the issue.'],
     goalFixed: 'Try again using the keyboard shortcuts below to navigate through the conference site and open the Registration page.',
@@ -1727,10 +1865,10 @@ var TASKS = [
   },
   {
     key: 't3', n: 3, title: 'Find your approved session', artifact: 'word',
-    para: 'Registration asks which conference session you plan to attend, and you realize you have only looked closely at the session Priya mentioned. The full conference program runs ten pages, and you need the scheduled time for Effective Communication Strategies. Open the Navigation Pane and use the document’s headings to find the session and its time.',
+    para: 'The program runs ten pages, and you need the scheduled time for <b>Effective Communication Strategies</b>. Open the Navigation Pane and use the document’s headings to find the session and its time.',
     repairH1: 'Structured headings',
     repairLines: ['The conference committee received a lot of frustrated emails from people trying to find sessions in the program, so they sent out an updated copy.'],
-    goalFixed: 'Use the Navigation Pane to find a new session Mr. Okafor just emailed you about. He thinks you should switch to Building Family Partnerships because it better fits the work you are doing this year.',
+    goalFixed: 'Mr. Okafor just emailed you too. He thinks you should switch to <b>Building Family Partnerships</b> because it better fits the work you are doing this year. Use the Navigation Pane to find the new session and its scheduled time.',
     controls: 'word',
     /* The "using the Navigation Pane" feedback variant describes what actually
        happened, so it fires only when the learner's most recent pane selection
@@ -1771,23 +1909,23 @@ var TASKS = [
   },
   {
     key: 't4', n: 4, title: 'Check the registration form', artifact: 'form',
-    para: 'A colleague has already started your registration form as a favor, so most of the information is waiting for you when you return to it. Your details look right, and Mr. Okafor is listed as the approval contact. Review the form and determine which email address will receive the conference confirmation and joining link.',
+    para: 'Your information looks right, and Mr. Okafor is listed as the approval contact. Review the form and determine which email address will receive the conference confirmation.',
     repairH1: 'Persistent form labels',
     repairLines: ['The committee assumed the survey builder they used for registration would create an accessible form by default. After hearing about problems with the form, they went back through the settings and made some adjustments.'],
-    goalFixed: 'Review the form again and determine which email address will receive the conference confirmation and joining link.',
+    goalFixed: 'Review the form again and determine which email address will receive the conference confirmation.',
     controls: null,
     question: {
-      legend: 'Which email address will receive the conference link?',
+      legend: 'Which email address will receive the conference confirmation?',
       options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
       correct: 2,
-      feedback: 'The form does not tell you which email address will receive the conference link. Once the fields were filled in, both email fields looked the same.',
+      feedback: 'The form does not tell you which email address will receive the conference confirmation. Once the fields were filled in, both email fields looked the same.',
       unknownIndex: 2
     },
     questionFixed: {
-      legend: 'Which email address will receive the conference link?',
+      legend: 'Which email address will receive the conference confirmation?',
       options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
       correct: 0,
-      feedback: 'The conference link goes to j.ellis@riversideps.k12.va.us. Each field kept its label after it was filled in, so the two email addresses were clear.',
+      feedback: 'The conference confirmation goes to j.ellis@riversideps.k12.va.us. Each field kept its label after it was filled in, so the two email addresses were clear.',
       unknownIndex: 2
     },
     crosswalk: {
@@ -1806,10 +1944,10 @@ var TASKS = [
   },
   {
     key: 't5', n: 5, title: 'Prepare to attend', artifact: 'video',
-    para: 'Your registration confirmation has arrived, and the conference is now on your calendar. Before the day arrives, the organizers have one short orientation video for you to review. Watch the video and find out what participants should have ready before the session.',
+    para: 'The orientation video explains what to expect and how to prepare for the virtual sessions. Watch it to find out what you should have ready before the conference begins.',
     repairH1: 'Captions and a transcript',
     repairLines: ['The committee thought the video platform automatically generated captions and didn’t test it before sending the video to participants. The caption file is uploaded now.'],
-    goalFixed: 'Watch the video again and find out what participants should have ready before the session.',
+    goalFixed: 'Watch the video again and find out what you should have ready before the conference begins.',
     controls: null,
     question: {
       legend: 'What did the video tell you to have ready?',
@@ -2474,7 +2612,7 @@ var CLOSING = {
   var MAIN = document.getElementById('main');
   var LIVE = document.getElementById('live');
   var STEPS_LIST = document.getElementById('steps');
-  var STORE_KEY = 'eal-v17';
+  var STORE_KEY = 'eal-v18';
 
   function reduced() {
     try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
@@ -2509,13 +2647,23 @@ var CLOSING = {
     answers: blankPairs(),
     times: { t3: [null, null] },
     t3method: [null, null],
-    t2: [null, null]            // { keys, ms } per encounter
+    t2: [null, null],           // { keys, ms } per encounter
+    /* Change spec v18 §C: while a review round trip is open this holds the
+       screen the learner left, so the crosswalk's last button can offer to
+       take them back to it and a reload can resume the review.  It is the one
+       piece of state a review writes; nothing a review does touches a
+       measurement, a rating or an answer. */
+    returnTo: null,
+    /* Change spec v18 §D: null means "whatever the device says"; true / false
+       is the learner's own choice, kept for the session. */
+    oskeys: null
   };
   function save() {
     try {
       window.sessionStorage.setItem(STORE_KEY, JSON.stringify({
         screen: state.screen, ratings: state.ratings,
-        answers: state.answers, times: state.times, t3method: state.t3method, t2: state.t2
+        answers: state.answers, times: state.times, t3method: state.t3method, t2: state.t2,
+        returnTo: state.returnTo, oskeys: state.oskeys
       }));
     } catch (e) { /* storage is optional; never rely on it */ }
   }
@@ -2531,14 +2679,13 @@ var CLOSING = {
   function clearStore() { try { window.sessionStorage.removeItem(STORE_KEY); } catch (e) {} }
 
   /* ------------------------------------------------------- screen manifest
-     Change spec v16 §A: 44 screens.  The cover, two orientation screens, the
-     five Practice Lab screens, then SEVEN screens per task (transition, task,
-     rating, repaired, rating, crosswalk 1, crosswalk 2), then the closing.
-     The try-again screen that used to sit between the first rating and the
-     repaired encounter is gone; `t{n}-rate1` now leads straight to
-     `t{n}-repair`.  1 + 2 + 5 + 5 × 7 + 1 = 44. */
+     Change spec v18 §B: 45 screens.  The cover, the "Before you get started"
+     checks, two orientation screens, the five Practice Lab screens, then SEVEN
+     screens per task (transition, task, rating, repaired, rating, crosswalk 1,
+     crosswalk 2), then the closing.  1 + 1 + 2 + 5 + 5 × 7 + 1 = 45. */
   var SCREENS = [];
   SCREENS.push({ id: COVER.id, kind: 'cover', cover: COVER });
+  SCREENS.push({ id: BEFORE.id, kind: 'before', before: BEFORE });
   ORIENTATION.forEach(function (o) { SCREENS.push({ id: o.id, kind: 'orientation', orient: o }); });
   SCREENS.push({ id: LAB.intro.id, kind: 'bridge', bridge: LAB.intro, lab: true });
   LAB.practices.forEach(function (p) {
@@ -2608,8 +2755,10 @@ var CLOSING = {
     s.node.hidden = false;                 // visible first, so a render fault is never a blank page
     initialFocus = null;
     /* Change spec v15 §A: the cover is the one screen that fills the space
-       between the rail and the footer, so `main` becomes a flex column for it
-       and goes back to being an ordinary block for every other screen. */
+       below the rail, so `main` becomes a flex column for it and goes back to
+       being an ordinary block for every other screen.  Change spec v18 §E:
+       there is no footer any more, so the rail height is the only thing the
+       centring has to allow for. */
     MAIN.classList.toggle('is-cover', s.kind === 'cover');
     RENDER[s.kind](s.node, s);
     /* The cover runs its own 0.5 s Scene fade, so it does not also take the
@@ -2634,14 +2783,13 @@ var CLOSING = {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
 
-  /* Change spec v13 §A: one named bar, two item sets.  The practice bar runs
-     from orientation through the Practice Lab; the task bar takes over at the
-     Task 1 transition and finishes complete on the closing.  The task number
-     still comes from the rule the ticks used. */
+  /* Change spec v18 §C: one bar of three stages — Intro, Practice, Tasks — and
+     the stage the learner is in opens in place, its word replaced by its own
+     sub-items.  Intro has no sub-items, so it never opens.  The task number
+     still comes from the rule the v13 bar used. */
   function taskNumberOf(s) {
-    /* Change spec v15 §A: the cover carries the practice bar with all three
-       items still to do, exactly as s0a does. */
     if (s.kind === 'cover') return 0;
+    if (s.kind === 'before') return 0;
     if (s.kind === 'orientation') return 0;
     if (s.lab) return -1;
     if (s.kind === 'closing') return 6;
@@ -2649,50 +2797,111 @@ var CLOSING = {
     return s.task.n;
   }
   var PRACTICE_IDS = ['lab-p1', 'lab-p2', 'lab-p3'];
-  /* Which bar, which item is current (0 = none), and whether the whole bar is
+  /* Which stage a screen sits in (0 Intro, 1 Practice, 2 Tasks), which of that
+     stage's sub-items is current (0 = none), and whether the whole stage is
      already behind the learner. */
   function progressOf(s) {
-    if (s.id === 'lab-exit') return { set: 'practice', now: 0, all: true };
-    var p = PRACTICE_IDS.indexOf(s.id);
-    if (p !== -1) return { set: 'practice', now: p + 1, all: false };
     var n = taskNumberOf(s);
-    if (n === 0 || n === -1) return { set: 'practice', now: 0, all: false };
-    if (n === 6) return { set: 'tasks', now: 0, all: true };
-    return { set: 'tasks', now: n, all: false };
+    if (n === 0) return { stage: 0, now: 0, all: false };
+    if (n === -1) {
+      if (s.id === 'lab-exit') return { stage: 1, now: 0, all: true };
+      var p = PRACTICE_IDS.indexOf(s.id);
+      return { stage: 1, now: p === -1 ? 0 : p + 1, all: false };
+    }
+    if (n === 6) return { stage: 2, now: 0, all: true };
+    return { stage: 2, now: n, all: false };
+  }
+
+  /* The state word a screen reader hears before an item's name.  A todo item
+     gets none: the items carry their own numbers, so there is nothing a
+     "Step n: " prefix could add that the name does not already say. */
+  function stepPrefix(st) {
+    return st === 'done' ? 'Completed: ' : st === 'now' ? 'Current: ' : null;
+  }
+  function stageItem(name, st, current) {
+    var li = document.createElement('li');
+    li.setAttribute('data-state', st);
+    if (current) li.setAttribute('aria-current', 'step');
+    var pre = stepPrefix(st);
+    if (pre) li.appendChild(txt('span', 'sr-only', pre));
+    return li;
+  }
+  /* The open stage's sub-items.  A done TASK item is the one interactive thing
+     in the whole bar: a button that opens that task's crosswalk for review and
+     comes back (change spec v18 §C). */
+  function subList(stage, p, reviewN) {
+    var ol = el('ol', 'substeps');
+    var names = stage === 1 ? STAGES.practice : STAGES.tasks;
+    names.forEach(function (name, i) {
+      var n = i + 1;
+      var st;
+      if (stage === 2 && reviewN) {
+        /* Reviewing: the task being reviewed reads `now`, and every other item
+           keeps the state the learner's real place gives it. */
+        var behind = p.stage === 2 && (p.all || (p.now !== 0 && n < p.now));
+        st = n === reviewN ? 'now' : (behind ? 'done' : 'todo');
+      } else {
+        st = p.all ? 'done'
+          : p.now === 0 ? 'todo'
+          : n < p.now ? 'done'
+          : n === p.now ? 'now' : 'todo';
+      }
+      var li = stageItem(name, st, st === 'now');
+      if (stage === 2 && st === 'done') {
+        var b = txt('button', 'step-name step-link', name);
+        b.type = 'button';
+        b.setAttribute('aria-label', 'Review ' + name);
+        b.addEventListener('click', function () { review(n); });
+        li.appendChild(b);
+      } else {
+        li.appendChild(txt('span', 'step-name', name));
+      }
+      ol.appendChild(li);
+    });
+    return ol;
   }
   function updateProgress(s) {
     var p = progressOf(s);
-    var practice = p.set === 'practice';
-    var names = practice ? STEPS.practice : STEPS.tasks;
+    var reviewN = 0;
+    /* During a review the bar shows the task being reviewed as current, with
+       the learner's real progress otherwise untouched, and reverts on return. */
+    if (state.returnTo && state.returnTo.screen && byId[state.returnTo.screen]) {
+      reviewN = p.now;
+      p = progressOf(byId[state.returnTo.screen]);
+    }
+    var open = reviewN ? 2 : p.stage;
     STEPS_LIST.innerHTML = '';
-    names.forEach(function (name, i) {
-      var n = i + 1;
-      var st = p.all ? 'done'
-        : p.now === 0 ? 'todo'
-        : n < p.now ? 'done'
-        : n === p.now ? 'now' : 'todo';
-      var li = document.createElement('li');
-      li.setAttribute('data-state', st);
-      if (st === 'now') li.setAttribute('aria-current', 'step');
-      /* Change spec v14 §A: a practice item carries its number inside its own
-         name ("Practice 1"), so it gets no `.step-n` — the number would
-         otherwise be shown and spoken twice.  Task items are unchanged. */
-      if (!practice) {
-        var num = txt('span', 'step-n', String(n));
-        num.setAttribute('aria-hidden', 'true');
-        li.appendChild(num);
+    for (var i = 0; i < STAGES.words.length; i++) {
+      if (i === open && i > 0) {
+        var li = document.createElement('li');
+        li.className = 'stage is-open';
+        li.appendChild(subList(i, p, reviewN));
+        STEPS_LIST.appendChild(li);
+        continue;
       }
-      /* At most one state word per item, so a screen reader user hears the
-         number a sighted user sees and what state the step is in.  On a todo
-         practice item the "Step {n}: " prefix would read "Step 1: Practice 1",
-         so v14 §A drops it: the item reads just its name. */
-      var prefix = st === 'done' ? 'Completed: '
-        : st === 'now' ? 'Current: '
-        : practice ? null : 'Step ' + n + ': ';
-      if (prefix) li.appendChild(txt('span', 'sr-only', prefix));
-      li.appendChild(txt('span', 'step-name', name));
-      STEPS_LIST.appendChild(li);
-    });
+      var st = i < open ? 'done' : i > open ? 'todo' : 'now';
+      var word = stageItem(STAGES.words[i], st, st === 'now');
+      word.className = 'stage';
+      word.appendChild(txt('span', 'step-name', STAGES.words[i]));
+      STEPS_LIST.appendChild(word);
+    }
+  }
+
+  /* Change spec v18 §C: open task {n}'s crosswalk for review, remembering the
+     screen to come back to.  Nothing else about the learner's state moves. */
+  function review(n) {
+    state.returnTo = { screen: state.screen };
+    go('t' + n + '-cross-a');
+  }
+  /* What the Return button on the second crosswalk offers to go back to. */
+  function returnLabel(id) {
+    var m = /^t([1-5])-/.exec(id);
+    if (m) return 'Task ' + m[1];
+    var k = /^lab-p([1-3])$/.exec(id);
+    if (k) return 'Practice ' + k[1];
+    if (id === 'lab-intro' || id === 'lab-exit') return 'the Practice Lab';
+    if (id === 'closing') return 'the closing';
+    return 'the activity';
   }
 
   /* ------------------------------------------------------- shared fragments */
@@ -2772,6 +2981,90 @@ var CLOSING = {
     box.appendChild(dl);
     return box;
   }
+  /* ------------------------------------------- on-screen keys (spec v18 §D)
+     Three buttons under the artifact that do what Tab, Shift+Tab and Enter do,
+     for a learner on a touch device who has no keyboard to press.  The strip
+     never takes focus itself — that is the whole point — so its buttons are
+     out of the tab order and swallow the pointer-down that would move focus
+     off the element they are about to act on.  `onKey` is what counts a press
+     where the screen counts presses; the practice counts nothing.
+     Shown by default on a coarse pointer; the toggle above it overrides that
+     for the session either way. */
+  function coarsePointer() {
+    try { return window.matchMedia('(pointer: coarse)').matches; } catch (e) { return false; }
+  }
+  function oskeysShown() {
+    return state.oskeys == null ? coarsePointer() : !!state.oskeys;
+  }
+  var FOCUSABLE = 'a[href], button, input, [tabindex]:not([tabindex="-1"])';
+  function oskeys(parent, art, onKey) {
+    var toggle = txt('button', 'oskeys-toggle', '');
+    toggle.type = 'button';
+    var strip = el('div', 'oskeys');
+    strip.setAttribute('role', 'group');
+    strip.setAttribute('aria-label', OSKEYS.label);
+
+    var marked = null;
+    function unmark() {
+      if (marked) { marked.classList.remove('is-kbfocus'); marked = null; }
+    }
+    function targets() {
+      return Array.prototype.filter.call(art.querySelectorAll(FOCUSABLE), function (n) {
+        return !n.disabled && !n.hidden && n.offsetParent !== null;
+      });
+    }
+    function move(step) {
+      var list = targets();
+      if (!list.length) return;
+      var at = list.indexOf(document.activeElement);
+      var next = at === -1 ? (step > 0 ? 0 : list.length - 1)
+        : (at + step + list.length) % list.length;
+      unmark();
+      var el2 = list[next];
+      el2.focus({ preventScroll: true });
+      marked = el2;
+      el2.classList.add('is-kbfocus');
+      el2.addEventListener('blur', unmark, { once: true });
+    }
+    function open() {
+      var a = document.activeElement;
+      if (!a || !art.contains(a)) return;
+      a.click();
+    }
+    [[OSKEYS.prev, function () { move(-1); }],
+      [OSKEYS.next, function () { move(1); }],
+      [OSKEYS.open, open]].forEach(function (row) {
+      var b = txt('button', 'btn secondary oskey', row[0]);
+      b.type = 'button';
+      b.tabIndex = -1;
+      /* Focus must stay inside the artifact: the strip acts on whatever is
+         focused there, so it must never become the focused thing itself. */
+      b.addEventListener('pointerdown', function (ev) { ev.preventDefault(); });
+      b.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
+      b.addEventListener('click', function () {
+        if (onKey) onKey();
+        row[1]();
+      });
+      strip.appendChild(b);
+    });
+
+    function paint() {
+      var on = oskeysShown();
+      strip.hidden = !on;
+      toggle.textContent = on ? OSKEYS.hide : OSKEYS.show;
+      toggle.setAttribute('aria-expanded', String(on));
+      if (!on) unmark();
+    }
+    toggle.addEventListener('click', function () {
+      state.oskeys = !oskeysShown();
+      save();
+      paint();
+    });
+    paint();
+    parent.appendChild(toggle);
+    parent.appendChild(strip);
+  }
+
   function primary(parent, label, onClick) {
     var wrap = el('div', 'actions');
     var b = txt('button', 'btn', label);
@@ -2818,11 +3111,15 @@ var CLOSING = {
     node.appendChild(rule);
 
     node.appendChild(txt('p', 'cover-sub', c.sub));
+    /* Change spec v18 §A: the note is in the markup on every device and shown
+       by the stylesheet only at (pointer: coarse) and (max-width: 900px).  It
+       rides the subtitle's own rise, so on a phone the two arrive together. */
+    node.appendChild(txt('p', 'cover-note', c.note));
 
     var actions = el('div', 'actions');
     var b = txt('button', 'btn cover-start', c.button);
     b.type = 'button';
-    b.addEventListener('click', function () { go('s0a'); });
+    b.addEventListener('click', function () { go('before'); });
     actions.appendChild(b);
     node.appendChild(actions);
 
@@ -2830,6 +3127,42 @@ var CLOSING = {
        first frame, so there is nothing to skip and nothing to wait for. */
     if (!reduced()) node.classList.add('is-animated');
   };
+
+  /* ======================================================= SCREEN: before ==
+     Change spec v18 §B.  Eyebrow, heading, a real ordered list of three checks
+     — each one a bold lead and its own paragraphs — and Continue.  The second
+     check carries the width-check line between its two paragraphs: two spans
+     wide enough that they share a row only while the column is, so the learner
+     sees the answer instead of being told it. */
+  RENDER.before = function (node, s) {
+    var b = s.before;
+    node.setAttribute('data-screen', 'before');
+    eyebrow(node, b.eyebrow);
+    heading(node, b.h1);
+    var ol = el('ol', 'checks');
+    b.items.forEach(function (item) {
+      var li = document.createElement('li');
+      item.paras.forEach(function (text, i) {
+        var p = document.createElement('p');
+        if (i === 0) p.appendChild(txt('b', null, item.lead));
+        if (i === 0) p.appendChild(document.createTextNode(' '));
+        p.insertAdjacentHTML('beforeend', text);
+        li.appendChild(p);
+        if (item.widthAfter === i) li.appendChild(widthCheck(b.width));
+      });
+      ol.appendChild(li);
+    });
+    node.appendChild(ol);
+    primary(node, b.button, function () { go(nextId(s.id)); });
+  };
+  /* One paragraph to a screen reader; two fixed-width, non-wrapping spans to
+     the layout, so the second drops to its own row as soon as the column is
+     narrower than the pair. */
+  function widthCheck(parts) {
+    var p = el('p', 'widthcheck');
+    parts.forEach(function (t) { p.appendChild(txt('span', null, t)); });
+    return p;
+  }
 
   /* ================================================== SCREEN: orientation == */
   RENDER.orientation = function (node, s) {
@@ -2876,6 +3209,10 @@ var CLOSING = {
 
     var art = el('div', 'artifact');
     node.appendChild(art);
+    /* Change spec v18 §D: the on-screen keys, when this screen has them, sit
+       directly under the artifact.  An empty slot takes no room. */
+    var keysSlot = el('div', 'oskeys-slot');
+    node.appendChild(keysSlot);
 
     var done = el('div', 'donenote');
     done.setAttribute('role', 'status');
@@ -2903,6 +3240,11 @@ var CLOSING = {
 
     if (p.kind === 'sr') {
       var pressed = {};
+      /* Change spec v18 §F: the practice document is an email now (same
+         .mock-email markup as Task 1).  It keeps the practice frame height
+         (--doc-h 420px): the screen never goes off here, so the frame has no
+         dark state to hold still for, and the short notice sits in a frame
+         that fits it (post-build ruling, 2026-09-17). */
       activeSim = SRSimulator.create(art, {
         docs: [SR_DOCS.practice], showNotes: false,
         onEvent: function (name, d) {
@@ -2923,6 +3265,8 @@ var CLOSING = {
     } else if (p.kind === 'kb') {
       art.appendChild(buildLibraryPractice(complete));
       art.classList.add('no-pointer');
+      /* Change spec v18 §D: the practice counts nothing, so no counter here. */
+      oskeys(keysSlot, art, null);
     } else {
       art.appendChild(buildWord({
         doc: PRACTICE_DOC, fixed: true, file: PRACTICE_DOC.file,
@@ -2936,11 +3280,11 @@ var CLOSING = {
   };
 
   /* ==================================================== SCREEN: encounter ==
-     Change spec v10 §F, as amended by change spec v17 §B/§C.  Task screen:
-     eyebrow, task title, story paragraph, controls block where §E allows one,
-     artifact, question, buttons — no tool line any more.  Repaired screen:
-     the "Try the repair" eyebrow, in-world heading, the repair lines, the
-     goal line, then the same pieces. */
+     Change spec v10 §F, as amended by change spec v17 §B/§C and v18 §G.  Task
+     screen: the "Conference Task" eyebrow, task title, story paragraph,
+     controls block where §E allows one, artifact, question, buttons — no tool
+     line any more.  Repaired screen: the "Accessible Design" eyebrow, the
+     principle heading, the repair lines, the goal line, then the same pieces. */
   RENDER.encounter = function (node, s) {
     var t = s.task, fixed = !!s.fixed;
     /* E is a stable reference for every callback below; the module-level `enc`
@@ -2952,7 +3296,7 @@ var CLOSING = {
     };
     enc = E;
 
-    eyebrow(node, fixed ? 'Try the repair' : ('Task ' + t.n + ' of 5'));
+    eyebrow(node, fixed ? 'Accessible Design' : 'Conference Task');
     heading(node, fixed ? t.repairH1 : t.title);
     if (fixed) {
       lede(node, t.repairLines);
@@ -2965,6 +3309,10 @@ var CLOSING = {
     var art = el('div', 'artifact');
     node.appendChild(art);
     E.art = art;
+    /* Change spec v18 §D: Task 2's two screens carry the on-screen keys under
+       the artifact.  An empty slot takes no room on the other eight. */
+    var keysSlot = el('div', 'oskeys-slot');
+    node.appendChild(keysSlot);
 
     var q = fixed && t.questionFixed ? t.questionFixed : t.question;
     var qNode = null;
@@ -3034,6 +3382,9 @@ var CLOSING = {
       /* Every key press made while focus is inside the artifact is counted,
          silently. */
       art.addEventListener('keydown', function () { E.artKeys++; });
+      /* Change spec v18 §D: a tap on the strip is one key press, counted the
+         same way, so the measurement means the same thing on both devices. */
+      oskeys(keysSlot, art, function () { E.artKeys++; });
       initialFocus = function () {
         var u = art.querySelector('.urlbar');
         if (u) u.focus({ preventScroll: true });
@@ -3430,6 +3781,17 @@ var CLOSING = {
     w.appendChild(ul);
     node.appendChild(w);
 
+    /* Change spec v18 §C: reached through a Review link, this screen's last
+       button goes back where the learner came from instead of on.  Everything
+       above it renders exactly as it does in the ordinary flow. */
+    var back = state.returnTo && state.returnTo.screen;
+    if (back) {
+      primary(node, 'Return to ' + returnLabel(back), function () {
+        state.returnTo = null;
+        go(back);
+      });
+      return;
+    }
     primary(node, t.key === 't5' ? 'Finish' : 'Continue', function () { go(nextId(s.id)); });
   };
 
@@ -3570,6 +3932,7 @@ var CLOSING = {
     state.times = { t3: [null, null] };
     state.t3method = [null, null];
     state.t2 = [null, null];
+    state.returnTo = null;
     clearStore();
     go('s0a');
   }
@@ -4174,6 +4537,11 @@ var CLOSING = {
     state.times = saved.times || state.times;
     state.t3method = saved.t3method || state.t3method;
     state.t2 = saved.t2 || state.t2;
+    /* Change spec v18 §C/§D: a reload in the middle of a review comes back to
+       the review, still knowing where to return to, and the on-screen keys
+       come back the way the learner left them. */
+    state.returnTo = saved.returnTo || null;
+    state.oskeys = (saved.oskeys === true || saved.oskeys === false) ? saved.oskeys : null;
     go(saved.screen);
   } else {
     go('cover');

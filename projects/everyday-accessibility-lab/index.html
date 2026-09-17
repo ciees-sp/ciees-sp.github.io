@@ -254,9 +254,11 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
   position: sticky; top: 0; z-index: 30;
 }
 .rail-in {
-  max-width: 1180px; margin: 0 auto; padding: 10px 20px;
-  display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  max-width: 1180px; margin: 0 auto; padding: 10px 20px 9px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
 }
+/* Post-build ruling 2026-09-17: the progress bar sits on its own row under the
+   wordmark at every width, never beside it. */
 .wordmark {
   font-family: var(--display); font-weight: 800; font-size: 17px;
   letter-spacing: -.01em; white-space: nowrap;
@@ -268,7 +270,7 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
    are drawn but never spoken.  Three looks and nothing else: `now` is dark,
    600, with a 2 px accent rule 3 px below it; `done` is muted; `todo` is the
    ordinary ink at 400.  No lines, no fill, no check marks, no chip. */
-.progress { flex: 1 1 auto; min-width: min(840px, 100%); }
+.progress { width: 100%; min-width: 0; }
 .stages, .substeps {
   display: flex; align-items: baseline; flex-wrap: wrap;
   list-style: none; margin: 0; padding: 0; white-space: nowrap;
@@ -463,7 +465,10 @@ main.is-cover { display: flex; flex-direction: column; }
   display: flex; flex-wrap: wrap; column-gap: .35em;
   margin-top: 10px; font-weight: 600; color: var(--ink);
 }
-.widthcheck span { flex: 0 0 470px; white-space: nowrap; overflow: visible; }
+/* Post-build ruling 2026-09-17: each half sizes to its own text, so the two
+   halves sit together with one word space between them and the second half
+   drops to a new row only when the sentence is wider than the column. */
+.widthcheck span { flex: 0 0 auto; white-space: nowrap; overflow: visible; }
 
 /* --- Change spec v18 §D: the on-screen keys ------------------------------
    A strip of three quiet buttons under the artifact, and a text-link toggle
@@ -820,7 +825,6 @@ blockquote.pull {
      current one below 720 px is gone.  The bar takes its own full-width row
      under the wordmark and wraps onto as many lines as it needs; every item
      is on screen at every width. */
-  .progress { order: 3; flex-basis: 100%; min-width: 0; }
   .stages { gap: 8px; row-gap: 4px; }
   .substeps { gap: 7px; row-gap: 4px; }
   .stages > li { gap: 8px; }
@@ -1311,7 +1315,7 @@ var BEFORE = {
     { lead: 'Sound.',
       paras: ['Turn your sound on. The screen reader practice and Task 1 use speech. If you cannot use sound, the activity still works: every announcement also appears as text on the screen.'] }
   ],
-  width: ['When this sentence fits on one line,', 'your window is wide enough for this activity.'],
+  width: ['When this sentence fits on one line,', 'your window is wide enough for every screen in this activity.'],
   button: 'Continue'
 };
 

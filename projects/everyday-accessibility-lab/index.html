@@ -261,19 +261,36 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
   font-family: var(--display); font-weight: 800; font-size: 17px;
   letter-spacing: -.01em; white-space: nowrap;
 }
-.progress { flex: 1; min-width: 120px; }
-.ticks { display: flex; gap: 6px; align-items: center; }
-.tick { height: 8px; flex: 1; border-radius: 2px; background: var(--line); }
-.tick[data-state="done"] { background: var(--fixed); }
-.tick[data-state="now"] { background: var(--accent); }
-/* Change spec v10 §B.4: a short muted chip sits to the left of the five
-   segments for the length of the Practice Lab, and nowhere else.  The
-   visually-hidden progress text carries the same fact. */
-.rail-chip {
-  flex: none; font-size: 11px; letter-spacing: .09em; text-transform: uppercase;
-  font-weight: 700; color: var(--ink-2); background: var(--ground);
-  border: 1px solid var(--line); border-radius: 999px; padding: 2px 9px; line-height: 1.5;
+/* Change spec v13 §A: the ticks, the chip and the hidden progress sentence are
+   replaced by one named bar — a single flex row of numbered step names, three
+   states and nothing else.  No lines, no fill, no check marks, no chip.  The
+   min-width is what forces the row to wrap onto its own line below about
+   1100 px; `.rail-in` already carries the flex-wrap that lets it. */
+.progress { flex: 1 1 auto; min-width: min(840px, 100%); }
+.steps-list {
+  display: flex; gap: 22px; align-items: baseline;
+  list-style: none; margin: 0; padding: 0; white-space: nowrap;
+  /* One row wherever the row is wide enough to hold it.  The wrap is a safety
+     valve only: it is what keeps a narrow header from pushing the page into a
+     horizontal scroll when the web font has not loaded and the fallback face
+     sets the names wider than the design does. */
+  /* Change spec v14 §A: the bar shows every item at every width, so the wrap
+     is no longer a safety valve — it is the layout.  The list takes as many
+     lines as it needs and items never clip. */
+  flex-wrap: wrap; row-gap: 4px;
 }
+.steps-list li {
+  display: flex; align-items: baseline; gap: 7px;
+  /* a transparent rule on every item so the current item's underline does not
+     move the row by 2 px when it changes screens */
+  border-bottom: 2px solid transparent; padding-bottom: 3px;
+}
+.step-n { font-family: var(--mono); font-size: 12px; color: var(--ink-3); }
+.step-name { font-family: var(--body); font-size: 14px; font-weight: 400; color: var(--ink); }
+.steps-list li[data-state="now"] { border-bottom-color: var(--accent); }
+.steps-list li[data-state="now"] .step-name { font-weight: 600; color: var(--ink); }
+.steps-list li[data-state="done"] .step-n,
+.steps-list li[data-state="done"] .step-name { color: var(--ink-3); font-weight: 400; }
 
 /* --- Buttons (System B: base .btn is the filled/primary look) ------------- */
 .btn {
@@ -285,10 +302,6 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
 .btn:hover { filter: brightness(1.12); }
 .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); box-shadow: none; }
 .btn.secondary:hover { background: var(--paper); filter: none; }
-/* Change spec v10 §B.3: the fail-safe is a plain tertiary button — one thin
-   solid border in the muted ink token, muted text, same size and position. */
-.btn.quiet { background: transparent; color: var(--ink-2); border: 1px solid var(--ink-3); font-weight: 600; box-shadow: none; }
-.btn.quiet:hover { background: var(--paper); color: var(--ink); filter: none; }
 .btn.small { padding: 6px 14px; font-size: 15px; }
 .btn:disabled { opacity: .5; cursor: not-allowed; filter: none; }
 
@@ -313,6 +326,138 @@ main:focus { outline: none; }
 .meta { margin-top: 20px; font-size: 15px; color: var(--ink-2); }
 .actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
 
+/* --- The cover (change spec v15 §A) ---------------------------------------
+   One centred column between the rail and the footer, with no card and no
+   panel.  The choreography is the Title scene of the author's Claude Design
+   export ported to CSS keyframes — the timings, the order and the proportions
+   only.  Every colour and every face here is a shell token: --display for the
+   heading, --body for the rest, --accent for the eyebrow, the bar and the
+   rule, --ink for the heading, --ink-2 for the subtitle, --ground behind it
+   all.  Nothing new is loaded.
+   The STATIC state is what is written below; the motion lives entirely under
+   `.cover.is-animated`, a class the router adds only when the learner has not
+   asked for reduced motion.  Without JS, or with `prefers-reduced-motion:
+   reduce`, every element is already at its final state and the bar is not
+   rendered at all.
+   --------------------------------------------------------------------------*/
+main.is-cover { display: flex; flex-direction: column; }
+.screen.cover {
+  flex: 1 1 auto; display: flex; flex-direction: column; justify-content: center;
+  align-items: center; width: 100%; max-width: 820px; text-align: center;
+}
+.cover-eyebrow {
+  font-family: var(--body); font-size: 15px; font-weight: 700;
+  letter-spacing: .22em; text-transform: uppercase; color: var(--accent);
+  margin: 0 0 28px;
+}
+.screen.cover .cover-h1 {
+  font-family: var(--display); font-size: clamp(52px, 9.5vw, 120px); font-weight: 800;
+  line-height: .98; letter-spacing: -.02em; color: var(--ink); margin: 0;
+  /* the two lines are set by the <br>; nothing else may re-balance them */
+  text-wrap: wrap;
+}
+.cover-bar {
+  display: inline-block; width: 5px; height: .72em; margin-left: .1em;
+  vertical-align: -.08em; background: var(--accent);
+}
+.cover-rule {
+  height: 4px; width: 190px; border-radius: 4px; background: var(--accent);
+  margin: 36px auto 0;
+}
+.cover-sub {
+  font-family: var(--body); font-size: clamp(19px, 2.4vw, 28px); line-height: 1.45;
+  color: var(--ink-2); margin: 34px auto 0; max-width: 30ch;
+}
+.screen.cover .actions { margin-top: 44px; justify-content: center; }
+/* The static cover has no bar: a blinking caret that never blinks is noise. */
+.cover:not(.is-animated) .cover-bar { display: none; }
+
+/* --- The cover's choreography (change spec v15 §A) ------------------------
+   `rise` is MOTION.rise from the export (opacity + a translateY that eases out
+   on a cubic), `cover-draw` is MOTION.draw on the rule's width, `cover-scene`
+   is the Scene wrapper's 0.5 s cross-dissolve, and `cover-blink` is the title
+   caret at 1.6 Hz.  Every delay and duration below is the export's, and
+   `animation-fill-mode: both` holds the `from` frame through the delay so a
+   piece never flashes at full strength before its turn.
+   --------------------------------------------------------------------------*/
+@keyframes cover-scene { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cover-rise {
+  from { opacity: 0; transform: translateY(var(--dy)); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes cover-draw { from { width: 0; } to { width: 190px; } }
+@keyframes cover-blink {
+  0%, 49.9% { opacity: 1; }
+  50%, 100% { opacity: .15; }
+}
+@keyframes cover-blink-out { from { opacity: 0; } to { opacity: 0; } }
+.screen.cover.is-animated { animation: cover-scene .5s cubic-bezier(.33, 1, .68, 1) both; }
+.cover.is-animated .cover-eyebrow,
+.cover.is-animated .cover-h1,
+.cover.is-animated .cover-sub,
+.cover.is-animated .cover-start {
+  animation-name: cover-rise; animation-timing-function: cubic-bezier(.33, 1, .68, 1);
+  animation-fill-mode: both;
+}
+.cover.is-animated .cover-eyebrow { --dy: 22px; animation-delay: .15s; animation-duration: .6s; }
+.cover.is-animated .cover-h1 { --dy: 28px; animation-delay: .35s; animation-duration: .8s; }
+.cover.is-animated .cover-sub { --dy: 22px; animation-delay: 1.4s; animation-duration: .7s; }
+.cover.is-animated .cover-start { --dy: 18px; animation-delay: 2.3s; animation-duration: .6s; }
+.cover.is-animated .cover-rule {
+  animation: cover-draw .9s cubic-bezier(.65, 0, .35, 1) 1.1s both;
+}
+/* Six cycles at 1.6 Hz from 0.35 s, then the caret is gone for good: the
+   second animation is later in the list, so its `opacity: 0` wins from the
+   moment it starts filling. */
+.cover.is-animated .cover-bar {
+  animation: cover-blink .625s linear .35s 6 both,
+             cover-blink-out .001s linear 4.1s forwards;
+}
+/* A keyboard learner who reaches Start before its turn sees it at once.  The
+   spec names `:focus-visible`; `:focus` is carried alongside it so a pointer
+   learner who clicks into the button mid-sequence sees the same thing, and
+   both are written at the depth of the rule they have to beat. */
+.cover.is-animated .cover-start:focus-visible,
+.cover.is-animated .cover-start:focus { animation: none; opacity: 1; transform: none; }
+
+/* --- Change spec v12 §A: orientation 1 ----------------------------------
+   Three pieces the shell had no equivalent for, built from the System B
+   tokens already above and nothing else: the subtitle that stands in for the
+   eyebrow, the POUR list, and the references block.  Every colour here is
+   --ink, --ink-2 or --accent on --ground, which is 7.1:1 or better in both
+   schemes, so the small type still clears AA. */
+.subtitle {
+  max-width: 62ch; margin: -4px 0 20px;
+  font-family: var(--body); font-size: clamp(19px, 2.2vw, 22px); font-weight: 400;
+  line-height: 1.35; color: var(--ink-2); text-wrap: balance;
+}
+/* With a subtitle above it, the first body paragraph is a body paragraph:
+   the lead has already been set, so nothing competes with it. */
+.lede.flat p.first { color: var(--ink-2); font-size: 17px; }
+.pourlist { margin: 14px 0 0; padding-left: 24px; color: var(--ink-2); }
+/* `.lede p + p` cannot see a paragraph that follows the list, so the list
+   carries the gap on its own side. */
+.lede .pourlist + p { margin-top: 14px; }
+.pourlist li { margin-top: 8px; }
+.pourlist li::marker { color: var(--ink-3); }
+.pourlist b { color: var(--ink); font-weight: 700; }
+.refs {
+  max-width: 68ch; margin-top: 34px; padding-top: 14px; border-top: 1px solid var(--line);
+}
+/* The same small-label recipe the controls block's own heading uses. */
+.screen .refs h2 {
+  font-family: var(--body); font-size: 13px; letter-spacing: .08em;
+  text-transform: uppercase; font-weight: 700; color: var(--ink-2); margin: 0 0 10px;
+}
+.ref {
+  font-size: 14px; line-height: 1.5; color: var(--ink-2);
+  padding-left: 24px; text-indent: -24px;
+}
+.ref + .ref { margin-top: 10px; }
+/* The shell's own link colour, kept underlined so the link is not signalled
+   by colour alone, and allowed to break so a long URL never widens the page. */
+.ref a { color: var(--accent); text-decoration: underline; overflow-wrap: anywhere; }
+
 /* --- Cards, callouts, directions ----------------------------------------- */
 .card {
   background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
@@ -325,17 +470,13 @@ main:focus { outline: none; }
   font-size: 15px; color: var(--ink-2); max-width: 68ch;
 }
 .callout b, .callout strong { color: var(--ink); }
-/* --- The v10 screen pattern (change spec v10 §F) -------------------------
-   A task screen: the tool line that names the access condition, then the story
-   paragraph.  A repaired screen: the repair lines, then the goal line.  Both
-   carry the labelled controls block only where §E allows one. */
+/* --- The v10 screen pattern (change spec v10 §F, tool line removed by
+   change spec v17 §B) ---------------------------------------------------
+   A task screen: the story paragraph.  A repaired screen: the repair lines,
+   then the goal line.  Both carry the labelled controls block only where §E
+   allows one. */
 .instruction { max-width: 68ch; font-size: 19px; color: var(--ink); margin-top: 4px; }
 .bodylines .instruction + .instruction { margin-top: 12px; }
-.toolline {
-  max-width: 68ch; font-size: 16px; font-weight: 600; color: var(--ink);
-  margin-bottom: 14px; border-left: 3px solid var(--accent); background: var(--accent-soft);
-  padding: 10px 14px; border-radius: 0 6px 6px 0;
-}
 .lede + .instruction { margin-top: 16px; }
 .controls {
   background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
@@ -358,10 +499,20 @@ main:focus { outline: none; }
   border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 2px 7px;
   color: var(--ink); white-space: nowrap;
 }
+/* Change spec v13 §E: the practice completion line is a statement, not an
+   alert — no box, no left rule, no fill.  One small circled check, then the
+   sentence in body text. */
 .donenote:not(:empty) {
-  margin: 16px 0 0; padding: 12px 14px; border-left: 3px solid var(--fixed);
-  background: var(--fixed-soft); border-radius: 0 6px 6px 0;
+  margin: 16px 0 0; display: flex; align-items: flex-start; gap: 10px;
   font-size: 16px; color: var(--ink); max-width: 78ch;
+}
+.donecheck {
+  flex: none; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--fixed-soft); color: var(--fixed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1; font-weight: 700;
+  /* the circle rides with the first line of the statement */
+  margin-top: 2px;
 }
 .donenote b { font-weight: 700; }
 
@@ -383,7 +534,15 @@ main:focus { outline: none; }
 .opts label:hover { border-color: var(--ink-3); }
 .opts label.is-checked { border-color: var(--accent); background: var(--accent-soft); }
 .opts input { accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
-.failsafe { margin-top: 22px; }
+/* Change spec v13 §C: the fail-safe is gone.  Task 2's post-completion
+   Continue lands in an ordinary actions slot, which stays out of the layout
+   until something is put in it.  Change spec v16 §C: that slot is now a plain
+   block holding the completion line and then the actions row, and it is just
+   as invisible while it is empty. */
+.actions:empty { display: none; }
+.post:empty { display: none; }
+.post .qstatus { margin-top: 28px; }
+.post .actions { margin-top: 18px; }
 /* Change spec v7 §C: the recorded answer locks on the same screen.  The chosen
    option keeps a stronger border and gains a check mark; the others recede
    without dropping below AA (no opacity, so the text stays legible). */
@@ -391,11 +550,30 @@ main:focus { outline: none; }
 .opts label.is-dim { background: var(--ground); border-color: var(--line); color: var(--ink-2); cursor: default; }
 .opts label.is-dim:hover { border-color: var(--line); }
 .opts .otick { margin-left: auto; color: var(--accent); font-weight: 700; font-size: 19px; line-height: 1; }
+/* Change spec v14 §C: the locked option says which way it went — border colour
+   only, no fill change, and the tick in the same slot becomes ✓ or ✕.  The
+   correct option is never highlighted when the learner was wrong; the feedback
+   sentence carries the fact. */
+.opts label.is-correct { border-color: var(--fixed); }
+.opts label.is-wrong { border-color: var(--barrier); }
+.opts label.is-correct .otick { color: var(--fixed); }
+.opts label.is-wrong .otick { color: var(--barrier); }
+/* Change spec v14 §C: the feedback line uses the practice completion line's
+   pattern (v13 §E) — a 20 px circle, then the sentence in body text.  No box,
+   no left rule, no fill behind the words. */
 .qstatus:not(:empty) {
-  margin-top: 14px; max-width: 68ch; font-weight: 600; color: var(--ink);
-  border-left: 3px solid var(--fixed); background: var(--fixed-soft);
-  padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 16px;
+  margin-top: 14px; display: flex; align-items: flex-start; gap: 10px;
+  font-size: 16px; color: var(--ink); max-width: 68ch;
 }
+.qmark {
+  flex: none; width: 20px; height: 20px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; line-height: 1; font-weight: 700;
+  /* the circle rides with the first line of the sentence */
+  margin-top: 2px;
+}
+.qmark.is-correct { background: var(--fixed-soft); color: var(--fixed); }
+.qmark.is-wrong { background: var(--barrier-soft); color: var(--barrier); }
 
 /* --- Effort rating faces -------------------------------------------------- */
 .rating { max-width: 560px; margin-top: 6px; border: 0; padding: 0; }
@@ -410,14 +588,11 @@ main:focus { outline: none; }
 .face input { accent-color: var(--accent); width: 18px; height: 18px; flex: none; }
 .face .emoji { font-size: 30px; line-height: 1; }
 
-/* --- Outcome / crosswalk -------------------------------------------------- */
-.outcome-line {
-  font-family: var(--display); font-size: clamp(20px, 3vw, 26px); font-weight: 500;
-  line-height: 1.3; max-width: 30ch; margin-bottom: 6px;
-}
+/* --- Crosswalk ------------------------------------------------------------ */
+/* Change spec v16 §A: the try-again screen is gone, and with it both of the
+   rules only that screen ever used — its measurement line and its `.notice`
+   line of direction. */
 .timeline-note { color: var(--ink-2); font-size: 16px; margin-top: 10px; }
-/* The try-again screen's one line of direction (change spec v7 §D). */
-.notice { margin-top: 14px; max-width: 68ch; font-size: 19px; color: var(--ink-2); }
 .pair {
   display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
   background: var(--paper); border: 1px solid var(--line); border-radius: 8px;
@@ -570,7 +745,12 @@ blockquote.pull {
   .screen { padding: 22px 14px 60px; }
   .rail-in { padding: 8px 14px; gap: 12px; }
   .wordmark { font-size: 15px; }
-  .progress { order: 3; flex-basis: 100%; }
+  /* Change spec v14 §A: the v13 rule that visually hid every step but the
+     current one below 720 px is gone.  The bar takes its own full-width row
+     under the wordmark and wraps onto as many lines as it needs; every item
+     is on screen at every width. */
+  .progress { order: 3; flex-basis: 100%; min-width: 0; }
+  .steps-list { gap: 16px; row-gap: 4px; }
   /* Two columns do not fit at phone width; the control sits above what it does. */
   .controls { max-width: 100%; }
   .controls dl { display: flex; flex-direction: column; gap: 11px; }
@@ -905,11 +1085,9 @@ blockquote.pull {
   <div class="rail-in">
     <span class="wordmark">Everyday Accessibility Lab</span>
     <div class="progress">
-      <span class="sr-only" id="progress-text">Not started. Five tasks.</span>
-      <div class="ticks">
-        <span class="rail-chip" id="lab-chip" aria-hidden="true" hidden>Practice</span>
-        <span class="tick" aria-hidden="true"></span><span class="tick" aria-hidden="true"></span><span class="tick" aria-hidden="true"></span><span class="tick" aria-hidden="true"></span><span class="tick" aria-hidden="true"></span>
-      </div>
+      <nav class="steps" aria-label="Progress">
+        <ol class="steps-list" id="steps"></ol>
+      </nav>
     </div>
   </div>
 </header>
@@ -931,7 +1109,21 @@ var FLYER_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRI
    pass over v10; the changed lines are listed in
    `accessibility-activity-v11-copy-change-log.md`), except where
    change-spec-v10.md orders otherwise (each such place is commented with the
-   section that ordered it and is listed in build-report-v11.md).
+   section that ordered it and is listed in build-report-v11.md), and except
+   for the two screens change-spec-v12.md rewrites: orientation 1 (§A, a full
+   replacement) and Practice 1's added body line (§B).  Those two carry the
+   v12 spec's own words verbatim and are listed in build-report-v12.md.
+   change-spec-v13.md then adds the progress-bar item names (§A), removes
+   orientation 2's callout (§B), removes every task's `skipped` line with the
+   fail-safe (§C) and replaces the three practice screens' body paragraphs and
+   drops their `tool` field (§D).  Those strings are the v13 spec verbatim and
+   are listed in build-report-v13.md.
+   change-spec-v17.md is a copy pass on top of all of that: the three practice
+   bodies are replaced again, every task's `para` is replaced, the task `tool`
+   field is removed outright (it had survived v13's practice-only removal),
+   and every repaired screen's `repairH1` / `repairLines` / `goalFixed` and
+   four of the eight `feedback` sentences are replaced.  Those strings are the
+   v17 spec verbatim and are listed in build-report-v17.md.
    The Task 3 program and the Task 5 caption track are each written once; the
    broken and the repaired version of each artifact render from this same
    source with a flag.
@@ -952,19 +1144,98 @@ var FACES = [
   { v: '5', emoji: '😣', label: 'Not successful at all' }
 ];
 
+/* ---------- The header progress bar (change spec v13 §A, v14 §A) ----------
+   Two item sets, one bar.  The practice bar runs from orientation through the
+   Practice Lab; the task bar runs from the Task 1 transition to the closing.
+   The five task names are the five task titles.  The strings live here so the
+   copy deck can list them.
+   Change spec v14 §A: the practice items are numbers only — each renders as a
+   single `.step-name` reading "Practice 1" with no separate `.step-n`, so the
+   number is never spoken or shown twice.
+   --------------------------------------------------------------------------*/
+var STEPS = {
+  practice: [
+    'Practice 1',
+    'Practice 2',
+    'Practice 3'
+  ],
+  tasks: [
+    'Check conference details',
+    'Register for the conference',
+    'Find your approved session',
+    'Check the registration form',
+    'Prepare to attend'
+  ]
+};
+
+/* ---------- The cover, one screen (change spec v15 §A) --------------------
+   The 49th screen, and the first one the learner sees.  Its choreography is
+   ported from the Title scene of the author's Claude Design export
+   (design-export/assets/runtime.js, MOTION.rise / MOTION.draw / Scene /
+   TitleScene) — the timings, the order and the proportions only.  The colours
+   and the type come from the shell's own tokens, so nothing new is loaded.
+   `h1` is two lines; the router joins them with a <br> and a single space, so
+   the accessible name stays "Access in Action".
+   --------------------------------------------------------------------------*/
+var COVER = {
+  id: 'cover',
+  eyebrow: 'Interactive Activity',
+  h1: ['Access', 'in Action'],
+  sub: 'A hands-on look at how everyday digital decisions can impact access.',
+  button: 'Start'
+};
+
 /* ---------- Orientation, two screens (copy §01 / §02; spec v10 §C) --------
    Screen 1 carries why it matters and one Continue.  Screen 2 carries how the
-   activity works, the callout, the meta line and Begin.
+   activity works, the meta line and Begin.  Change spec v13 §B removes the
+   callout screen 2 used to carry.
+   Change spec v12 §A replaces screen 1 outright: no eyebrow, a subtitle under
+   the h1, six body paragraphs with the POUR list between the fourth and the
+   fifth, and an APA reference list at the foot.  Screen 1's strings are the
+   v12 spec verbatim; every other screen is still the v11 copy file.
    --------------------------------------------------------------------------*/
 var ORIENTATION = [
   {
     id: 's0a',
-    eyebrow: 'A learning lab for public-sector staff',
-    h1: 'Small choices decide who can use it',
+    /* Change spec v12 §A: no eyebrow on this screen.  The subtitle is the
+       lead line and does the work the eyebrow used to. */
+    eyebrow: null,
+    h1: 'Access in Action',
+    subtitle: 'A hands-on look at how everyday digital decisions can impact access.',
+    /* A string is a paragraph; { list: [...] } is a real <ul>. */
     paras: [
-      'Every week, you send flyers, post web pages, share documents, build forms, and record videos. Small choices inside each one decide who can use it.',
-      'More than one in four adults in the United States reports a disability. Many choices that shut people out are easy to change once you know what to look for.',
-      'Some accessibility issues are things you can fix directly in your own emails, documents, forms, videos, or slides. Others are issues you may need to test, document, and send to the person or team that owns the site or tool.'
+      'Most of us move through the digital world on autopilot. We scan a message, open a page, find what we need, and finish the task. When everything works, the design disappears.',
+      'More than one in four adults in the United States reports living with a disability (Centers for Disease Control and Prevention [CDC], 2024). That makes digital accessibility an important part of everyday public service.',
+      'It is also part of compliance. The Americans with Disabilities Act, or ADA, protects people with disabilities from discrimination. Title II is the part of the ADA that applies to state and local governments. A newer Title II rule gives public agencies specific requirements for websites and mobile apps. Those requirements use WCAG 2.1 Level AA (U.S. Department of Justice [DOJ], 2024). WCAG stands for Web Content Accessibility Guidelines.',
+      'WCAG is built around four practical ideas, often remembered as POUR:',
+      { list: [
+        { term: 'Perceivable:', text: 'People can get the information.' },
+        { term: 'Operable:', text: 'People can move through it and use it.' },
+        { term: 'Understandable:', text: 'People know what it says and what to do next.' },
+        { term: 'Robust:', text: 'Content works with assistive technologies, browsers, and devices.' }
+      ] },
+      'POUR gives you a simple way to notice accessibility in the digital materials you use and create. As you read a document, share a flyer, post a form, or send a message, you can ask: Can people get the information? Can they use it? Can they tell what to do next? Does it work for people using different tools?',
+      'Many accessibility barriers are introduced unintentionally through ordinary work habits. Using screenshots of charts or tables in a presentation, labeling links as “click here” or “learn more,” and skipping alt text when images add meaning are just a few examples. Learning what to look for helps you avoid introducing those barriers, make small fixes as you work, and know when to ask for help.'
+    ],
+    /* APA 7.  `after` is the text between the italic title and the URL, its
+       own leading space included, so an entry with a bracketed description and
+       one without both read correctly. */
+    refsHeading: 'References',
+    refs: [
+      {
+        author: 'Centers for Disease Control and Prevention.',
+        date: '(2024, July 16).',
+        title: 'CDC data shows over 70 million U.S. adults reported having a disability',
+        after: ' [Press release].',
+        url: 'https://www.cdc.gov/media/releases/2024/s0716-adult-disability.html'
+      },
+      {
+        author: 'U.S. Department of Justice, Civil Rights Division.',
+        date: '(2024, April 8).',
+        title: 'Fact sheet: New rule on the accessibility of web content and mobile apps provided by state and local governments',
+        after: '.',
+        url: 'https://www.ada.gov/resources/2024-03-08-web-rule/'
+      }
     ],
     button: 'Continue'
   },
@@ -976,10 +1247,8 @@ var ORIENTATION = [
       'You’ll move through a familiar work task: registering for a one-day virtual conference called Virtual Education Workshops. You’ll learn about the conference, open registration, find your approved session, check the registration form, and prepare to attend.',
       'Each task shows one moment as it is often built, then the same moment improved. Some tasks ask you to work under a specific access condition, such as using only a keyboard or watching without sound. These moments show you real barriers in digital content and tools. They are a learning simulation, not a recreation of anyone’s lived experience.'
     ],
-    /* Change spec v10 §B.1 replaces the copy's callout sentence-for-sentence:
-       there is no in-page nudge and no keyboard shortcut to a dialog, so the
-       callout names only the one route the learner still has. */
-    callout: 'Below every artifact, you’ll also have an option to continue without answering, so you can move on at any time.',
+    /* Change spec v13 §B: the callout is removed.  There is nothing left for it
+       to name — the fail-safe it described is gone from every screen. */
     meta: 'About 20 minutes · Works with a keyboard and a screen reader · Nothing you enter leaves your browser',
     button: 'Begin'
   }
@@ -1010,27 +1279,30 @@ var LAB = {
     ]
   },
   practices: [
-    /* Practice 1: the screen stays on for the whole practice (spec v10 §D), so
-       the copy's two body lines — the one that was shown before the reveal and
-       the one that replaced it — are stacked from the start.  No reveal button
-       and no controls block: the console toolbar carries the keys (§E).
-       v11: a tool line above the body, in the task screens' own shape. */
+    /* Change spec v13 §D: a practice screen is eyebrow · h1 · body paragraphs ·
+       controls block where one applies · artifact · completion line · actions.
+       There is no `tool` field any more — the tool line belongs to the task
+       screens alone.  The body paragraphs below are the v13 spec verbatim.
+       Practice 1: the screen stays on for the whole practice (spec v10 §D), so
+       nothing is revealed and nothing swaps.  No controls block: the console
+       toolbar carries the keys (§E). */
+    /* change-spec-v17 §A: all three bodies replaced, spec-verbatim. */
     { id: 'lab-p1', kind: 'sr', h1: 'Practice using a screen reader',
-      tool: 'You will use the screen reader for this practice.',
-      body: ['This is a front desk notice from your own office, the kind of short update that goes out most weeks.',
-             'It has one heading and one link: press <b>H</b> to jump to the heading, then press <b>L</b> to hear the link listed. The notice stays visible the whole time, so you can follow along above as the screen reader announces each line.'],
+      body: ['A screen reader uses speech or a braille display to present digital content, and it lets people navigate by elements such as headings, links, and form fields.',
+             'This is a front desk notice from your office. It has one heading and one link.',
+             'Use the screen reader commands below to jump to the heading and hear the link listed. For the purpose of this activity, the notice will stay visible so you can follow along as the screen reader announces each line.'],
       controls: null,
       done: 'You used the screen reader controls to move through text, jump to a heading, and list the available links.' },
-    /* Practice 2: the body is the author's, ruled in spec v10 §D, and replaces
-       the copy's single practice line. */
     { id: 'lab-p2', kind: 'kb', h1: 'Practice moving with the keyboard',
-      tool: 'You will use the keyboard for this practice. The mouse is unavailable.',
-      body: ['This is the website of Riverside Public Library. You want to check the library’s hours before you stop by, so move through the page by keyboard and open the Hours page.'],
+      body: ['Keyboard navigation lets people move through and activate interactive elements such as links, buttons, and form controls without using a mouse.',
+             'This is the Riverside Public Library website. You want to check the library’s hours before you stop by.',
+             'Practice using the keyboard shortcuts below to open the Hours page on the library website.'],
       controls: 'kb',
       done: 'You used the keyboard to move focus between controls and activate a link.' },
     { id: 'lab-p3', kind: 'word', h1: 'Check document structure',
-      tool: 'You will use the document’s navigation pane for this practice.',
-      body: ['This is the staff travel guide from your regional office, the short reference staff get pointed to before a trip. You have a trip coming up and want to check what the guide says about turning in receipts, so open the navigation pane and select <b>Travel information</b>.'],
+      body: ['Built-in heading styles give a document structure that people can scan visually and navigate with assistive technology.',
+             'This is a staff travel guide from your regional office. You have a trip coming up and want to check what it says about turning in receipts.',
+             'Test this document’s heading structure by opening the Navigation Pane in Microsoft Word, then select <b>Travel information</b> to jump to that section.'],
       controls: 'word',
       done: 'You opened the navigation pane and used a heading to move through the document.' }
   ]
@@ -1053,9 +1325,9 @@ var TRANSITIONS = [
     lines: ['Your confirmation lands a minute after the form goes through, joining link and all. Before Wednesday arrives, watch the short orientation video so you know what to have ready.'] }
 ];
 
-/* ---------- Try-again screen (copy §1) ------------------------------------ */
-var TRY_AGAIN_H1 = 'Try the task again';
-var TRY_AGAIN_CUE = 'This time, pay attention to what feels easier, clearer, or more predictable.';
+/* Change spec v16 §A: the five try-again screens are gone, and with them the
+   heading and the attention cue that used to live here.  The measurement they
+   carried now rides in the feedback sentence on the task screen itself. */
 
 /* ---------- Controls blocks (spec v10 §E) ---------------------------------
    Only two blocks survive: the keyboard block and the navigation-pane block.
@@ -1110,6 +1382,10 @@ var SR_DOCS = {
       { t: 'Email. Fwd: Save the date. From Priya Natarajan.' },
       { t: 'Hi, thought of you. Flyer below.', sel: '#e1-body' },
       { t: 'Graphic. VEW-flyer-FINAL-v2.png', sel: '#e1-img' },
+      /* Change spec v15 §B: the first email carries one link, and its text
+         says nothing about where it goes.  The L key now has an item to list,
+         and the links list is the poorer for it. */
+      { t: 'Link. Click here', link: 'Click here', sel: '#e1-link a' },
       { t: 'Priya', sel: '#e1-sig' },
       { t: 'End of message.' }
     ],
@@ -1117,6 +1393,7 @@ var SR_DOCS = {
       '<div class="em-head"><div><b>From</b> Priya Natarajan</div><div><b>To</b> you</div><div><b>Subject</b> Fwd: Save the date</div></div>' +
       '<p id="e1-body">Hi, thought of you. Flyer below.</p>' +
       '<img id="e1-img" src="' + FLYER + '" alt="">' +
+      '<p id="e1-link"><a href="#">Click here</a></p>' +
       '<p id="e1-sig" style="margin-top:14px">Priya</p></div>'
   },
   t1fixed: {
@@ -1130,7 +1407,7 @@ var SR_DOCS = {
       { t: 'Wednesday, August 12. Attend online.', sel: '#e2-when' },
       { t: 'Topics: Student progress and achievements. Effective communication strategies.', sel: '#e2-topics' },
       { t: 'Register by July 31.', sel: '#e2-reg' },
-      { t: 'Link. View the conference program', link: 'View the conference program', sel: '#e2-link a' },
+      { t: 'Link. Register on the conference website', link: 'Register on the conference website', sel: '#e2-link a' },
       /* The flyer is decorative now — the essential details are real text above
          it — so it carries empty alt text and the screen reader has no line for
          it at all (spec v10 §F, carried from v8 §C.1). */
@@ -1145,7 +1422,7 @@ var SR_DOCS = {
       '<p id="e2-when">Wednesday, August 12. Attend online.</p>' +
       '<p id="e2-topics">Topics: Student progress and achievements. Effective communication strategies.</p>' +
       '<p id="e2-reg">Register by July 31.</p>' +
-      '<p id="e2-link"><a href="#">View the conference program</a></p></div>' +
+      '<p id="e2-link"><a href="#">Register on the conference website</a></p></div>' +
       '<img id="e2-img" src="' + FLYER + '" alt="">' +
       '<p id="e2-sig" style="margin-top:14px">Priya</p></div>'
   }
@@ -1382,24 +1659,38 @@ var LIBRARY = {
 var TASKS = [
   {
     key: 't1', n: 1, title: 'Check conference details', artifact: 'sr',
-    tool: 'You will use the screen reader for this task. Your screen is off.',
-    para: 'Priya’s email is short: a note, a flyer, her name at the bottom. Your supervisor, Mr. Okafor, is ready to approve your request, but he needs the date of the conference before he can sign off. Use the screen reader to find that date in Priya’s email so his approval can move today.',
-    repairH1: 'Priya sends a quick fix',
-    repairLines: ['Priya realized the flyer would not work for everyone, so she resent the email with the details typed out as real text. Read the update and see if the date is any easier to find this time.'],
-    goalFixed: 'Find the conference date in the updated email. Your screen is off.',
+    /* change-spec-v17 §B / §C: the tool line is gone; para, repairH1,
+       repairLines and goalFixed are the v17 spec verbatim. */
+    para: 'Priya sent you information about a conference she thought you might want to attend. Mr. Okafor is ready to review your request, but he needs the conference date before he can approve it. Use the screen reader commands to find the date in Priya’s email so the request can keep moving.',
+    repairH1: 'Essential information in accessible text',
+    repairLines: ['Priya realized the flyer would not work for everyone, so she sent a new email with the conference details included in the message.'],
+    goalFixed: 'Use the screen reader to find the conference date in the updated email.',
     controls: null,
+    /* Change spec v14 §B: three options, the artifact claim last, and a
+       `correct` index.  Change spec v16 §B: the `feedback` sentence now carries
+       the answer AND what happened, and (where there is one) the measurement,
+       through the placeholders `{keys}`, `{time}` and `{pages}`.  Tasks 1, 4
+       and 5 have nothing to measure, so their sentences hold no placeholder. */
     question: {
-      legend: 'What is the date of the conference?',
-      options: ['August 12', 'August 21', 'September 12', 'I couldn’t determine that from this version.'],
-      unknownIndex: 3
+      legend: 'What date did the screen reader announce for the conference?',
+      options: ['August 12', 'August 21', 'The screen reader did not announce a date.'],
+      correct: 2,
+      feedback: 'The screen reader did not announce a conference date. The date was available only in the flyer image.',
+      unknownIndex: 2
     },
-    skipped: 'you continued without answering.',
+    questionFixed: {
+      legend: 'What is the date of the conference?',
+      options: ['August 12', 'August 21', 'The screen reader did not announce a date.'],
+      correct: 0,
+      feedback: 'The conference is August 12. The date was included in the message text, so the screen reader announced it.',
+      unknownIndex: 2
+    },
     crosswalk: {
-      before: 'The conference date, topics, and registration information lived only inside the flyer image. Your screen reader could read the message around it, but the details you needed stayed out of reach.',
+      before: 'The conference date, topics, and registration information lived only inside the flyer image. Your screen reader could read the message around it, but the details you needed stayed out of reach. The one link in the message read only “Click here,” so the links list could not tell you where it went.',
       changed: 'The conference details are now written into the email as real text, and the link says clearly where it goes. The flyer image stays in the message, but it is decorative now, since the same information already sits nearby in real text, so it carries empty alt text.',
       pins: [
         { note: 'The message includes the date, topics, and registration instructions as real text.', sel: '.em-details' },
-        { note: 'The link says where it goes: "View the conference program."', sel: '#e2-link' },
+        { note: 'The link says where it goes: “Register on the conference website.”', sel: '#e2-link' },
         { note: 'The flyer image stays in the email with empty alt text, so the screen reader moves past it instead of repeating the details already in the text.', sel: '#e2-img' }
       ],
       principle: 'Put essential information in real text, and let images support it.',
@@ -1410,14 +1701,16 @@ var TASKS = [
   },
   {
     key: 't2', n: 2, title: 'Register for the conference', artifact: 'site',
-    tool: 'You will use the keyboard for this task. The mouse is unavailable.',
-    para: 'The homepage looks exactly like Priya described it, same headline, same Register button front and center. Mr. Okafor is expecting a calendar hold from you by the end of the day, so you would like this done quickly. Move through the page by keyboard and see how far you get toward Registration.',
-    repairH1: 'The web team already fixed it',
-    repairLines: ['You were not the only registrant to flag the Register button today, so the web team pushed a fix within the hour. Try again and see if the page behaves any better this time.'],
-    goalFixed: 'Open the Registration page. The mouse is unavailable.',
+    para: 'Good news: Mr. Okafor approved your request and asked you to get registered while there is still space. You have a few minutes before your next commitment, so you pull up the conference website. Use the keyboard shortcuts below to navigate through the site and open the Registration page.',
+    repairH1: 'Logical focus order',
+    repairLines: ['It sounds like you were not the only person having trouble with registration. The web team thinks they fixed the issue.'],
+    goalFixed: 'Try again using the keyboard shortcuts below to navigate through the conference site and open the Registration page.',
     controls: 'kb',
     question: null,
-    skipped: 'you continued without opening Registration.',
+    /* Change spec v16 §C: Task 2 has no question, so it closes with its own
+       measurement line, rendered in the same feedback pattern under the
+       artifact the moment Registration opens. */
+    doneLine: 'Task complete. You reached Registration after {keys} in {time}.',
     crosswalk: {
       before: 'Focus moved through the page in an order that worked against you. The footer came before the main content, and Registration, the one thing you needed, came last.',
       changed: 'Focus was reordered to match how the page reads, so each control keeps its meaning and function. Registration now comes right after the headline, where you expect it.',
@@ -1434,28 +1727,34 @@ var TASKS = [
   },
   {
     key: 't3', n: 3, title: 'Find your approved session', artifact: 'word',
-    tool: 'You will use the document’s navigation pane for this task.',
-    para: 'The program runs ten pages, and Priya’s session, Effective Communication Strategies, is in there somewhere. You want to give Mr. Okafor the exact time before he blocks your calendar for the wrong slot. Open the navigation pane, or work through the pages by hand if you have to, and find when it runs.',
-    repairH1: 'A cleaner program, and a different session',
-    repairLines: ['The committee resent the program with a working structure after more than one attendee said they could not find their session. While you have it open, Mr. Okafor messages to say he would rather you attend Building Family Partnerships instead, since it fits the work you are doing this year.'],
-    goalFixed: 'Find Building Family Partnerships and identify its scheduled time.',
+    para: 'Registration asks which conference session you plan to attend, and you realize you have only looked closely at the session Priya mentioned. The full conference program runs ten pages, and you need the scheduled time for Effective Communication Strategies. Open the Navigation Pane and use the document’s headings to find the session and its time.',
+    repairH1: 'Structured headings',
+    repairLines: ['The conference committee received a lot of frustrated emails from people trying to find sessions in the program, so they sent out an updated copy.'],
+    goalFixed: 'Use the Navigation Pane to find a new session Mr. Okafor just emailed you about. He thinks you should switch to Building Family Partnerships because it better fits the work you are doing this year.',
     controls: 'word',
-    /* The "from the navigation pane" try-again variant describes what actually
+    /* The "using the Navigation Pane" feedback variant describes what actually
        happened, so it fires only when the learner's most recent pane selection
        was the target session or the block that contains it.  The first
-       version's pane lists neither, so on that version it can never fire. */
+       version's pane lists neither, so on that version it can never fire.
+       Change spec v16 §B: the crosswalk's rule, `paneReachedTarget`, is the
+       same rule that chooses between `feedback` and `feedbackPane` at lock. */
     paneTargets: [['sec-ecs', 'sec-bs2'], ['sec-bfp', 'sec-bs3']],
     question: {
       legend: 'When is Effective Communication Strategies scheduled?',
-      options: ['10:15 a.m.', '1:30 p.m.', '2:45 p.m.', 'I couldn’t determine that from this version.'],
-      unknownIndex: 3
+      options: ['1:30 p.m.', '2:45 p.m.', 'The program does not give a time.'],
+      correct: 0,
+      feedback: 'Effective Communication Strategies is scheduled for 1:30 p.m. You found it after {pages} in {time}.',
+      feedbackPane: 'Effective Communication Strategies is scheduled for 1:30 p.m. You found it using the Navigation Pane in {time}.',
+      unknownIndex: 2
     },
     questionFixed: {
       legend: 'When is Building Family Partnerships scheduled?',
-      options: ['10:15 a.m.', '1:30 p.m.', '2:45 p.m.', 'I couldn’t determine that from this version.'],
-      unknownIndex: 3
+      options: ['1:30 p.m.', '2:45 p.m.', 'The program does not give a time.'],
+      correct: 1,
+      feedback: 'Building Family Partnerships is scheduled for 2:45 p.m. You found it after {pages} in {time}.',
+      feedbackPane: 'Building Family Partnerships is scheduled for 2:45 p.m. You found it using the Navigation Pane in {time}.',
+      unknownIndex: 2
     },
-    skipped: 'you continued without answering the session question.',
     crosswalk: {
       before: 'Effective Communication Strategies sat in Breakout Session 2 at 1:30 p.m., several pages into the program. Many section titles were bolded and enlarged by hand instead of styled as real headings, so the navigation pane found only a few parts of the document to show you.',
       changed: 'Built-in heading styles now give every section its place in a consistent hierarchy. The navigation pane lists them all, which makes the program easier to scan and navigate.',
@@ -1472,18 +1771,25 @@ var TASKS = [
   },
   {
     key: 't4', n: 4, title: 'Check the registration form', artifact: 'form',
-    tool: 'You will review the form for this task.',
-    para: 'Your name, your agency, your role: all correct. Mr. Okafor is listed as the approval contact, which is right, but you want to be sure the conference link comes to you and not to his inbox by mistake. Look over the filled-in form and confirm which address will receive it. You do not need to submit anything.',
-    repairH1: 'The committee rebuilds the form',
-    repairLines: ['The committee traced the mix-up back to the survey program where they had built registration, and rebuilt the form there so every label stays in view and required fields are marked in words. Look it over again and see if the two email fields are easier to tell apart this time.'],
-    goalFixed: 'Confirm which email address will receive the conference link. You do not need to submit anything.',
+    para: 'A colleague has already started your registration form as a favor, so most of the information is waiting for you when you return to it. Your details look right, and Mr. Okafor is listed as the approval contact. Review the form and determine which email address will receive the conference confirmation and joining link.',
+    repairH1: 'Persistent form labels',
+    repairLines: ['The committee assumed the survey builder they used for registration would create an accessible form by default. After hearing about problems with the form, they went back through the settings and made some adjustments.'],
+    goalFixed: 'Review the form again and determine which email address will receive the conference confirmation and joining link.',
     controls: null,
     question: {
       legend: 'Which email address will receive the conference link?',
-      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'I couldn’t determine that from the form.'],
+      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
+      correct: 2,
+      feedback: 'The form does not tell you which email address will receive the conference link. Once the fields were filled in, both email fields looked the same.',
       unknownIndex: 2
     },
-    skipped: 'you continued without answering.',
+    questionFixed: {
+      legend: 'Which email address will receive the conference link?',
+      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
+      correct: 0,
+      feedback: 'The conference link goes to j.ellis@riversideps.k12.va.us. Each field kept its label after it was filled in, so the two email addresses were clear.',
+      unknownIndex: 2
+    },
     crosswalk: {
       before: 'Placeholder text was the only label on each field, so once a field was filled in, you could not tell what it was for. Required fields showed only as a colored border, with no word or symbol. The two email fields sat back to back, and you could not tell yours from Mr. Okafor’s.',
       changed: 'The form now gives every field a persistent, visible label that stays in view after it is filled in. Required fields say so in words instead of relying on color.',
@@ -1500,24 +1806,33 @@ var TASKS = [
   },
   {
     key: 't5', n: 5, title: 'Prepare to attend', artifact: 'video',
-    tool: 'You will watch the video for this task. The sound is unavailable.',
-    para: 'It is barely half a minute, long enough to say what you need before you log on. Your office is between meetings, so you are watching this on mute. Watch it and find out what participants should have ready before the session.',
-    repairH1: 'The video comes back with captions',
-    repairLines: ['The committee caught that the orientation video had no captions, so they republished the same clip a day later with captions and a transcript underneath. Watch it again and see what you missed the first time.'],
-    goalFixed: 'Find out what participants should have ready before the session. The sound is unavailable.',
+    para: 'Your registration confirmation has arrived, and the conference is now on your calendar. Before the day arrives, the organizers have one short orientation video for you to review. Watch the video and find out what participants should have ready before the session.',
+    repairH1: 'Captions and a transcript',
+    repairLines: ['The committee thought the video platform automatically generated captions and didn’t test it before sending the video to participants. The caption file is uploaded now.'],
+    goalFixed: 'Watch the video again and find out what participants should have ready before the session.',
     controls: null,
     question: {
-      legend: 'What should participants have ready before the session?',
-      echoColon: 'all',
+      legend: 'What did the video tell you to have ready?',
       options: [
         'The confirmation email, the session code, and a way to take notes',
         'A printed program and a photo ID',
-        'A webcam and a quiet room',
-        'I couldn’t determine that without the audio.'
+        'The video had no captions or transcript.'
       ],
-      unknownIndex: 3
+      correct: 2,
+      feedback: 'The video did not provide the instructions in a form you could access with the sound off. The information was available only in the audio.',
+      unknownIndex: 2
     },
-    skipped: 'you continued without answering.',
+    questionFixed: {
+      legend: 'What should participants have ready before the session?',
+      options: [
+        'The confirmation email, the session code, and a way to take notes',
+        'A printed program and a photo ID',
+        'The video had no captions or transcript.'
+      ],
+      correct: 0,
+      feedback: 'Participants should have the confirmation email, the session code, and a way to take notes. The captions and transcript made those instructions available with the sound off.',
+      unknownIndex: 2
+    },
     crosswalk: {
       before: 'You needed three things ready: the confirmation email, the session code, and a way to take notes. The video spoke those instructions out loud, and the sound was unavailable.',
       changed: 'The video now carries accurate captions, and a transcript sits alongside it. You can read the instructions on screen as they play, or read them anytime in the transcript.',
@@ -2145,21 +2460,21 @@ var CLOSING = {
 /* ==========================================================================
    APPLICATION
    A tiny router over one <section class="screen"> per screen, a shared
-   encounter controller (artifact + fail-safe), the shared success rating, the
+   encounter controller (artifact + question), the shared success rating, the
    two crosswalk screens and the closing.  Nothing leaves the browser.
    Change spec v10 §B: there is no options button, no modal, no keyboard route
-   into one, and no in-page nudge of any kind.  The only ways forward are the
-   buttons on each screen; restarting lives on the closing screen alone.
+   into one, and no in-page nudge of any kind.  Change spec v13 §C: there is no
+   fail-safe either — the question's own Continue is the only way off a task
+   screen, and Task 2's Continue appears once Registration opens.  Restarting
+   lives on the closing screen alone.
    ========================================================================== */
 (function () {
   'use strict';
 
   var MAIN = document.getElementById('main');
   var LIVE = document.getElementById('live');
-  var TICKS = document.querySelectorAll('.ticks .tick');
-  var LAB_CHIP = document.getElementById('lab-chip');
-  var PROGRESS_TEXT = document.getElementById('progress-text');
-  var STORE_KEY = 'eal-v11';
+  var STEPS_LIST = document.getElementById('steps');
+  var STORE_KEY = 'eal-v17';
 
   function reduced() {
     try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
@@ -2186,10 +2501,12 @@ var CLOSING = {
     return { t1: [null, null], t2: [null, null], t3: [null, null], t4: [null, null], t5: [null, null] };
   }
   var state = {
-    screen: 's0a',
+    screen: 'cover',
     ratings: blankPairs(),
-    outcomes: blankPairs(),
-    answers: blankPairs(),      // the learner's chosen option label, verbatim
+    /* Change spec v14 §C: each entry is { text, correct } — the chosen option
+       label verbatim, plus whether it was the right one.  The closing still
+       echoes the text alone and carries no mark. */
+    answers: blankPairs(),
     times: { t3: [null, null] },
     t3method: [null, null],
     t2: [null, null]            // { keys, ms } per encounter
@@ -2197,7 +2514,7 @@ var CLOSING = {
   function save() {
     try {
       window.sessionStorage.setItem(STORE_KEY, JSON.stringify({
-        screen: state.screen, ratings: state.ratings, outcomes: state.outcomes,
+        screen: state.screen, ratings: state.ratings,
         answers: state.answers, times: state.times, t3method: state.t3method, t2: state.t2
       }));
     } catch (e) { /* storage is optional; never rely on it */ }
@@ -2214,11 +2531,14 @@ var CLOSING = {
   function clearStore() { try { window.sessionStorage.removeItem(STORE_KEY); } catch (e) {} }
 
   /* ------------------------------------------------------- screen manifest
-     Change spec v10 §A: 48 screens.  Two orientation screens, the five
-     Practice Lab screens, then eight screens per task (transition, task,
-     rating, try-again, repaired, rating, crosswalk 1, crosswalk 2), then the
-     closing. */
+     Change spec v16 §A: 44 screens.  The cover, two orientation screens, the
+     five Practice Lab screens, then SEVEN screens per task (transition, task,
+     rating, repaired, rating, crosswalk 1, crosswalk 2), then the closing.
+     The try-again screen that used to sit between the first rating and the
+     repaired encounter is gone; `t{n}-rate1` now leads straight to
+     `t{n}-repair`.  1 + 2 + 5 + 5 × 7 + 1 = 44. */
   var SCREENS = [];
+  SCREENS.push({ id: COVER.id, kind: 'cover', cover: COVER });
   ORIENTATION.forEach(function (o) { SCREENS.push({ id: o.id, kind: 'orientation', orient: o }); });
   SCREENS.push({ id: LAB.intro.id, kind: 'bridge', bridge: LAB.intro, lab: true });
   LAB.practices.forEach(function (p) {
@@ -2229,7 +2549,6 @@ var CLOSING = {
     SCREENS.push({ id: t.key + '-trans', kind: 'bridge', bridge: TRANSITIONS[i], n: t.n });
     SCREENS.push({ id: t.key + '-task', kind: 'encounter', task: t, fixed: false });
     SCREENS.push({ id: t.key + '-rate1', kind: 'rating', task: t, round: 0 });
-    SCREENS.push({ id: t.key + '-outcome', kind: 'outcome', task: t });
     SCREENS.push({ id: t.key + '-repair', kind: 'encounter', task: t, fixed: true });
     SCREENS.push({ id: t.key + '-rate2', kind: 'rating', task: t, round: 1 });
     SCREENS.push({ id: t.key + '-cross-a', kind: 'crossA', task: t });
@@ -2272,6 +2591,9 @@ var CLOSING = {
     SCREENS.forEach(function (s) {
       if (!s.node.hidden) { s.node.hidden = true; }
       s.node.classList.remove('entering');
+      /* v15 §A: dropping `is-animated` here is what lets the cover's own Scene
+         fade start over if the learner ever comes back to it. */
+      s.node.classList.remove('is-animated');
       s.node.innerHTML = '';
     });
   }
@@ -2280,13 +2602,20 @@ var CLOSING = {
   var RENDER = {};
   function go(id) {
     teardown();
-    var s = byId[id] || byId.s0a;
+    var s = byId[id] || byId.cover;
     state.screen = s.id;
     save();
     s.node.hidden = false;                 // visible first, so a render fault is never a blank page
     initialFocus = null;
+    /* Change spec v15 §A: the cover is the one screen that fills the space
+       between the rail and the footer, so `main` becomes a flex column for it
+       and goes back to being an ordinary block for every other screen. */
+    MAIN.classList.toggle('is-cover', s.kind === 'cover');
     RENDER[s.kind](s.node, s);
-    if (!reduced()) {
+    /* The cover runs its own 0.5 s Scene fade, so it does not also take the
+       shell's 0.28 s screen-rise: two animations on one element is one too
+       many, and the export's is the one the author asked for. */
+    if (!reduced() && s.kind !== 'cover') {
       s.node.classList.add('entering');
       later(function () { s.node.classList.remove('entering'); }, 320);
     }
@@ -2305,31 +2634,65 @@ var CLOSING = {
     window.scrollTo({ top: 0, behavior: 'auto' });
   }
 
-  /* Change spec v10 §B.4: during the Practice Lab every segment stays in the
-     todo state, a short "Practice" chip shows to the left of the segments, and
-     the visually-hidden progress text reads "Practice lab."  The task segments
-     start moving at the Task 1 transition. */
+  /* Change spec v13 §A: one named bar, two item sets.  The practice bar runs
+     from orientation through the Practice Lab; the task bar takes over at the
+     Task 1 transition and finishes complete on the closing.  The task number
+     still comes from the rule the ticks used. */
   function taskNumberOf(s) {
+    /* Change spec v15 §A: the cover carries the practice bar with all three
+       items still to do, exactly as s0a does. */
+    if (s.kind === 'cover') return 0;
     if (s.kind === 'orientation') return 0;
     if (s.lab) return -1;
     if (s.kind === 'closing') return 6;
     if (s.kind === 'bridge') return s.n;   // a transition belongs to the task it opens
     return s.task.n;
   }
-  function updateProgress(s) {
+  var PRACTICE_IDS = ['lab-p1', 'lab-p2', 'lab-p3'];
+  /* Which bar, which item is current (0 = none), and whether the whole bar is
+     already behind the learner. */
+  function progressOf(s) {
+    if (s.id === 'lab-exit') return { set: 'practice', now: 0, all: true };
+    var p = PRACTICE_IDS.indexOf(s.id);
+    if (p !== -1) return { set: 'practice', now: p + 1, all: false };
     var n = taskNumberOf(s);
-    for (var i = 0; i < TICKS.length; i++) {
-      var st = 'todo';
-      if (n === 6) st = 'done';
-      else if (n > 0 && i + 1 < n) st = 'done';
-      else if (n > 0 && i + 1 === n) st = 'now';
-      TICKS[i].setAttribute('data-state', st);
-    }
-    LAB_CHIP.hidden = n !== -1;
-    PROGRESS_TEXT.textContent = n === -1 ? 'Practice lab.'
-      : n === 0 ? 'Not started. Five tasks.'
-      : n === 6 ? 'Activity complete. Five tasks of five.'
-      : 'Task ' + n + ' of 5';
+    if (n === 0 || n === -1) return { set: 'practice', now: 0, all: false };
+    if (n === 6) return { set: 'tasks', now: 0, all: true };
+    return { set: 'tasks', now: n, all: false };
+  }
+  function updateProgress(s) {
+    var p = progressOf(s);
+    var practice = p.set === 'practice';
+    var names = practice ? STEPS.practice : STEPS.tasks;
+    STEPS_LIST.innerHTML = '';
+    names.forEach(function (name, i) {
+      var n = i + 1;
+      var st = p.all ? 'done'
+        : p.now === 0 ? 'todo'
+        : n < p.now ? 'done'
+        : n === p.now ? 'now' : 'todo';
+      var li = document.createElement('li');
+      li.setAttribute('data-state', st);
+      if (st === 'now') li.setAttribute('aria-current', 'step');
+      /* Change spec v14 §A: a practice item carries its number inside its own
+         name ("Practice 1"), so it gets no `.step-n` — the number would
+         otherwise be shown and spoken twice.  Task items are unchanged. */
+      if (!practice) {
+        var num = txt('span', 'step-n', String(n));
+        num.setAttribute('aria-hidden', 'true');
+        li.appendChild(num);
+      }
+      /* At most one state word per item, so a screen reader user hears the
+         number a sighted user sees and what state the step is in.  On a todo
+         practice item the "Step {n}: " prefix would read "Step 1: Practice 1",
+         so v14 §A drops it: the item reads just its name. */
+      var prefix = st === 'done' ? 'Completed: '
+        : st === 'now' ? 'Current: '
+        : practice ? null : 'Step ' + n + ': ';
+      if (prefix) li.appendChild(txt('span', 'sr-only', prefix));
+      li.appendChild(txt('span', 'step-name', name));
+      STEPS_LIST.appendChild(li);
+    });
   }
 
   /* ------------------------------------------------------- shared fragments */
@@ -2342,16 +2705,58 @@ var CLOSING = {
   }
   function lede(parent, paras, cls) {
     var d = el('div', 'lede col' + (cls ? ' ' + cls : ''));
-    paras.forEach(function (p, i) { d.appendChild(el('p', i === 0 ? 'first' : null, p)); });
+    paras.forEach(function (p, i) {
+      /* Change spec v12 §A: a body entry may be a real list instead of a
+         paragraph — the POUR list on orientation 1 is the only one.  Every
+         other screen passes plain strings and renders exactly as before. */
+      if (p && p.list) { d.appendChild(bulletList(p.list)); return; }
+      d.appendChild(el('p', i === 0 ? 'first' : null, p));
+    });
     parent.appendChild(d);
     return d;
   }
-  /* The tool line on a task screen and the goal line on a repaired screen both
-     carry the access condition; the labelled controls block is the only place a
-     key or a control is named, and it renders only where change spec v10 §E
-     allows one. */
+  /* A <ul> whose every item opens with its term in bold, then the sentence. */
+  function bulletList(rows) {
+    var ul = el('ul', 'pourlist');
+    rows.forEach(function (row) {
+      var li = document.createElement('li');
+      li.appendChild(txt('b', null, row.term));
+      li.appendChild(document.createTextNode(' ' + row.text));
+      ul.appendChild(li);
+    });
+    return ul;
+  }
+  /* Change spec v12 §A: the references block at the foot of orientation 1.
+     A small h2, then one APA entry per source with the title in italics and
+     the URL as a real link that opens in a new tab and says so to a screen
+     reader.  No new request: the links are never followed by the activity. */
+  function referencesBlock(heading2, refs) {
+    var box = el('div', 'refs');
+    box.appendChild(txt('h2', 'refs-h', heading2));
+    refs.forEach(function (r) {
+      var p = el('p', 'ref');
+      p.appendChild(document.createTextNode(r.author + ' ' + r.date + ' '));
+      p.appendChild(txt('i', null, r.title));
+      p.appendChild(document.createTextNode(r.after + ' '));
+      var a = document.createElement('a');
+      a.className = 'reflink';
+      a.href = r.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.appendChild(document.createTextNode(r.url));
+      a.appendChild(txt('span', 'sr-only', ' (opens in a new tab)'));
+      p.appendChild(a);
+      box.appendChild(p);
+    });
+    return box;
+  }
+  /* The goal line on a repaired screen carries the access condition; the
+     labelled controls block is the only place a key or a control is named,
+     and it renders only where change spec v10 §E allows one.  Change spec
+     v17 §B removes the task screen's tool line outright (it had already been
+     removed from the practice screens in v13), so goalLine is the only one of
+     the pair left. */
   function goalLine(html) { return el('p', 'instruction', html); }
-  function toolLine(text) { return txt('p', 'toolline', text); }
   function controlsBlock(def) {
     var box = el('div', 'controls');
     box.appendChild(txt('h2', 'controls-label', def.label));
@@ -2376,20 +2781,69 @@ var CLOSING = {
     parent.appendChild(wrap);
     return b;
   }
-  /* The fail-safe says what happens.  Task 2 is an action task, so nothing is
-     being answered there.  Change spec v10 §B.3: a plain tertiary button. */
-  function failLabel(t) {
-    return t && t.key === 't2' ? 'Continue without finishing' : 'Continue without answering';
-  }
+
+  /* ======================================================== SCREEN: cover ==
+     Change spec v15 §A.  One centred column — eyebrow, two-line title with the
+     blinking caret, the rule that draws itself, the subtitle and Start — and
+     nothing else on the screen.  The markup is the static, finished state; the
+     `is-animated` class added below is the only thing that puts any of it in
+     motion, so a learner with JS off or with reduced motion asked for sees the
+     whole cover at once, with no caret.
+     The two h1 lines are joined by a <br> AND a single space: the space is
+     collapsed away at the start of the second line, and it is what keeps the
+     heading's accessible name (and the tab title) "Access in Action" rather
+     than "Accessin Action". */
+  RENDER.cover = function (node, s) {
+    var c = s.cover;
+    node.classList.add('cover');
+    node.setAttribute('data-screen', 'cover');
+    node.appendChild(txt('p', 'cover-eyebrow', c.eyebrow));
+
+    var h = el('h1', 'cover-h1');
+    h.setAttribute('tabindex', '-1');
+    c.h1.forEach(function (line, i) {
+      if (i) {
+        h.appendChild(document.createElement('br'));
+        h.appendChild(document.createTextNode(' '));
+      }
+      h.appendChild(document.createTextNode(line));
+    });
+    var bar = el('span', 'cover-bar');
+    bar.setAttribute('aria-hidden', 'true');
+    h.appendChild(bar);
+    node.appendChild(h);
+
+    var rule = el('div', 'cover-rule');
+    rule.setAttribute('aria-hidden', 'true');
+    node.appendChild(rule);
+
+    node.appendChild(txt('p', 'cover-sub', c.sub));
+
+    var actions = el('div', 'actions');
+    var b = txt('button', 'btn cover-start', c.button);
+    b.type = 'button';
+    b.addEventListener('click', function () { go('s0a'); });
+    actions.appendChild(b);
+    node.appendChild(actions);
+
+    /* The sequence is under four seconds and Start is in the DOM from the
+       first frame, so there is nothing to skip and nothing to wait for. */
+    if (!reduced()) node.classList.add('is-animated');
+  };
 
   /* ================================================== SCREEN: orientation == */
   RENDER.orientation = function (node, s) {
     var o = s.orient;
-    eyebrow(node, o.eyebrow);
+    /* Change spec v12 §A: orientation 1 has no eyebrow.  It leads with the
+       heading and a subtitle, so its body paragraphs are all set the same and
+       the subtitle alone carries the lead. */
+    if (o.eyebrow) eyebrow(node, o.eyebrow);
     heading(node, o.h1);
-    lede(node, o.paras);
+    if (o.subtitle) node.appendChild(txt('p', 'subtitle', o.subtitle));
+    lede(node, o.paras, o.subtitle ? 'flat' : null);
     if (o.callout) node.appendChild(txt('div', 'callout', o.callout));
     if (o.meta) node.appendChild(txt('p', 'meta', o.meta));
+    if (o.refs) node.appendChild(referencesBlock(o.refsHeading, o.refs));
     primary(node, o.button, function () { go(nextId(s.id)); });
   };
 
@@ -2404,18 +2858,15 @@ var CLOSING = {
   };
 
   /* ===================================================== SCREEN: practice ==
-     Change spec v10 §D: eyebrow "Practice Lab", heading, body line(s), the
+     Change spec v13 §D: eyebrow "Practice Lab", heading, body paragraphs, the
      controls block where §E allows one, the artifact, then the completion line
-     and Continue.  Continue is not in the DOM until the required interaction
-     is done, and no amount of waiting puts it there. */
+     and Continue.  There is no tool line here any more — the task screens keep
+     theirs.  Continue is not in the DOM until the required interaction is done,
+     and no amount of waiting puts it there. */
   RENDER.practice = function (node, s) {
     var p = s.practice;
     eyebrow(node, 'Practice Lab');
     heading(node, p.h1);
-
-    /* v11: the practice screens open with a tool line, in the same shape and
-       the same style the task screens use, above the body lines. */
-    if (p.tool) node.appendChild(toolLine(p.tool));
 
     var bodyWrap = el('div', 'bodylines');
     p.body.forEach(function (line) { bodyWrap.appendChild(goalLine(line)); });
@@ -2437,7 +2888,12 @@ var CLOSING = {
     function complete() {
       if (finished) return;
       finished = true;
-      done.textContent = p.done;
+      /* Change spec v13 §E: a statement, not an alert — the circled check is
+         written in at completion time, never sitting in an empty line. */
+      var mark = txt('span', 'donecheck', '✓');
+      mark.setAttribute('aria-hidden', 'true');
+      done.appendChild(mark);
+      done.appendChild(txt('span', 'donetext', p.done));
       var cont = txt('button', 'btn', 'Continue');
       cont.type = 'button';
       cont.addEventListener('click', function () { go(nextId(s.id)); });
@@ -2480,10 +2936,11 @@ var CLOSING = {
   };
 
   /* ==================================================== SCREEN: encounter ==
-     Change spec v10 §F.  Task screen: eyebrow, task title, tool line, story
-     paragraph, controls block where §E allows one, artifact, question,
-     buttons.  Repaired screen: eyebrow, in-world heading, the repair lines,
-     the goal line, then the same pieces. */
+     Change spec v10 §F, as amended by change spec v17 §B/§C.  Task screen:
+     eyebrow, task title, story paragraph, controls block where §E allows one,
+     artifact, question, buttons — no tool line any more.  Repaired screen:
+     the "Try the repair" eyebrow, in-world heading, the repair lines, the
+     goal line, then the same pieces. */
   RENDER.encounter = function (node, s) {
     var t = s.task, fixed = !!s.fixed;
     /* E is a stable reference for every callback below; the module-level `enc`
@@ -2495,13 +2952,12 @@ var CLOSING = {
     };
     enc = E;
 
-    eyebrow(node, 'Task ' + t.n + ' of 5' + (fixed ? ' · Repaired' : ''));
+    eyebrow(node, fixed ? 'Try the repair' : ('Task ' + t.n + ' of 5'));
     heading(node, fixed ? t.repairH1 : t.title);
     if (fixed) {
       lede(node, t.repairLines);
       node.appendChild(goalLine(t.goalFixed));
     } else {
-      node.appendChild(toolLine(t.tool));
       lede(node, [t.para]);
     }
     if (t.controls) node.appendChild(controlsBlock(CONTROLS[t.controls]));
@@ -2520,20 +2976,20 @@ var CLOSING = {
           E.locked = true;
           E.lockMs = E.t0 == null ? null : (window.performance.now() - E.t0);
           clearTimers();
-          if (E.failsafeWrap) E.failsafeWrap.hidden = true;
         },
         onAdvance: function (i) { finish(i === q.unknownIndex ? 'unknown' : 'answered', i); }
-      });
+      }, E);
       node.appendChild(qNode.wrap);
     }
 
-    var fs = el('div', 'failsafe');
-    var fsBtn = txt('button', 'btn quiet', failLabel(t));
-    fsBtn.type = 'button';
-    fsBtn.addEventListener('click', function () { finish('skipped'); });
-    fs.appendChild(fsBtn);
-    node.appendChild(fs);
-    E.failsafeWrap = fs;
+    /* Change spec v13 §C: where the fail-safe used to be there is now an empty
+       slot.  Only Task 2 ever fills it, and only once Registration has opened;
+       every other encounter leaves it empty, and an empty slot takes no room in
+       the layout.  Change spec v16 §C: what Task 2 puts here is its completion
+       line in the feedback pattern, then the Continue button. */
+    var post = el('div', 'post');
+    node.appendChild(post);
+    E.postWrap = post;
 
     /* ---- ending the encounter ---- */
     function finish(kind, chosenIndex) {
@@ -2548,8 +3004,11 @@ var CLOSING = {
         state.t3method[slot] = { pages: E.maxPage, pane: paneReachedTarget(t, fixed, E) };
       }
       if (t.key === 't2') state.t2[slot] = { keys: E.artKeys, ms: ms };
-      state.answers[t.key][slot] = (q && chosenIndex != null) ? q.options[chosenIndex] : null;
-      state.outcomes[t.key][slot] = firstTryLine(t, q, kind, chosenIndex, ms, E);
+      /* Change spec v14 §C: the stored answer keeps its text and gains the
+         verdict.  The closing reads the text alone. */
+      state.answers[t.key][slot] = (q && chosenIndex != null)
+        ? { text: q.options[chosenIndex], correct: chosenIndex === q.correct }
+        : null;
       save();
       go(nextId(s.id));
     }
@@ -2598,36 +3057,34 @@ var CLOSING = {
     }
   };
 
-  /* The "from the navigation pane" variant describes what actually happened,
+  /* The "using the Navigation Pane" variant describes what actually happened,
      so it fires only when the learner's most recent pane selection was the
      target session or the block that contains it.  The first version's pane
-     lists neither, so on that version it can never fire. */
+     lists neither, so on that version it can never fire.  Change spec v16 §B:
+     the same rule chooses between `feedback` and `feedbackPane` at lock time,
+     which is why the feedback line and the crosswalk never disagree. */
   function paneReachedTarget(t, fixed, e) {
     if (!t.paneTargets || !e.lastPane) return false;
     return t.paneTargets[fixed ? 1 : 0].indexOf(e.lastPane) !== -1;
   }
 
-  /* The try-again screen carries ONE measurement line, and only where there is
-     a measurement or a fail-safe to report.  It never echoes the learner's
-     answer and never says anything about right or wrong.  Tasks 1, 4 and 5
-     have nothing to measure, so an answered attempt returns null and the
-     screen shows no measurement line at all. */
-  function firstTryLine(t, q, kind, idx, ms, e) {
-    var time = fmtDuration(ms);
-    if (t.key === 't2') {
-      return kind === 'skipped'
-        ? 'First try: you continued without opening Registration.'
-        : 'First try: you opened Registration after ' + fmtKeys(e.artKeys) + ' in ' + time + '.';
-    }
-    if (t.key === 't3') {
-      if (kind === 'skipped') return 'First try: ' + t.skipped;
-      if (kind === 'unknown') return 'First try: you answered after ' + time + '.';
-      return paneReachedTarget(t, e.fixed, e)
-        ? 'First try: you found the session from the navigation pane in ' + time + '.'
-        : 'First try: you found the session after scrolling through ' + e.maxPage +
-          ' page' + (e.maxPage === 1 ? '' : 's') + ' in ' + time + '.';
-    }
-    return kind === 'skipped' ? 'First try: ' + t.skipped : null;
+  /* Change spec v16 §B: the feedback sentence carries the answer, what
+     happened, and — where this task has one — the measurement.  The
+     placeholders are filled at lock time from the encounter's own counters:
+     `{keys}` from the key presses made inside the artifact, `{time}` from the
+     clock the encounter started, `{pages}` from the furthest page reached.
+     Tasks 1, 4 and 5 have nothing to measure, so their sentences hold no
+     placeholder and this function returns them unchanged. */
+  function fillMeasures(s, e) {
+    return String(s)
+      .replace('{keys}', fmtKeys(e ? e.artKeys : 0))
+      .replace('{time}', fmtDuration(e ? e.lockMs : null))
+      .replace('{pages}', fmtPages(e ? e.maxPage : 1));
+  }
+  function feedbackSentence(q, e) {
+    var s = (q.feedbackPane && e && paneReachedTarget(e.task, e.fixed, e))
+      ? q.feedbackPane : q.feedback;
+    return fillMeasures(s, e);
   }
   function endStop(s) { return /[.!?]$/.test(s) ? s : s + '.'; }
   function fmtKeys(n) { return n + ' key press' + (n === 1 ? '' : 'es'); }
@@ -2643,11 +3100,15 @@ var CLOSING = {
 
   /* ---- the information question ----
      Selecting an option enables Continue.  The first Continue does not leave
-     the screen: the choice locks, the other options dim, the fail-safe hides
-     and a status line says the answer is recorded.  The same Continue then
-     advances.  Nothing on this screen says right or wrong. */
+     the screen: the choice locks, the other options dim, and a status line
+     says whether the answer was right and gives the fact behind it (change
+     spec v14 §C).  Change spec v16 §B: that same line now also carries what
+     happened and, where the task has one, the measurement — so there is no
+     separate screen for it.  The same Continue then advances.  The chosen
+     option carries the matching glyph; a wrong answer never highlights the
+     right option, because the feedback sentence carries the fact. */
   var qSeq = 0;
-  function buildQuestion(q, cb) {
+  function buildQuestion(q, cb, ctx) {
     var id = 'q' + (++qSeq);
     var wrap = el('div', 'qblock');
     var fs = document.createElement('fieldset');
@@ -2688,16 +3149,28 @@ var CLOSING = {
         if (!sel) return;
         chosen = parseInt(sel.value, 10);
         locked = true;
+        var right = chosen === q.correct;
+        /* The clock stops first: the sentence below is written from the
+           counters this call freezes (change spec v16 §B). */
+        if (cb && cb.onLock) cb.onLock(chosen, right);
         inputs.forEach(function (inp, i) {
           inp.disabled = true;
           if (i !== chosen) labels[i].classList.add('is-dim');
         });
         labels[chosen].classList.add('is-locked');
-        var tick = txt('span', 'otick', '✓');
+        labels[chosen].classList.add(right ? 'is-correct' : 'is-wrong');
+        var tick = txt('span', 'otick', right ? '✓' : '✕');
         tick.setAttribute('aria-hidden', 'true');
         labels[chosen].appendChild(tick);
-        status.textContent = 'Your answer is recorded.';
-        if (cb && cb.onLock) cb.onLock(chosen);
+        /* The same visual pattern as the practice completion line: a 20 px
+           circle, then the sentence.  The glyph is decorative — the verdict is
+           carried by the words "Correct." / "Not quite.", so a screen reader
+           hears it. */
+        var mark = txt('span', 'qmark ' + (right ? 'is-correct' : 'is-wrong'), right ? '✓' : '✕');
+        mark.setAttribute('aria-hidden', 'true');
+        status.appendChild(mark);
+        status.appendChild(txt('span', 'qstatustext',
+          (right ? 'Correct. ' : 'Not quite. ') + feedbackSentence(q, ctx)));
         return;
       }
       if (cb && cb.onAdvance) cb.onAdvance(chosen);
@@ -2758,18 +3231,9 @@ var CLOSING = {
     return null;
   }
 
-  /* ===================================================== SCREEN: try again ==
-     A measurement or fail-safe line only where there is one, then the one
-     attention cue shared by all five tasks, then Continue. */
-  RENDER.outcome = function (node, s) {
-    var t = s.task;
-    eyebrow(node, 'Task ' + t.n + ' of 5');
-    heading(node, TRY_AGAIN_H1);
-    var line = state.outcomes[t.key][0];
-    if (line) node.appendChild(txt('p', 'outcome-line', line));
-    node.appendChild(txt('p', 'notice', TRY_AGAIN_CUE));
-    primary(node, 'Continue', function () { go(nextId(s.id)); });
-  };
+  /* Change spec v16 §A: there is no try-again screen.  The first rating leads
+     straight to the repaired encounter, and the measurement that screen used to
+     carry now rides in the feedback line on the task screen itself. */
 
   /* ============================================ SCREEN: crosswalk 1 of 2 ==
      Change spec v10 §G.  "What changed": the learner's own reaction to the
@@ -3002,7 +3466,15 @@ var CLOSING = {
       answerSide('Repaired version: ', state.answers[t.key][1])
     ]);
   }
-  function answerSide(prefix, label) {
+  /* Change spec v14 §C: a stored answer is { text, correct }.  Only the text
+     is echoed here — the closing rows carry no right/wrong mark.  A bare
+     string is still accepted, so an older saved session reads cleanly. */
+  function answerText(a) {
+    if (a == null) return null;
+    return typeof a === 'string' ? a : a.text;
+  }
+  function answerSide(prefix, answer) {
+    var label = answerText(answer);
     var s = el('span', 'side');
     s.appendChild(document.createTextNode(prefix));
     var b = document.createElement('b');
@@ -3094,7 +3566,6 @@ var CLOSING = {
 
   function restart() {
     state.ratings = blankPairs();
-    state.outcomes = blankPairs();
     state.answers = blankPairs();
     state.times = { t3: [null, null] };
     state.t3method = [null, null];
@@ -3158,20 +3629,41 @@ var CLOSING = {
     function openRegistration() {
       view.innerHTML = '';
       var reg = el('div', 'vew');
+      /* Change spec v16 §C: the in-artifact "Task complete" status is gone, so
+         there is exactly one status announcement for this moment — the line
+         below the artifact.  The heading and the paragraph stay. */
       reg.innerHTML = '<div class="v-top"><div class="v-mark">Virtual <i>Education</i> Workshops</div></div>' +
         '<div class="v-regpage"><h2 tabindex="-1" id="reg-heading">Registration</h2>' +
-        '<p>Registration for Virtual Education Workshops is open. Continue to the form.</p>' +
-        '<p class="v-status" role="status">Task complete</p></div>';
+        '<p>Registration for Virtual Education Workshops is open. Continue to the form.</p></div>';
       view.appendChild(reg);
-      announce('Registration opened. Task complete.');
-      /* Replace the fail-safe with an ordinary Continue so the learner reads
-         the page they just opened instead of being jumped away from it. */
-      if (e && e.failsafeWrap) {
-        e.failsafeWrap.innerHTML = '';
+      /* Change spec v16 §C: Task 2 has no question, so it closes with its own
+         measurement, in the feedback pattern — the ✓ circle, then the line —
+         followed by the Continue button that was already here.  The clock is
+         read at this moment, the moment Registration opens. */
+      var line = fillMeasures(TASKS[1].doneLine, {
+        artKeys: e ? e.artKeys : 0,
+        lockMs: (e && e.t0 != null) ? (window.performance.now() - e.t0) : null,
+        maxPage: 1
+      });
+      announce(line);
+      if (e && e.postWrap) {
+        e.postWrap.innerHTML = '';
+        var st = el('div', 'qstatus');
+        st.setAttribute('role', 'status');
+        var mark = txt('span', 'qmark is-correct', '✓');
+        mark.setAttribute('aria-hidden', 'true');
+        st.appendChild(mark);
+        st.appendChild(txt('span', 'qstatustext', line));
+        e.postWrap.appendChild(st);
+        /* Change spec v13 §C: an ordinary Continue appears below the artifact,
+           so the learner reads the page they just opened instead of being
+           jumped away from it.  Nothing is there before this. */
+        var acts = el('div', 'actions');
         var b = txt('button', 'btn', 'Continue');
         b.type = 'button';
         b.addEventListener('click', function () { finish('answered'); });
-        e.failsafeWrap.appendChild(b);
+        acts.appendChild(b);
+        e.postWrap.appendChild(acts);
         window.setTimeout(function () { b.focus(); }, 60);
       }
     }
@@ -3678,14 +4170,13 @@ var CLOSING = {
   var saved = load();
   if (saved && byId[saved.screen]) {
     state.ratings = saved.ratings || state.ratings;
-    state.outcomes = saved.outcomes || state.outcomes;
     state.answers = saved.answers || state.answers;
     state.times = saved.times || state.times;
     state.t3method = saved.t3method || state.t3method;
     state.t2 = saved.t2 || state.t2;
     go(saved.screen);
   } else {
-    go('s0a');
+    go('cover');
   }
 })();
 </script>

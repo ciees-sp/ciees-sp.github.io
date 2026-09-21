@@ -1,4 +1,5 @@
 <!doctype html>
+<!-- Everyday Accessibility Lab · CIEES Special Projects, Old Dominion University · CC BY-NC-SA 4.0 · build v20 · 2026-09-21 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -258,11 +259,26 @@ main:focus, main:focus-visible { outline: none; box-shadow: none; }
   display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
 }
 /* Post-build ruling 2026-09-17: the progress bar sits on its own row under the
-   wordmark at every width, never beside it. */
+   wordmark at every width, never beside it.
+   Change spec v19 §C: the wordmark shares its own row with the menu button,
+   which sits at the right end of it. */
+.rail-top {
+  width: 100%; display: flex; align-items: center;
+  justify-content: space-between; gap: 12px;
+}
 .wordmark {
   font-family: var(--display); font-weight: 800; font-size: 17px;
   letter-spacing: -.01em; white-space: nowrap;
 }
+/* Change spec v19 §C: an icon-only button — no visible word at any width —
+   with a 44x44 target and the three-bar glyph in --ink. */
+.menu-btn {
+  flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0;
+  background: none; border: 0; color: var(--ink); border-radius: 6px;
+}
+.menu-btn:hover { background: var(--ground); }
+.menu-btn svg { display: block; }
 /* Change spec v18 §C: the bar is three stages now — Intro, Practice, Tasks —
    and the stage the learner is in opens in place, its word replaced by its own
    sub-items.  A chevron sits between stages and a middle dot between
@@ -617,7 +633,6 @@ main.is-cover { display: flex; flex-direction: column; }
 .actions:empty { display: none; }
 .post:empty { display: none; }
 .post .qstatus { margin-top: 28px; }
-.post .actions { margin-top: 18px; }
 /* Change spec v7 §C: the recorded answer locks on the same screen.  The chosen
    option keeps a stronger border and gains a check mark; the others recede
    without dropping below AA (no opacity, so the text stays legible). */
@@ -687,30 +702,39 @@ main.is-cover { display: flex; flex-direction: column; }
 .pair.answers .side b { font-weight: 700; }
 .pair.answers .side.none b { font-weight: 600; color: var(--ink-2); }
 
-/* --- Crosswalk screen 1 · What changed (change spec v10 §G) --------------
-   A Before block and an After block, each opening with a small tag and the
-   learner's own reaction line, then the paragraph, then the artifact: frozen
-   in the Before block, frozen with numbered pins and a notes column in the
-   After block. */
-.xblock { max-width: 1000px; margin-top: 22px; }
-.xhead { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
-.xtag {
-  flex: none; font-size: 11px; letter-spacing: .1em; text-transform: uppercase;
-  font-weight: 700; border-radius: 4px; padding: 3px 9px;
+/* --- Crosswalk screen 1 · What changed (change spec v19 §H) --------------
+   Two headed sections — Original design, then Accessible design with the POUR
+   mark under its heading — each one paragraph and the learner's own rating
+   line; then the pinned accessible artifact with its notes column.  The
+   frozen original artifact, the Before / After tags and the divider that
+   change spec v10 §G put here are all gone. */
+.xpara { max-width: 68ch; color: var(--ink-2); margin-bottom: 8px; }
+/* The rating line: body size, muted, regular weight.  `p.rating` is more
+   specific than the `.rating` fieldset rule below, so the two never mix. */
+p.rating {
+  max-width: 68ch; margin: 0 0 6px; font-size: 17px; font-weight: 400;
+  color: var(--ink-2);
 }
-.is-before .xtag { background: var(--barrier-soft); color: var(--barrier); }
-.is-after .xtag { background: var(--fixed-soft); color: var(--fixed); }
-.xreact { color: var(--ink); font-weight: 600; }
-.xreact .emoji { font-size: 21px; line-height: 1; vertical-align: -3px; }
-.xpara { max-width: 68ch; color: var(--ink-2); margin-bottom: 18px; }
-.xdiv { border-top: 1px solid var(--line); margin: 34px 0 0; max-width: 1000px; }
+p.rating .emoji { font-size: 21px; line-height: 1; vertical-align: -3px; }
+/* The POUR mark: four circles, the task's own principle(s) filled.  The
+   letters are decoration; "POUR: {names}" is what is spoken. */
+.pour { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.pour-dot {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--line); color: var(--ink-3);
+  display: grid; place-items: center;
+  font-family: var(--display); font-weight: 700; font-size: 14px; line-height: 1;
+}
+.pour-dot.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.pour-sep { color: var(--ink-3); }
+.pour-name { font-weight: 600; color: var(--ink); }
+.screen .pinned { margin-top: 24px; }
 
 .pinwrap { position: relative; display: block; max-width: 760px; }
 /* The pinned artifact keeps a gutter on its left so a numbered circle can sit
    beside the element it marks instead of on top of it. */
 .pinned .pinwrap { padding-left: 26px; }
 .frozen { display: block; }
-.frozen.is-before { max-height: 420px; overflow-y: auto; border-radius: 8px; }
 .pin {
   position: absolute; left: 0; top: 0; width: 22px; height: 22px; border-radius: 50%;
   background: var(--ink); color: var(--paper); display: grid; place-items: center;
@@ -758,16 +782,39 @@ main.is-cover { display: flex; flex-direction: column; }
    height.  The v17 rule that sized this frame to a short plain-text notice is
    gone with it. */
 
-/* --- Crosswalk screen 2 · Your role --------------------------------------- */
+/* --- Crosswalk screen 2 · Everyday accessibility (change spec v19 §I) -----
+   One column: the lead, "Put it into practice" with three marked items at
+   full column width, then the Examples label and the examples as quiet tags.
+   No boxes, no left borders, no fills. */
+.lede.rolebody { max-width: 900px; }
 .rolebody p { color: var(--ink-2); }
 .rolebody p.first { color: var(--ink); font-size: 19px; }
-.wherelse { max-width: 900px; margin-top: 30px; }
-.wherelse ul {
-  margin: 10px 0 0; padding-left: 22px; color: var(--ink-2);
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 6px 26px;
+.practice-list { max-width: 900px; display: flex; flex-direction: column; gap: 22px; margin-top: 2px; }
+.practice-item { position: relative; padding-left: 22px; }
+.screen .practice-item h3 { margin: 0 0 3px; }
+.practice-item h3::before {
+  content: ""; position: absolute; left: 0; top: .42em;
+  width: 10px; height: 10px; border-radius: 50%; background: var(--accent);
 }
-.wherelse li::marker { color: var(--fixed); }
+.practice-item p { color: var(--ink-2); }
+.screen h2.label {
+  font-family: var(--body); font-size: 13px; letter-spacing: .1em;
+  text-transform: uppercase; font-weight: 700; color: var(--ink-2);
+  margin: 18px 0 8px;
+}
+/* Change spec v19 §I: this screen has to hold one 1280x800 view at 100% zoom,
+   so it runs on a tighter vertical rhythm than the rest of the shell. */
+.screen[data-screen="crossb"] { padding-top: 22px; padding-bottom: 18px; }
+.screen[data-screen="crossb"] h2 { margin-top: 20px; }
+.screen[data-screen="crossb"] .actions { margin-top: 20px; }
+ul.tags {
+  list-style: none; margin: 0; padding: 0; max-width: 900px;
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+ul.tags li {
+  color: var(--ink-2); border: 1px solid var(--line);
+  border-radius: 999px; padding: 4px 12px; font-size: 15px;
+}
 
 /* --- Closing -------------------------------------------------------------- */
 .exitbeat { margin-bottom: 30px; }
@@ -800,9 +847,59 @@ blockquote.pull {
   font-weight: 500; line-height: 1.3;
 }
 
-/* --- Change spec v18 §E: there is no footer.  `main` still takes the rest of
+/* --- Footer (change spec v19 §E) -----------------------------------------
+   One line of small muted type under `main`, which still takes the rest of
    the viewport height (flex: 1 on a min-height: 100vh body), so the cover
-   still centres in everything below the rail. */
+   centres in what is left between the rail and this line.  It wraps at phone
+   width; the two links are underlined, so neither is carried by colour. */
+.app-foot { border-top: 1px solid var(--line); background: var(--paper); padding: 13px 20px; }
+.app-foot p {
+  max-width: 1180px; margin: 0 auto;
+  font-size: 13px; line-height: 1.6; color: var(--ink-2);
+}
+.app-foot a { color: var(--ink-2); text-decoration: underline; }
+
+/* --- The menu (change spec v19 §C, v20 §A) -------------------------------
+   A scrim at 40% --ink over the page, and the panel on --paper against the
+   right edge: 360px on a desktop, the full width at phone width.  The list
+   is the part that scrolls. */
+.menu-scrim { position: fixed; inset: 0; z-index: 40; background: var(--ink); opacity: .4; }
+#menu-panel {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 41;
+  width: 360px; max-width: 100%;
+  background: var(--paper); border-left: 1px solid var(--line);
+  box-shadow: var(--shadow); display: flex;
+}
+.menu-in { display: flex; flex-direction: column; width: 100%; min-height: 0; padding: 14px 20px 18px; }
+.menu-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+#menu-panel h2 { font-family: var(--display); font-size: 21px; font-weight: 700; margin: 0; }
+#menu-panel h2:focus { outline: none; }
+.menu-close {
+  flex: none; display: grid; place-items: center;
+  width: 44px; height: 44px; padding: 0; margin-right: -8px;
+  background: none; border: 0; color: var(--ink);
+  font-size: 26px; line-height: 1; border-radius: 6px;
+}
+.menu-close:hover { background: var(--ground); }
+.menu-list { flex: 1 1 auto; min-height: 0; overflow-y: auto; list-style: none; margin: 0; padding: 0; }
+.menu-label {
+  font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+  font-weight: 700; color: var(--ink-2); margin: 12px 0 2px;
+}
+.menu-list > li:first-child .menu-label { margin-top: 2px; }
+.menu-item {
+  display: flex; width: 100%; align-items: center; gap: 10px;
+  background: none; border: 0; border-radius: 6px;
+  margin: 0; padding: 5px 10px; text-align: left;
+  font-size: 15px; color: var(--ink);
+}
+.menu-item:hover { background: var(--ground); }
+/* Change spec v20 §A: the current item is marked the way menus mark it — a
+   4px accent bar on its left edge and a heavier weight, no word.  A completed
+   item carries a check mark at its right edge (the word is screen-reader
+   only).  No actions row and no confirm block in the panel any more. */
+.menu-item[aria-current="page"] { font-weight: 700; padding-left: 6px; border-left: 4px solid var(--accent); border-radius: 0 6px 6px 0; }
+.menu-check { margin-left: auto; color: var(--accent); font-size: 15px; line-height: 1; }
 
 /* --- Screen transitions (System B idiom; System B itself swaps instantly) -- */
 @keyframes screen-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -840,6 +937,11 @@ blockquote.pull {
   .controls .crow { display: flex; flex-direction: column; gap: 2px; align-items: flex-start; }
   .frozen .mock-word .w-split { grid-template-columns: 1fr; }
   .frozen .mock-word .w-page { max-width: 100%; }
+  /* Change spec v19 §C: the panel takes the whole width at phone width. */
+  #menu-panel { width: 100%; border-left: 0; }
+  .menu-in { padding: 14px 16px 18px; }
+  /* Change spec v19 §E: the footer line wraps instead of scrolling. */
+  .app-foot { padding: 12px 14px; }
 }
 
 
@@ -989,17 +1091,18 @@ blockquote.pull {
 .vform .f-check input { width: 17px; height: 17px; margin-top: 3px; flex: none; accent-color: #1b2a52; }
 .vform .f-submit { background: #1b2a52; color: #FFFFFF; border: 0; border-radius: 4px; padding: 11px 26px; font-weight: 700; font-size: 16px; }
 .vform .f-status { margin-top: 14px; font-size: 14px; color: #4a5160; min-height: 1.4em; }
-/* Broken version only — the deliberate barriers (change spec v10 §F).  There
-   is no helper text and no symbol here: required status is a coloured left
-   border and nothing else, and every field's only label is its placeholder. */
-.vform.is-broken .is-reqcolor { border-left: 4px solid #C2402F; }
-.vform.is-broken .f-agree { font-size: 14px; color: #22262e; }
-.vform.is-broken span.f-agree.is-reqcolor { padding-left: 8px; border-left-width: 4px; border-left-style: solid; }
-/* Repaired version */
-.vform.is-fixed label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 4px; color: #22262e; }
-.vform.is-fixed .f-help { color: #4a5160; font-size: 14px; margin: 4px 0 6px; }
-.vform.is-fixed .f-help.above { margin: 0 0 6px; }
-.vform.is-fixed .f-agree { font-size: 15px; color: #22262e; }
+/* Change spec v19 §G: both versions carry real labels now, so the label rule
+   belongs to the form and not to one variant of it. */
+.vform label { display: block; font-weight: 600; font-size: 15px; margin-bottom: 4px; color: #22262e; }
+.vform .f-required { font-size: 14px; font-weight: 600; color: #22262e; margin-bottom: 16px; }
+.vform .f-help { color: #4a5160; font-size: 14px; margin: 5px 0 0; }
+.vform .f-agree { font-size: 15px; margin-bottom: 0; }
+/* Broken version only — the one deliberate barrier left in the styling: a
+   required field is marked by the colour of its label and by nothing else.
+   The artifact is a browser mock and sits on white paper in both colour
+   schemes, so this is the light-theme value of --barrier written out (6.9:1
+   on white); the barrier is colour-only marking, not low contrast. */
+.vform.is-broken label.f-req { color: #9C3A2E; }
 
 /* --- Word for Windows document window (change spec §G) --------------------
    A Microsoft 365-style window: title bar, ribbon tab strip with View active,
@@ -1170,7 +1273,10 @@ blockquote.pull {
 
 <header class="app-rail">
   <div class="rail-in">
-    <span class="wordmark">Everyday Accessibility Lab</span>
+    <div class="rail-top">
+      <span class="wordmark">Everyday Accessibility Lab</span>
+      <button type="button" class="menu-btn" id="menu-btn" aria-label="Menu" aria-expanded="false" aria-controls="menu-panel"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h16"></path><path d="M3 11h16"></path><path d="M3 16h16"></path></g></svg></button>
+    </div>
     <div class="progress">
       <nav class="steps" aria-label="Progress">
         <ol class="stages" id="steps"></ol>
@@ -1180,6 +1286,13 @@ blockquote.pull {
 </header>
 
 <main id="main" tabindex="-1"></main>
+
+<footer class="app-foot">
+  <p>Concept and development by <a href="https://cieesodu.org/special-projects/" target="_blank" rel="noopener">CIEES Special Projects<span class="sr-only"> (opens in a new tab)</span></a>, with AI-assisted implementation. · <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener">CC BY-NC-SA 4.0<span class="sr-only"> (opens in a new tab)</span></a> · Version <span data-role="version"></span> · Last updated 2026-09-21</p>
+</footer>
+
+<div class="menu-scrim" id="menu-scrim" hidden></div>
+<div id="menu-panel" role="dialog" aria-modal="true" aria-labelledby="menu-h" hidden></div>
 
 <div id="live" class="sr-only" aria-live="polite"></div>
 <script>
@@ -1216,6 +1329,15 @@ var FLYER_B64 = "/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBAUEBAYFBQUGBgYHCQ4JCQgICRI
    and every repaired story and goal line (§H); and aligns Task 4's two legends
    and two feedback sentences with the new wording (§I).  Those strings are the
    v18 spec verbatim and are listed in build-report-v18.md.
+   change-spec-v19.md then: adds Practice 1's fourth body paragraph and the
+   Bragg reference (§A); adds the menu's own strings (§C); adds the Back label
+   (§D) and the public version the footer shows (§E); reworks Task 4's form
+   fields, labels, placeholders, question options, feedback, repaired heading
+   and story line (§G); replaces every crosswalk's `before`, `changed`, pin
+   notes, `principle` and `where`, adds `pour` and the three `practice` items
+   and removes `role` outright (§H / §I); and renames the closing's restart
+   control and its confirmation (§J).  Those strings are the v19 spec verbatim
+   and are listed in build-report-v19.md.
    The Task 3 program and the Task 5 caption track are each written once; the
    broken and the repaired version of each artifact render from this same
    source with a flag.
@@ -1272,6 +1394,48 @@ var OSKEYS = {
   show: 'Using a touchscreen? Show on-screen keys',
   hide: 'Hide on-screen keys'
 };
+
+/* ---------- The menu (change spec v19 §C, v20 §A) -------------------------
+   One button at the right end of the header's top row opens a real dialog
+   over the page: ten places, in activity order — one Intro item, the three
+   practices, the five tasks, the closing.  `label` on a row opens a group;
+   the Intro and Closing rows open none.  `id` is the first content screen
+   for the Intro row, the closing screen for the Closing row, `lab-p{k}` for
+   a practice, and `t{n}` for a task — a task row never names a screen,
+   because which screen it opens depends on how far the learner has got.
+   --------------------------------------------------------------------------*/
+var MENU = {
+  button: 'Menu',
+  title: 'Menu',
+  close: 'Close menu',
+  /* Change spec v20 §A: one Intro item that opens the first content screen,
+     the practices and tasks under their group labels, then the closing.  No
+     actions: jumping to the closing is the wrap-up, and Start over lives on
+     the closing screen. */
+  items: [
+    { id: 'before', name: 'Intro' },
+    { id: 'lab-p1', name: 'Practice 1', label: 'Practice', practice: 1 },
+    { id: 'lab-p2', name: 'Practice 2', practice: 2 },
+    { id: 'lab-p3', name: 'Practice 3', practice: 3 },
+    { id: 't1', name: 'Task 1', label: 'Tasks', task: 1 },
+    { id: 't2', name: 'Task 2', task: 2 },
+    { id: 't3', name: 'Task 3', task: 3 },
+    { id: 't4', name: 'Task 4', task: 4 },
+    { id: 't5', name: 'Task 5', task: 5 }
+  ],
+  closing: { id: 'closing', name: 'Closing' },
+  /* A completed item shows a check mark; the word is for screen readers only.
+     The current item is marked by aria-current, with no word at all. */
+  doneMark: '\u2713',
+  doneSr: 'Completed'
+};
+
+/* The public version in the footer (change spec v19 §E).  The build number
+   (v19) stays out of the footer; it lives in the file's first-line comment. */
+var VERSION_PUBLIC = '1.0';
+
+/* The label on the shell's Back button (change spec v19 §D). */
+var BACK_LABEL = 'Back';
 
 /* ---------- The cover, one screen (change spec v15 §A) --------------------
    The 49th screen, and the first one the learner sees.  Its choreography is
@@ -1357,6 +1521,19 @@ var ORIENTATION = [
        one without both read correctly. */
     refsHeading: 'References',
     refs: [
+      /* change-spec-v19 §A: the Bragg entry, first in alphabetical order.
+         `pre` is the part of an entry that sits between the date and the
+         italic title — here the article title and the "In" that introduces
+         the proceedings, because in this entry it is the PROCEEDINGS title
+         that is italicised, not the article's. */
+      {
+        author: 'Bragg, D., Bennett, C., Reinecke, K., & Ladner, R.',
+        date: '(2018).',
+        pre: 'A large inclusive study of human listening rates. In',
+        title: 'Proceedings of the 2018 CHI Conference on Human Factors in Computing Systems',
+        after: '. Association for Computing Machinery.',
+        url: 'https://doi.org/10.1145/3173574.3174018'
+      },
       {
         author: 'Centers for Disease Control and Prevention.',
         date: '(2024, July 16).',
@@ -1422,10 +1599,13 @@ var LAB = {
        nothing is revealed and nothing swaps.  No controls block: the console
        toolbar carries the keys (§E). */
     /* change-spec-v17 §A: all three bodies replaced, spec-verbatim. */
+    /* change-spec-v19 §A: a fourth body paragraph after the author's three,
+       naming the listening rate the Fast toggle plays at. */
     { id: 'lab-p1', kind: 'sr', h1: 'Practice using a screen reader',
       body: ['A screen reader uses speech or a braille display to present digital content, and it lets people navigate by elements such as headings, links, and form fields.',
              'This is a front desk notice from your office. It has one heading and one link.',
-             'Use the screen reader commands below to jump to the heading and hear the link listed. For the purpose of this activity, the notice will stay visible so you can follow along as the screen reader announces each line.'],
+             'Use the screen reader commands below to jump to the heading and hear the link listed. For the purpose of this activity, the notice will stay visible so you can follow along as the screen reader announces each line.',
+             'Many experienced screen reader users listen at two to three times conversational speed, some at 500 words per minute (Bragg et al., 2018). Select Fast in the voice controls to hear the next lines at that pace.'],
       controls: null,
       done: 'You used the screen reader controls to move through text, jump to a heading, and list the available links.' },
     { id: 'lab-p2', kind: 'kb', h1: 'Practice moving with the keyboard',
@@ -1744,23 +1924,44 @@ var CLIP = {
 };
 
 /* ---------- Task 4: the registration form, written once --------------------
-   Spec v10 §F refocuses the first version on three things and nothing else:
-   placeholder text as the only label, required status carried by colour alone
-   (a coloured left border, no symbol and no word), and the two email fields
-   back to back with nothing between them.  All helper text is removed from the
-   first version, so there is no low-contrast text anywhere in it.
+   Change spec v19 §G reworks both versions.  BOTH now have real <label for>
+   elements: the first version's barrier is no longer a missing label but a
+   vague one — two fields both labelled "Email", so nothing on the form says
+   which address the confirmation goes to — plus required status carried by
+   the label's colour alone (red text, no asterisk and no note).  Placeholders
+   are neutral now; only Session code, which has no value, shows one.
+   The repaired version gives every field a specific, persistent label, marks
+   required fields with a real asterisk (and an sr-only "(required)") under a
+   "* Required" line, and puts each helper under its own field.
+   Values are unchanged from v10.
    --------------------------------------------------------------------------*/
 var FORM_FIELDS = [
-  { id: 'f-name', value: 'Jordan Ellis', ph: 'Full name', label: 'Full name (required)', req: true, type: 'text' },
-  { id: 'f-email', value: 'j.ellis@riversideps.k12.va.us', ph: 'Email', label: 'Your work email (required)', req: true, type: 'email',
-    help: 'We will send your confirmation and joining link here.' },
-  { id: 'f-sup', value: 'm.okafor@riversideps.k12.va.us', ph: 'Email', label: 'Supervisor or approval contact email (required)', req: true, type: 'email',
+  { id: 'f-name', value: 'Jordan Ellis', req: true, type: 'text',
+    labelBroken: 'Full name', ph: '',
+    label: 'Full name' },
+  { id: 'f-email', value: 'j.ellis@riversideps.k12.va.us', req: true, type: 'email',
+    labelBroken: 'Email', ph: 'name@agency.gov',
+    label: 'Your email address',
+    help: 'We send the confirmation and joining link here.' },
+  { id: 'f-sup', value: 'm.okafor@riversideps.k12.va.us', req: true, type: 'email',
+    labelBroken: 'Email', ph: 'name@agency.gov',
+    label: 'Approval contact email address',
     help: 'We will let this person know you registered.' },
-  { id: 'f-org', value: 'Riverside Regional Office', ph: 'Agency Name', label: 'Agency or organization (required)', req: true, type: 'text' },
-  { id: 'f-role', value: 'Program staff', ph: 'Role', label: 'Your role', req: false, type: 'text' },
-  { id: 'f-code', value: '', ph: 'Session code', label: 'Session code (optional)', req: false, type: 'text',
+  { id: 'f-org', value: 'Riverside Regional Office', req: true, type: 'text',
+    labelBroken: 'Agency name', ph: '',
+    label: 'Agency or organization' },
+  { id: 'f-role', value: 'Program staff', req: false, type: 'text',
+    labelBroken: 'Role', ph: '',
+    label: 'Your role' },
+  { id: 'f-code', value: '', req: false, type: 'text',
+    labelBroken: 'Session code', ph: 'Session code',
+    label: 'Session code',
     help: 'Enter the code shown on the session page, if you noted it.' }
 ];
+/* The line above the repaired form's fields, and the visually-hidden word the
+   real asterisk in each required label carries after it. */
+var FORM_REQUIRED_NOTE = '* Required';
+var FORM_REQUIRED_SR = '(required)';
 var FORM_CONSENT_BROKEN = 'I agree.';
 var FORM_CONSENT = 'I agree to follow the event’s participation guidelines, and I understand the session will be recorded.';
 
@@ -1793,8 +1994,9 @@ var LIBRARY = {
    block where §E allows one, the artifact, the question and the buttons.  The
    repaired screen carries an in-world `repairH1`, the repair lines, then the
    goal line and the same controls block.
-   `crosswalk` holds both crosswalk screens: `before` / `changed` and the pins
-   for screen 1, and `principle` / `enabled` / `role` / `where` for screen 2.
+   `crosswalk` holds both crosswalk screens: `before` / `changed` / `pour` /
+   `pourName` and the pins for screen 1, and `principle` / `enabled` /
+   `practice` / `where` for screen 2 (change spec v19 §H / §I; `role` is gone).
    Each pin carries its note and the selector inside the repaired artifact it
    is anchored to.
    --------------------------------------------------------------------------*/
@@ -1827,18 +2029,30 @@ var TASKS = [
       feedback: 'The conference is August 12. The date was included in the message text, so the screen reader announced it.',
       unknownIndex: 2
     },
+    /* change-spec-v19 §H / §I: `before`, `changed`, the pin notes, `principle`,
+       `enabled`, the three `practice` items and `where` are the v19 spec
+       verbatim; `pour` names the principle(s) the POUR mark fills; `role` is
+       removed from the data outright. */
     crosswalk: {
-      before: 'The conference date, topics, and registration information lived only inside the flyer image. Your screen reader could read the message around it, but the details you needed stayed out of reach. The one link in the message read only “Click here,” so the links list could not tell you where it went.',
-      changed: 'The conference details are now written into the email as real text, and the link says clearly where it goes. The flyer image stays in the message, but it is decorative now, since the same information already sits nearby in real text, so it carries empty alt text.',
+      pour: ['P'], pourName: 'Perceivable',
+      before: 'The conference date and other important details were available only in the flyer image. The screen reader could reach the email itself, but it could not get the information inside the image.',
+      changed: 'The conference details are now included in the email text. That makes the same essential information available whether someone reads the message visually or uses a screen reader to hear it.',
       pins: [
-        { note: 'The message includes the date, topics, and registration instructions as real text.', sel: '.em-details' },
-        { note: 'The link says where it goes: “Register on the conference website.”', sel: '#e2-link' },
-        { note: 'The flyer image stays in the email with empty alt text, so the screen reader moves past it instead of repeating the details already in the text.', sel: '#e2-img' }
+        { note: 'The date, topics, and registration details appear in the message text.', sel: '.em-details' },
+        { note: 'The link clearly describes where it goes.', sel: '#e2-link' },
+        { note: 'The flyer is decorative because the same information is already provided in the message.', sel: '#e2-img' }
       ],
-      principle: 'Put essential information in real text, and let images support it.',
-      enabled: 'By writing the details as real text, you make the same information available to people reading with a screen reader, browsing with images turned off, using a plain-text preview, enlarging text, translating content, or copying details into another tool.',
-      role: 'When you add a flyer, screenshot, chart, or other image to an email, document, slide, or page, make sure the essential information is available as real text. Add meaningful alt text when the image communicates information that is provided nowhere else. Use empty alt text when the image is decorative.',
-      where: ['Event flyers pasted into emails', 'Social media graphics', 'Infographics', 'Scanned PDFs', 'Slides with screenshots of text', 'Charts or diagrams shared as images']
+      principle: 'Provide essential information as accessible text',
+      enabled: 'When people need information to understand something or take action, provide it as text they can read, resize, search, copy, translate, or access with assistive technology.',
+      practice: [
+        { h: 'Keep essential details in text',
+          p: 'Include dates, instructions, contact information, and other important details in the email, document, slide, or webpage itself.' },
+        { h: 'Use alt text with purpose',
+          p: 'Describe an image when it communicates information that is not provided elsewhere. If the image repeats information already available in nearby text, it may not need to be announced again.' },
+        { h: 'Write descriptive links',
+          p: 'Use link text that tells people what they will open or where the link will take them. For example, use “Read the conference program” instead of “Click here.”' }
+      ],
+      where: ['Emails', 'Social media graphics', 'Slides', 'Webpages', 'PDFs']
     }
   },
   {
@@ -1854,17 +2068,25 @@ var TASKS = [
        artifact the moment Registration opens. */
     doneLine: 'Task complete. You reached Registration after {keys} in {time}.',
     crosswalk: {
-      before: 'Focus moved through the page in an order that worked against you. The footer came before the main content, and Registration, the one thing you needed, came last.',
-      changed: 'Focus was reordered to match how the page reads, so each control keeps its meaning and function. Registration now comes right after the headline, where you expect it.',
+      pour: ['O'], pourName: 'Operable',
+      before: 'The page looked organized visually, but keyboard focus moved through the elements in a different order. Registration came much later than its position on the page suggested.',
+      changed: 'Focus now follows the same meaningful order as the page itself: navigation first, then the main conference content and Registration, followed by the footer. Keyboard users can move through the page in a predictable sequence and reach controls where they expect to find them.',
       pins: [
-        { note: 'The navigation receives focus first, then the rest of the page follows in the order it reads.', sel: '.v-nav' },
-        { note: 'Registration is the next stop after the headline.', sel: '.v-cta' },
-        { note: 'The footer links come last, where they sit on the page.', sel: '.v-footnav' }
+        { note: 'Focus starts with the main navigation.', sel: '.v-nav' },
+        { note: 'Registration comes immediately after the conference introduction.', sel: '.v-cta' },
+        { note: 'Footer links come last in the focus order.', sel: '.v-footnav' }
       ],
-      principle: 'Set focus order to match the order the page reads.',
-      enabled: 'By setting focus order to match the order the page reads, you let people using a keyboard, a switch device, a screen reader, or another input device reach Registration in a predictable sequence and complete the main task efficiently.',
-      role: 'When you publish or review a page, use the keyboard to move through the page’s controls in sequence. Check that focus moves in a logical order, supports the task, and reaches important actions when someone needs them. If the order makes the page confusing or difficult to operate, document the path and share it with the person or team that maintains the site.',
-      where: ['Custom buttons and menus on websites', 'Carousels and pop-ups', 'Buttons inside PDFs', 'Embedded widgets and maps', 'Learning-management-system content', 'Interactive modules and simulations']
+      principle: 'Ensure people can complete tasks without a mouse',
+      enabled: 'People who use a keyboard should be able to reach the same information and actions, follow a logical path through the page, know where they are as they move, and complete the same task as someone using a mouse.',
+      practice: [
+        { h: 'Check the focus order',
+          p: 'Use Tab and Shift + Tab to move through the page. Focus should move in a logical sequence that supports the task, and a visible outline, highlight, or other indicator should consistently show which item currently has keyboard focus.' },
+        { h: 'Reach what the task requires',
+          p: 'Check that keyboard users can get to the links, buttons, fields, menus, and other interactive elements they need. Important information and actions should not be skipped or available only with a mouse.' },
+        { h: 'Complete the action',
+          p: 'Activate the links, buttons, menus, and other elements you reach. Confirm that they work from the keyboard and that you can continue moving through the task without becoming stuck.' }
+      ],
+      where: ['Websites', 'Online forms', 'Learning modules', 'Interactive PDFs', 'Web-based tools']
     }
   },
   {
@@ -1898,52 +2120,69 @@ var TASKS = [
       unknownIndex: 2
     },
     crosswalk: {
-      before: 'Effective Communication Strategies sat in Breakout Session 2 at 1:30 p.m., several pages into the program. Many section titles were bolded and enlarged by hand instead of styled as real headings, so the navigation pane found only a few parts of the document to show you.',
-      changed: 'Built-in heading styles now give every section its place in a consistent hierarchy. The navigation pane lists them all, which makes the program easier to scan and navigate.',
+      pour: ['P', 'O'], pourName: 'Perceivable + Operable',
+      before: 'The section titles looked like headings, but they were created with visual formatting instead of built-in heading styles. That meant the document looked structured without providing the same structure for navigation.',
+      changed: 'Built-in heading styles make the program easier for everyone to scan. Sighted readers can scan the page visually, while people using the Navigation Pane or assistive technology can use that same heading structure to understand how the document is organized and jump directly to the section they need.',
       pins: [
-        { note: 'Each block and session title uses a built-in heading style, so the sizes form one consistent hierarchy.', sel: '#sec-bfp' },
-        { note: 'The navigation pane lists every section, with sessions nested under their block.', sel: '.w-panetitle' },
-        { note: 'Each heading in the pane jumps straight to that part of the document.', sel: '[data-target="sec-bfp"]' }
+        { note: 'Session sections and titles use built-in heading styles.', sel: '#sec-bfp' },
+        { note: 'The Navigation Pane shows the document’s heading structure.', sel: '.w-panetitle' },
+        { note: 'Selecting a heading jumps directly to that section.', sel: '[data-target="sec-bfp"]' }
       ],
-      principle: 'Give documents structure with heading styles.',
-      enabled: 'By using heading styles, you let people move through the program by structure instead of page by page. The headings support visual scanning, use of the navigation pane, screen reader navigation by heading, and a more reliable structure when the document is exported to PDF.',
-      role: 'Use built-in heading styles when you create documents, agendas, manuals, reports, and other long resources. Open the navigation pane to check whether the structure is working. If you export the document to PDF, check the exported file to confirm that the heading structure carried through.',
-      where: ['Policies and procedure manuals', 'Reports and guidance', 'Agendas and minutes', 'Training manuals', 'Long web pages', 'Learning-management-system content', 'Slide decks without title placeholders', 'PDFs exported without tags or bookmarks']
+      principle: 'Structure content to support how people scan and navigate',
+      enabled: 'People who read visually can scan headings, lists, and sections to find what they need without reading every word. Built-in structure gives people using assistive technology a comparable way to understand how content is organized and move directly to the part they need.',
+      practice: [
+        { h: 'Identify structure with built-in tools',
+          p: 'Use heading styles, list tools, table structure, and other built-in options that identify what each part of the content is instead of relying on size, bolding, spacing, or position alone.' },
+        { h: 'Use a meaningful hierarchy and order',
+          p: 'Organize headings and content so their structure reflects how the information is meant to be understood. For example, a main section heading should be identified at a higher level than the subsections beneath it.' },
+        { h: 'Check the structure in the format you are using',
+          p: 'Use the tools available to review what others can navigate. In a document, that might mean checking the document outline or Navigation Pane. In a PDF, it may mean reviewing tags and reading order. For web content, it may mean checking headings or navigating with assistive technology.' }
+      ],
+      where: ['Documents', 'PDFs', 'Webpages', 'Presentations', 'Learning materials']
     }
   },
   {
     key: 't4', n: 4, title: 'Check the registration form', artifact: 'form',
     para: 'Your information looks right, and Mr. Okafor is listed as the approval contact. Review the form and determine which email address will receive the conference confirmation.',
-    repairH1: 'Persistent form labels',
-    repairLines: ['The committee assumed the survey builder they used for registration would create an accessible form by default. After hearing about problems with the form, they went back through the settings and made some adjustments.'],
+    /* change-spec-v19 §G: the repaired screen's heading and story line. */
+    repairH1: 'Specific form labels',
+    repairLines: ['The committee assumed the survey builder they used for registration would create an accessible form by default. After hearing about problems with the form, they went back through the settings and rewrote the labels.'],
     goalFixed: 'Review the form again and determine which email address will receive the conference confirmation.',
     controls: null,
     question: {
       legend: 'Which email address will receive the conference confirmation?',
-      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
+      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which address receives the confirmation.'],
       correct: 2,
-      feedback: 'The form does not tell you which email address will receive the conference confirmation. Once the fields were filled in, both email fields looked the same.',
+      feedback: 'The form does not tell you which email address will receive the conference confirmation. Both fields were labeled Email, so once they were filled in, nothing told you which was which.',
       unknownIndex: 2
     },
     questionFixed: {
       legend: 'Which email address will receive the conference confirmation?',
-      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which field is which.'],
+      options: ['j.ellis@riversideps.k12.va.us', 'm.okafor@riversideps.k12.va.us', 'The form does not say which address receives the confirmation.'],
       correct: 0,
-      feedback: 'The conference confirmation goes to j.ellis@riversideps.k12.va.us. Each field kept its label after it was filled in, so the two email addresses were clear.',
+      feedback: 'The conference confirmation goes to j.ellis@riversideps.k12.va.us. Each label says whose address the field holds.',
       unknownIndex: 2
     },
     crosswalk: {
-      before: 'Placeholder text was the only label on each field, so once a field was filled in, you could not tell what it was for. Required fields showed only as a colored border, with no word or symbol. The two email fields sat back to back, and you could not tell yours from Mr. Okafor’s.',
-      changed: 'The form now gives every field a persistent, visible label that stays in view after it is filled in. Required fields say so in words instead of relying on color.',
+      pour: ['U', 'P'], pourName: 'Understandable + Perceivable',
+      before: 'The form included labels, but both email fields were labeled Email. Nothing on the form said which address the confirmation would go to, and the difference between the two fields depended on context that disappeared once they were filled in. Required fields were marked in red and nothing else.',
+      changed: 'Each field now has a specific, persistent label that tells people exactly what information belongs there. The meaning no longer depends on placeholder text or surrounding visual context, so people can understand the fields whether they scan the form visually or navigate directly among form controls. Required fields are marked with an asterisk and a note, so the marking survives high-contrast mode and print, where red text looks like any other text.',
       pins: [
-        { note: 'Every field keeps a visible label, even after it is filled in.', sel: 'label[for="f-name-r"]' },
-        { note: 'Required fields say "(required)" in words.', sel: 'label[for="f-email-r"]' },
-        { note: 'The two email fields sit under their own labels, so you can tell your address from Mr. Okafor’s.', sel: 'label[for="f-sup-r"]' }
+        { note: 'Each email field has a distinct label that identifies whose address belongs there.', sel: 'label[for="f-email-r"]' },
+        { note: 'Instructions and examples remain visible instead of disappearing when someone starts typing.', sel: '#f-email-r-help' },
+        { note: 'Required fields are marked with an asterisk and a note, not by color alone.', sel: '.f-required' }
       ],
-      principle: 'Keep labels and instructions visible before, during, and after entry.',
-      enabled: 'By keeping labels and instructions in view, you let people know what each field is for before, during, and after entry. That clarity supports people using screen readers, magnification, mobile devices, autofill, or voice input, as well as people who have someone else fill out the form for them.',
-      role: 'When you build a form, use clear visible labels, place instructions near the field they support, and identify required fields in words. When a form comes from a system or vendor outside your control, test it after fields are filled in and report anything that disappears, becomes unclear, or is difficult to read.',
-      where: ['Sign-up and intake forms', 'Surveys', 'HR forms', 'PDF forms', 'Learning-management-system quizzes', 'Online applications', 'Vendor forms and embedded forms']
+      principle: 'Make meaning clear without relying on visual cues alone',
+      enabled: 'Use words and labels to communicate important meaning directly. Color, position, shape, and other visual cues can support that meaning, but they should not be the only way someone has to understand it.',
+      practice: [
+        { h: 'Use specific, persistent labels',
+          p: 'Give fields, buttons, links, and other items names that clearly identify their purpose. Keep labels available when people enter information or move through the content.' },
+        { h: 'Keep instructions and status information available',
+          p: 'Place important guidance where people can refer to it when they need it. Identify required information, errors, or other important status in words instead of depending on color or other visual treatment alone.' },
+        { h: 'Use visual cues as support, not the only instruction',
+          p: 'Explain what colors in a chart represent. When referring to something by location, also identify it by name. For example, say “See the Enrollment by Region chart” instead of only “See the chart on the right,” or use the link’s name instead of saying only “Click the link below.”' }
+      ],
+      where: ['Forms', 'Charts and graphs', 'Documents and instructions', 'Webpages', 'Online tools']
     }
   },
   {
@@ -1976,16 +2215,24 @@ var TASKS = [
       unknownIndex: 2
     },
     crosswalk: {
-      before: 'You needed three things ready: the confirmation email, the session code, and a way to take notes. The video spoke those instructions out loud, and the sound was unavailable.',
-      changed: 'The video now carries accurate captions, and a transcript sits alongside it. You can read the instructions on screen as they play, or read them anytime in the transcript.',
+      pour: ['P'], pourName: 'Perceivable',
+      before: 'The preparation instructions were provided only through the video’s audio. Anyone who could not hear the audio had no other way to get that information.',
+      changed: 'Captions and a transcript provide the video’s spoken information as text. That gives people another way to perceive the same instructions when they cannot hear the audio, choose to watch without sound, or need to review the information afterward.',
       pins: [
-        { note: 'Captions appear on screen in time with the speech.', sel: '.vcc' },
-        { note: 'A transcript sits under the player with the full text of the video.', sel: '.vtranscript summary' }
+        { note: 'Captions appear in sync with the spoken content.', sel: '.vcc' },
+        { note: 'A transcript provides the full spoken content in text.', sel: '.vtranscript summary' }
       ],
-      principle: 'Give spoken content a readable text alternative.',
-      enabled: 'By adding captions and a transcript, you make the spoken content available to people watching without sound, using captions, reviewing in a noisy place, working in a second language, or searching for a specific instruction. The transcript also gives people a stable text version they can search, print, translate, or revisit.',
-      role: 'When you publish a video or recording, turn on captions, correct any errors in auto-captions, and provide a transcript when the content includes spoken instructions or other essential audio. Check the final version in the place where learners or viewers will use it.',
-      where: ['Recorded trainings', 'Webinars', 'Announcements', 'Social media videos', 'Voicemail instructions', 'Podcasts', 'Town hall recordings', 'Narrated slide presentations']
+      principle: 'Provide accessible alternatives for audio and visual information',
+      enabled: 'Audio and visual content can communicate different information. Accessibility means providing an appropriate alternative for each when that information is needed to understand the content or complete the task.',
+      practice: [
+        { h: 'Provide access to spoken and other audio information',
+          p: 'Use accurate captions for speech and meaningful sounds in video. A transcript can also provide a stable text version that people can review, search, or refer to later.' },
+        { h: 'Provide access to important visual information',
+          p: 'If essential information appears on screen but is not communicated in the existing audio, provide audio description or another accessible alternative. For example, if a presenter silently demonstrates a step on screen, that step also needs to be communicated for people who cannot see it.' },
+        { h: 'Check the finished media',
+          p: 'Review the captions, transcript, and any audio description with the final video. Confirm that they accurately communicate the information people need instead of assuming an automated tool produced a usable result.' }
+      ],
+      where: ['Training videos', 'Recorded meetings', 'Presentations', 'Webinars', 'Video instructions']
     }
   }
 ];
@@ -1996,10 +2243,12 @@ var CLOSING = {
   h1: 'How successful you felt, task by task',
   exit: 'You close the tab with everything you need: the confirmation email, the session code from the program, and a notebook already open on your desk. Wednesday, you will log on early for Building Family Partnerships, not the session you first expected, and let Priya know how her own talk went. One conference, five ordinary moments, each a little easier than the one you started with.',
   pull: 'A routine digital task can be quick and independent when the product communicates clearly through multiple access pathways.',
-  restart: 'Restart the activity',
-  confirmQ: 'Restart? Your ratings will be cleared.',
+  /* change-spec-v19 §J: the closing's restart control and its confirmation.
+     Since v20 §A this is the one Start over in the activity. */
+  restart: 'Start over',
+  confirmQ: 'Start over? Your progress will be cleared.',
   confirmNo: 'No, keep going',
-  confirmYes: 'Yes, restart'
+  confirmYes: 'Yes, start over'
 };
 /* ===== inlined from parts/sr-simulator.js (host changes marked inline) ===== */
 /*!
@@ -2072,6 +2321,9 @@ var CLOSING = {
  *                     news trio).
  *       voice       — boolean, initial state of the "Voice on/off" toggle.
  *                     Default true (matches original).
+ *       fast        — boolean, initial state of the "Fast" toggle (HOST
+ *                     CHANGE, build v19, change spec v19 §A). Default false.
+ *                     On, the utterance rate is 2.5; off, 1.0.
  *       showNotes   — boolean, whether to render the two-column "What it
  *                     mirrors / What it simplifies" footer notes. Default
  *                     true. (Addition — the original always showed them;
@@ -2083,7 +2335,7 @@ var CLOSING = {
  *                     event hooks at all — this is additive, not a
  *                     behavior change).
  *     Returns an instance: { loadDocument, loadDocuments, reset, key,
- *       setVoice, destroy, getState }.
+ *       setVoice, setFast, destroy, getState }.
  *
  *   instance.loadDocuments(docs, opts)
  *     Replaces the whole document picker with a new array of Document
@@ -2111,6 +2363,10 @@ var CLOSING = {
  *   instance.setVoice(on)
  *     Sets the Web Speech toggle without a click.
  *
+ *   instance.setFast(on)
+ *     Sets the Fast listening-speed toggle without a click (HOST CHANGE,
+ *     build v19, change spec v19 §A).
+ *
  *   instance.destroy()
  *     Removes the document-level keydown listener this instance installed
  *     and empties the container. Call before dropping the instance or
@@ -2120,7 +2376,7 @@ var CLOSING = {
  *     once per page lifetime.)
  *
  *   instance.getState()
- *     Returns a shallow snapshot: { docIndex, pos, presses, voice, peek }.
+ *     Returns a shallow snapshot: { docIndex, pos, presses, voice, fast, peek }.
  *     Read-only convenience for a host page or test harness; the simulator
  *     does not read this back in.
  *
@@ -2225,6 +2481,7 @@ var CLOSING = {
  *     'key'       { key, pos }         — after each down/up/h/l press resolves
  *     'peek'      { on }               — Show screen toggled
  *     'voice'     { on }               — Voice toggled
+ *     'fast'      { on }               — Fast toggled (HOST CHANGE, v19 §A)
  *     'docchange' { index, id }        — document picker changed docs
  *   This is an ADDITION over the source (which had no hooks at all); it
  *   does not change any internal behavior and can be safely omitted.
@@ -2235,8 +2492,11 @@ var CLOSING = {
  *     feature-detected (`'speechSynthesis' in window`), so it degrades
  *     silently to console-only output in a browser/headless environment
  *     without it (this is why the automated test in test-sr.html works
- *     under headless Chromium without audio). Rate is fixed at 1.0x (author ruling 2026-09-15; was 1.35x),
- *     pitch 1, lang 'en-US' — unchanged from source.
+ *     under headless Chromium without audio). Rate is 1.0x with Fast off
+ *     (author ruling 2026-09-15; was 1.35x) and 2.5x with Fast on (HOST
+ *     CHANGE, build v19, change spec v19 §A: many experienced screen reader
+ *     users listen at two to three times conversational speed), pitch 1,
+ *     lang 'en-US' — otherwise unchanged from source.
  *   - Uses window.setTimeout for the Links List key's staggered 350ms
  *     announcements. No other timers, no audio files, no video.
  *   - No other external dependencies. Pure vanilla JS, no build step.
@@ -2362,7 +2622,9 @@ var CLOSING = {
     var onEvent = typeof options.onEvent === 'function' ? options.onEvent : function () {};
 
     // state — same shape/fields as source original line 223, plus `docs`.
-    var state = { docs: [], doc: 0, pos: -1, presses: 0, voice: options.voice !== false, peek: false };
+    /* HOST CHANGE (build v19, change spec v19 §A): `fast` mirrors `voice` —
+       an initial option, a toolbar toggle, and an onEvent('fast', { on }). */
+    var state = { docs: [], doc: 0, pos: -1, presses: 0, voice: options.voice !== false, fast: options.fast === true, peek: false };
 
     root.classList.add('sr-sim');
     root.innerHTML = TEMPLATE;
@@ -2387,7 +2649,8 @@ var CLOSING = {
       try {
         global.speechSynthesis.cancel();
         var u = new global.SpeechSynthesisUtterance(text);
-        u.rate = 1.0; u.pitch = 1; u.lang = 'en-US';
+        /* HOST CHANGE (build v19, change spec v19 §A): 2.5 with Fast on. */
+        u.rate = state.fast ? 2.5 : 1.0; u.pitch = 1; u.lang = 'en-US';
         global.speechSynthesis.speak(u);
       } catch (e) { /* voice is optional */ }
     }
@@ -2483,11 +2746,16 @@ var CLOSING = {
         return '<button class="key" type="button" data-key="' + k + '"><kbd>' + KEYDEFS[k].k + '</kbd>' + KEYDEFS[k].label + '</button>';
       }).join('')
         + '<button class="key" type="button" data-role="voice" aria-pressed="' + String(state.voice) + '">'
-        + (state.voice ? 'Voice on' : 'Voice off') + '</button>';
+        + (state.voice ? 'Voice on' : 'Voice off') + '</button>'
+        /* HOST CHANGE (build v19, change spec v19 §A): one more key-button
+           after Voice, so the learner can hear the next lines at the pace
+           experienced screen reader users actually listen at. */
+        + '<button class="key" type="button" data-role="fast" aria-pressed="' + String(state.fast) + '">Fast</button>';
       $$('[data-role="keys"] [data-key]').forEach(function (b) {
         b.addEventListener('click', function () { key(b.dataset.key); });
       });
       $('[data-role="voice"]').addEventListener('click', function () { setVoice(!state.voice); });
+      $('[data-role="fast"]').addEventListener('click', function () { setFast(!state.fast); });
       /* Show screen lives in the frame's title bar now, so it survives every
          re-render; only its label and state are refreshed here. */
       var pk = $('[data-role="peek"]');
@@ -2542,6 +2810,16 @@ var CLOSING = {
       onEvent('voice', { on: state.voice });
     }
 
+    /* HOST CHANGE (build v19, change spec v19 §A): the listening-speed
+       toggle, written exactly like setVoice above.  Nothing else in the
+       engine reads it — speak() alone does, when it builds the utterance. */
+    function setFast(on) {
+      state.fast = !!on;
+      var fb = $('[data-role="fast"]');
+      if (fb) fb.setAttribute('aria-pressed', String(state.fast));
+      onEvent('fast', { on: state.fast });
+    }
+
     function togglePeek() {
       state.peek = !state.peek;
       announceLine(state.peek ? 'Screen on. The current line is highlighted.' : 'Screen off.');
@@ -2576,7 +2854,7 @@ var CLOSING = {
     }
 
     function getState() {
-      return { docIndex: state.doc, pos: state.pos, presses: state.presses, voice: state.voice, peek: state.peek };
+      return { docIndex: state.doc, pos: state.pos, presses: state.presses, voice: state.voice, fast: state.fast, peek: state.peek };
     }
 
     loadDocuments(options.docs && options.docs.length ? options.docs : DEFAULT_DOCS);
@@ -2587,6 +2865,7 @@ var CLOSING = {
       reset: reset,
       key: key,
       setVoice: setVoice,
+      setFast: setFast,
       destroy: destroy,
       getState: getState,
     };
@@ -2607,8 +2886,14 @@ var CLOSING = {
    Change spec v10 §B: there is no options button, no modal, no keyboard route
    into one, and no in-page nudge of any kind.  Change spec v13 §C: there is no
    fail-safe either — the question's own Continue is the only way off a task
-   screen, and Task 2's Continue appears once Registration opens.  Restarting
-   lives on the closing screen alone.
+   screen, and Task 2's Continue appears once Registration opens.
+   Change spec v19: the saved state lives in localStorage now (§B); one real
+   dialog — the menu — opens from the header and is the second place Start
+   over lives (§C); every screen but the cover opens its actions row with Back
+   (§D); the footer is back, with the licence and the build date (§E); Task 2
+   reads its clock once, when Registration opens (§F); the registration form
+   is reworked so both versions carry real labels (§G); and the two crosswalk
+   screens are rebuilt (§H / §I).
    ========================================================================== */
 (function () {
   'use strict';
@@ -2616,7 +2901,12 @@ var CLOSING = {
   var MAIN = document.getElementById('main');
   var LIVE = document.getElementById('live');
   var STEPS_LIST = document.getElementById('steps');
-  var STORE_KEY = 'eal-v18';
+  /* Change spec v19 §B: the saved state moves from sessionStorage to
+     localStorage under a new key, so a reload OR a new tab resumes the screen
+     the learner left.  Nothing else about the saved shape changes except the
+     added `fast`. */
+  var STORE_KEY = 'eal-v20';
+  var STORE = window.localStorage;
 
   function reduced() {
     try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; }
@@ -2660,27 +2950,30 @@ var CLOSING = {
     returnTo: null,
     /* Change spec v18 §D: null means "whatever the device says"; true / false
        is the learner's own choice, kept for the session. */
-    oskeys: null
+    oskeys: null,
+    /* Change spec v19 §A/§B: the listening-speed choice, persisted and handed
+       to every simulator instance, so it carries across screens and visits. */
+    fast: false
   };
   function save() {
     try {
-      window.sessionStorage.setItem(STORE_KEY, JSON.stringify({
+      STORE.setItem(STORE_KEY, JSON.stringify({
         screen: state.screen, ratings: state.ratings,
         answers: state.answers, times: state.times, t3method: state.t3method, t2: state.t2,
-        returnTo: state.returnTo, oskeys: state.oskeys
+        returnTo: state.returnTo, oskeys: state.oskeys, fast: state.fast
       }));
     } catch (e) { /* storage is optional; never rely on it */ }
   }
   function load() {
     try {
-      var raw = window.sessionStorage.getItem(STORE_KEY);
+      var raw = STORE.getItem(STORE_KEY);
       if (!raw) return null;
       var s = JSON.parse(raw);
       if (!s || typeof s.screen !== 'string') return null;
       return s;
     } catch (e) { return null; }
   }
-  function clearStore() { try { window.sessionStorage.removeItem(STORE_KEY); } catch (e) {} }
+  function clearStore() { try { STORE.removeItem(STORE_KEY); } catch (e) {} }
 
   /* ------------------------------------------------------- screen manifest
      Change spec v18 §B: 45 screens.  The cover, the "Before you get started"
@@ -2721,6 +3014,39 @@ var CLOSING = {
   function nextId(id) {
     var s = byId[id];
     return SCREENS[Math.min(s.index + 1, SCREENS.length - 1)].id;
+  }
+  /* ----------------------------------------------------- Back (spec v19 §D)
+     The previous screen in the manifest, except that Back never lands on a
+     task or repaired encounter whose work is already done — an answer locked,
+     or, on Task 2, Registration opened.  It steps over such a screen to the
+     one before, which is why `t{n}-rate1` goes back to `t{n}-trans` and
+     `t{n}-rate2` to `t{n}-rate1`.  Nothing here writes state: Back never
+     changes a stored answer, timing or measurement. */
+  function encounterDone(s) {
+    if (s.kind !== 'encounter') return false;
+    var slot = s.fixed ? 1 : 0;
+    if (s.task.key === 't2') return state.t2[slot] != null;
+    return state.answers[s.task.key][slot] != null;
+  }
+  function prevId(id) {
+    var i = byId[id].index;
+    while (i > 0) {
+      i--;
+      if (encounterDone(SCREENS[i])) continue;
+      return SCREENS[i].id;
+    }
+    return SCREENS[0].id;
+  }
+  function goBack(id) {
+    /* In review mode the two crosswalk screens answer to the review, not to
+       the manifest: cross-b steps back to cross-a, and cross-a is Return. */
+    var back = state.returnTo && state.returnTo.screen;
+    if (back && byId[back]) {
+      var m = /^t([1-5])-cross-(a|b)$/.exec(id);
+      if (m && m[2] === 'b') { go('t' + m[1] + '-cross-a'); return; }
+      if (m && m[2] === 'a') { state.returnTo = null; go(back); return; }
+    }
+    go(prevId(id));
   }
 
   /* --------------------------------------------------- live encounter state */
@@ -2841,9 +3167,13 @@ var CLOSING = {
       var st;
       if (stage === 2 && reviewN) {
         /* Reviewing: the task being reviewed reads `now`, and every other item
-           keeps the state the learner's real place gives it. */
-        var behind = p.stage === 2 && (p.all || (p.now !== 0 && n < p.now));
-        st = n === reviewN ? 'now' : (behind ? 'done' : 'todo');
+           keeps the state the learner's real record gives it. */
+        st = n === reviewN ? 'now' : (taskFinished(n) ? 'done' : 'todo');
+      } else if (stage === 2) {
+        /* Post-build ruling 2026-09-21 (menu jumps): a task is `done` only when
+           its second rating exists, so a task the learner jumped past stays
+           `todo`, and the current one is `now` whether or not it is finished. */
+        st = n === p.now ? 'now' : (taskFinished(n) ? 'done' : 'todo');
       } else {
         st = p.all ? 'done'
           : p.now === 0 ? 'todo'
@@ -2908,6 +3238,160 @@ var CLOSING = {
     return 'the activity';
   }
 
+  /* ============================================ MENU (spec v19 §C, v20 §A)
+     One button at the right end of the header's top row opens a real dialog
+     over the page: ten places, in activity order — Intro, the practices, the
+     tasks, the closing.  A done item carries a check, the current item
+     aria-current; there are no state words and no action buttons.  Focus
+     moves to the heading on open, Tab cycles inside the panel, Escape /
+     Close / the scrim close it, and focus goes back to the button.  No key
+     opens it. */
+  var MENU_BTN = document.getElementById('menu-btn');
+  var MENU_PANEL = document.getElementById('menu-panel');
+  var MENU_SCRIM = document.getElementById('menu-scrim');
+  var MENU_FOCUSABLE = 'button, a[href], input, [tabindex]:not([tabindex="-1"])';
+
+  /* Where the learner actually is: during a review round trip that is the
+     screen they left, exactly as the progress bar reads it. */
+  function realScreen() {
+    var r = state.returnTo && state.returnTo.screen;
+    return (r && byId[r]) ? r : state.screen;
+  }
+  /* 'done' | 'now' | null.  Tasks follow the bar's completion rule (a task
+     is done only when its second rating exists); practices follow position;
+     the one Intro item is current on every intro screen and done after them. */
+  var INTRO_IDS = ['cover', 'before', 's0a', 's0b'];
+  function menuStateOf(item, here) {
+    var p = progressOf(byId[here]);
+    if (item.task) {
+      if (p.stage === 2 && !p.all && item.task === p.now) return 'now';
+      return taskFinished(item.task) ? 'done' : null;
+    }
+    if (item.practice) {
+      if (p.stage < 1) return null;
+      if (p.stage > 1 || p.all) return 'done';
+      if (item.practice < p.now) return 'done';
+      return item.practice === p.now ? 'now' : null;
+    }
+    if (item.id === 'closing') return here === 'closing' ? 'now' : null;
+    /* the Intro item */
+    if (INTRO_IDS.indexOf(here) !== -1) return 'now';
+    return 'done';
+  }
+  /* A task counts as finished when its second rating exists. */
+  function taskFinished(n) { return state.ratings['t' + n][1] != null; }
+
+  function menuAct(item, st) {
+    var here = realScreen();
+    if (st === 'now' && !(item.id === 'before' && here !== 'before')) {
+      /* The current item takes the learner back to the screen they are on —
+         which, mid-review, means leaving the review the way Return does. */
+      if (state.screen === here) { closeMenu(true); return; }
+      closeMenu(false);
+      state.returnTo = null;
+      go(here);
+      return;
+    }
+    closeMenu(false);
+    state.returnTo = null;
+    if (item.practice) { go(item.id); return; }   // a done practice re-runs
+    if (item.task) {
+      /* Never t{n}-task and never t{n}-repair: a finished task opens its
+         review, an unstarted one its transition. */
+      if (taskFinished(item.task)) { review(item.task); return; }
+      go('t' + item.task + '-trans');
+      return;
+    }
+    go(item.id);                                   // Intro (the first content screen), or the closing
+  }
+
+  function menuItem(item, here) {
+    var li = document.createElement('li');
+    if (item.label) li.appendChild(txt('p', 'menu-label', item.label));
+    var st = menuStateOf(item, here);
+    var b = txt('button', 'menu-item', item.name);
+    b.type = 'button';
+    if (st === 'now') b.setAttribute('aria-current', 'page');
+    if (st === 'done') {
+      var mark = txt('span', 'menu-check', MENU.doneMark);
+      mark.setAttribute('aria-hidden', 'true');
+      b.appendChild(mark);
+      b.appendChild(txt('span', 'sr-only', ' ' + MENU.doneSr));
+    }
+    b.addEventListener('click', function () { menuAct(item, st); });
+    li.appendChild(b);
+    return li;
+  }
+
+  function buildMenu() {
+    MENU_PANEL.innerHTML = '';
+    var inner = el('div', 'menu-in');
+
+    var head = el('div', 'menu-head');
+    var h = txt('h2', null, MENU.title);
+    h.id = 'menu-h';
+    h.setAttribute('tabindex', '-1');
+    head.appendChild(h);
+    var close = txt('button', 'menu-close', '×');
+    close.type = 'button';
+    close.setAttribute('aria-label', MENU.close);
+    close.addEventListener('click', function () { closeMenu(true); });
+    head.appendChild(close);
+    inner.appendChild(head);
+
+    var here = realScreen();
+    var ol = el('ol', 'menu-list');
+    MENU.items.forEach(function (item) { ol.appendChild(menuItem(item, here)); });
+    ol.appendChild(menuItem(MENU.closing, here));
+    inner.appendChild(ol);
+
+    MENU_PANEL.appendChild(inner);
+    return h;
+  }
+
+  function menuFocusables() {
+    return Array.prototype.filter.call(MENU_PANEL.querySelectorAll(MENU_FOCUSABLE), function (n) {
+      return !n.disabled && n.offsetParent !== null;
+    });
+  }
+  function menuKeydown(ev) {
+    if (ev.key === 'Escape') { ev.preventDefault(); closeMenu(true); return; }
+    if (ev.key !== 'Tab') return;
+    var list = menuFocusables();
+    if (!list.length) return;
+    var first = list[0], last = list[list.length - 1];
+    var a = document.activeElement;
+    if (ev.shiftKey) {
+      if (a === first || !MENU_PANEL.contains(a) || a === MENU_PANEL.querySelector('#menu-h')) {
+        ev.preventDefault(); last.focus();
+      }
+    } else if (a === last) {
+      ev.preventDefault(); first.focus();
+    }
+  }
+  var menuOpen = false;
+  function openMenu() {
+    if (menuOpen) return;
+    var h = buildMenu();
+    MENU_SCRIM.hidden = false;
+    MENU_PANEL.hidden = false;
+    MENU_BTN.setAttribute('aria-expanded', 'true');
+    menuOpen = true;
+    MENU_PANEL.addEventListener('keydown', menuKeydown);
+    h.focus({ preventScroll: true });
+  }
+  function closeMenu(returnFocus) {
+    if (!menuOpen) return;
+    MENU_PANEL.removeEventListener('keydown', menuKeydown);
+    MENU_PANEL.hidden = true;
+    MENU_SCRIM.hidden = true;
+    MENU_BTN.setAttribute('aria-expanded', 'false');
+    menuOpen = false;
+    if (returnFocus) MENU_BTN.focus();
+  }
+  MENU_BTN.addEventListener('click', function () { openMenu(); });
+  MENU_SCRIM.addEventListener('click', function () { closeMenu(true); });
+
   /* ------------------------------------------------------- shared fragments */
   function eyebrow(parent, text) { parent.appendChild(txt('p', 'eyebrow', text)); }
   function heading(parent, text) {
@@ -2948,7 +3432,11 @@ var CLOSING = {
     box.appendChild(txt('h2', 'refs-h', heading2));
     refs.forEach(function (r) {
       var p = el('p', 'ref');
-      p.appendChild(document.createTextNode(r.author + ' ' + r.date + ' '));
+      /* `pre` (change spec v19 §A) is whatever sits between the date and the
+         italic title — an article title and the "In" before a proceedings
+         name, in the one entry whose italics are not on the work's own
+         title.  Entries without it read exactly as they did. */
+      p.appendChild(document.createTextNode(r.author + ' ' + r.date + ' ' + (r.pre ? r.pre + ' ' : '')));
       p.appendChild(txt('i', null, r.title));
       p.appendChild(document.createTextNode(r.after + ' '));
       var a = document.createElement('a');
@@ -3069,13 +3557,27 @@ var CLOSING = {
     parent.appendChild(strip);
   }
 
-  function primary(parent, label, onClick) {
+  /* Change spec v19 §D: every screen but the cover opens its actions row with
+     Back, in the shell's secondary look, and whatever moves the activity on
+     joins it on the right.  On a screen where Continue only appears once the
+     work is done, the row — and Back in it — is there from the start. */
+  function actionsRow(parent, id) {
     var wrap = el('div', 'actions');
+    if (id !== 'cover') {
+      var b = txt('button', 'btn secondary back', BACK_LABEL);
+      b.type = 'button';
+      b.addEventListener('click', function () { goBack(id); });
+      wrap.appendChild(b);
+    }
+    parent.appendChild(wrap);
+    return wrap;
+  }
+  function primary(parent, label, onClick, id) {
+    var wrap = actionsRow(parent, id);
     var b = txt('button', 'btn', label);
     b.type = 'button';
     b.addEventListener('click', onClick);
     wrap.appendChild(b);
-    parent.appendChild(wrap);
     return b;
   }
 
@@ -3157,7 +3659,7 @@ var CLOSING = {
       ol.appendChild(li);
     });
     node.appendChild(ol);
-    primary(node, b.button, function () { go(nextId(s.id)); });
+    primary(node, b.button, function () { go(nextId(s.id)); }, s.id);
   };
   /* One paragraph to a screen reader; two fixed-width, non-wrapping spans to
      the layout, so the second drops to its own row as soon as the column is
@@ -3181,7 +3683,7 @@ var CLOSING = {
     if (o.callout) node.appendChild(txt('div', 'callout', o.callout));
     if (o.meta) node.appendChild(txt('p', 'meta', o.meta));
     if (o.refs) node.appendChild(referencesBlock(o.refsHeading, o.refs));
-    primary(node, o.button, function () { go(nextId(s.id)); });
+    primary(node, o.button, function () { go(nextId(s.id)); }, s.id);
   };
 
   /* ======================================================= SCREEN: bridge ==
@@ -3191,7 +3693,7 @@ var CLOSING = {
     eyebrow(node, s.bridge.eyebrow);
     heading(node, s.bridge.h1);
     lede(node, s.bridge.lines);
-    primary(node, 'Continue', function () { go(nextId(s.id)); });
+    primary(node, 'Continue', function () { go(nextId(s.id)); }, s.id);
   };
 
   /* ===================================================== SCREEN: practice ==
@@ -3222,8 +3724,8 @@ var CLOSING = {
     done.setAttribute('role', 'status');
     node.appendChild(done);
 
-    var actions = el('div', 'actions');
-    node.appendChild(actions);
+    /* Change spec v19 §D: Back is here from the start; Continue joins it. */
+    var actions = actionsRow(node, s.id);
 
     var finished = false;
     function complete() {
@@ -3251,7 +3753,11 @@ var CLOSING = {
          that fits it (post-build ruling, 2026-09-17). */
       activeSim = SRSimulator.create(art, {
         docs: [SR_DOCS.practice], showNotes: false,
+        /* Change spec v19 §A: the listening-speed choice is the host's, so it
+           is handed in here and taken back out of the simulator's own event. */
+        fast: state.fast,
         onEvent: function (name, d) {
+          if (name === 'fast') { state.fast = d.on; save(); return; }
           if (name !== 'key') return;
           if (d.key === 'h' || d.key === 'l') pressed[d.key] = true;
           if (pressed.h && pressed.l) complete();
@@ -3330,7 +3836,7 @@ var CLOSING = {
           clearTimers();
         },
         onAdvance: function (i) { finish(i === q.unknownIndex ? 'unknown' : 'answered', i); }
-      }, E);
+      }, E, s.id);
       node.appendChild(qNode.wrap);
     }
 
@@ -3342,6 +3848,11 @@ var CLOSING = {
     var post = el('div', 'post');
     node.appendChild(post);
     E.postWrap = post;
+    /* Change spec v19 §D: Task 2 has no question, so its actions row is the
+       screen's own — Back from the moment it renders, and the Continue that
+       change spec v16 §C puts below the artifact joins it when Registration
+       opens.  Every other encounter's row lives inside the question block. */
+    if (!q) E.actsRow = actionsRow(node, s.id);
 
     /* ---- ending the encounter ---- */
     function finish(kind, chosenIndex) {
@@ -3374,7 +3885,12 @@ var CLOSING = {
       art.classList.add('doc-email');
       activeSim = SRSimulator.create(art, {
         docs: [fixed ? SR_DOCS.t1fixed : SR_DOCS.t1broken], showNotes: false,
-        onEvent: function (name) { if (name === 'key') E.artKeys++; }
+        /* Change spec v19 §A: the choice made in Practice 1 carries here. */
+        fast: state.fast,
+        onEvent: function (name, d) {
+          if (name === 'fast') { state.fast = d.on; save(); return; }
+          if (name === 'key') E.artKeys++;
+        }
       });
       unmarkSimLandmark(art);
     } else if (t.artifact === 'site') {
@@ -3463,7 +3979,7 @@ var CLOSING = {
      option carries the matching glyph; a wrong answer never highlights the
      right option, because the feedback sentence carries the fact. */
   var qSeq = 0;
-  function buildQuestion(q, cb, ctx) {
+  function buildQuestion(q, cb, ctx, screenId) {
     var id = 'q' + (++qSeq);
     var wrap = el('div', 'qblock');
     var fs = document.createElement('fieldset');
@@ -3493,7 +4009,9 @@ var CLOSING = {
     status.setAttribute('role', 'status');
     wrap.appendChild(status);
 
-    var actions = el('div', 'actions');
+    /* Change spec v19 §D: Back sits to the left of this Continue, in the same
+       row, and is live from the first frame — the question's Continue is not. */
+    var actions = actionsRow(wrap, screenId);
     var btn = txt('button', 'btn', 'Continue');
     btn.type = 'button';
     btn.disabled = true;
@@ -3531,7 +4049,6 @@ var CLOSING = {
       if (cb && cb.onAdvance) cb.onAdvance(chosen);
     });
     actions.appendChild(btn);
-    wrap.appendChild(actions);
     return out;
   }
 
@@ -3544,6 +4061,7 @@ var CLOSING = {
     var t = s.task;
     eyebrow(node, 'Task ' + t.n + ' of 5');
     heading(node, RATING_PROMPT);
+    var stored = state.ratings[t.key][s.round];
     var fs = document.createElement('fieldset');
     fs.className = 'rating';
     var lg = txt('legend', 'sr-only', RATING_PROMPT);
@@ -3568,18 +4086,20 @@ var CLOSING = {
         announce('Recorded: ' + f.label);
         cont.disabled = false;
       });
+      /* Change spec v19 §D: a rating screen reached by Back opens on the
+         choice already stored, and choosing again simply replaces it. */
+      if (stored === f.v) { input.checked = true; lab.classList.add('is-checked'); }
       faces.appendChild(lab);
     });
     fs.appendChild(faces);
     node.appendChild(fs);
 
-    var actions = el('div', 'actions');
+    var actions = actionsRow(node, s.id);
     var cont = txt('button', 'btn', 'Continue');
     cont.type = 'button';
-    cont.disabled = true;
+    cont.disabled = !stored;
     cont.addEventListener('click', function () { go(nextId(s.id)); });
     actions.appendChild(cont);
-    node.appendChild(actions);
   };
   function faceByValue(v) {
     for (var i = 0; i < FACES.length; i++) if (FACES[i].v === v) return FACES[i];
@@ -3591,57 +4111,65 @@ var CLOSING = {
      carry now rides in the feedback line on the task screen itself. */
 
   /* ============================================ SCREEN: crosswalk 1 of 2 ==
-     Change spec v10 §G.  "What changed": the learner's own reaction to the
-     first version beside a frozen view of the broken artifact, a divider, then
-     the same for the repaired version, with the repaired artifact drawn frozen
-     and annotated with numbered pins and a notes column. */
+     Change spec v19 §H rebuilds this screen.  Two headed sections — "Original
+     design" and "Accessible design" — each one paragraph and then the
+     learner's own rating line, with the POUR mark under the second heading;
+     then the pinned accessible artifact with its numbered notes column, which
+     is the v18 component untouched; then Back and Continue.  The frozen
+     original artifact, the Before / After tags and the divider are gone. */
   RENDER.crossA = function (node, s) {
-    var t = s.task;
+    var t = s.task, c = t.crosswalk;
     eyebrow(node, 'What changed');
     heading(node, t.title);
-    node.appendChild(changeBlock(t, false));
-    node.appendChild(el('div', 'xdiv'));
-    node.appendChild(changeBlock(t, true));
-    primary(node, 'Continue', function () { go(nextId(s.id)); });
+
+    node.appendChild(txt('h2', null, 'Original design'));
+    node.appendChild(txt('p', 'xpara', c.before));
+    node.appendChild(ratingLine(t, 0));
+
+    node.appendChild(txt('h2', null, 'Accessible design'));
+    node.appendChild(pourMark(c));
+    node.appendChild(txt('p', 'xpara', c.changed));
+    node.appendChild(ratingLine(t, 1));
+
+    node.appendChild(pinnedArtifact(t));
+    primary(node, 'Continue', function () { go(nextId(s.id)); }, s.id);
   };
 
-  function changeBlock(t, after) {
-    var box = el('div', 'xblock ' + (after ? 'is-after' : 'is-before'));
-    var head = el('p', 'xhead');
-    head.appendChild(txt('span', 'xtag', after ? 'After' : 'Before'));
-    head.appendChild(document.createTextNode(' '));
-    head.appendChild(reactionLine(t, after ? 1 : 0));
-    box.appendChild(head);
-    box.appendChild(txt('p', 'xpara', after ? t.crosswalk.changed : t.crosswalk.before));
-    if (after) box.appendChild(pinnedArtifact(t));
-    else {
-      var wrap = el('div', 'pinwrap');
-      wrap.appendChild(frozenArtifact(t, false));
-      box.appendChild(wrap);
-    }
-    return box;
+  /* Change spec v19 §H: the POUR mark.  Four circles in the display face, the
+     principle(s) this task turns on filled; then the name(s).  The letters are
+     decoration — a screen reader hears "POUR: Perceivable" and nothing else. */
+  function pourMark(c) {
+    var p = el('p', 'pour');
+    ['P', 'O', 'U', 'R'].forEach(function (letter) {
+      var on = c.pour.indexOf(letter) !== -1;
+      var dot = txt('span', 'pour-dot' + (on ? ' is-on' : ''), letter);
+      dot.setAttribute('aria-hidden', 'true');
+      p.appendChild(dot);
+    });
+    var sep = txt('span', 'pour-sep', '·');
+    sep.setAttribute('aria-hidden', 'true');
+    p.appendChild(sep);
+    p.appendChild(txt('span', 'sr-only', 'POUR: '));
+    p.appendChild(txt('span', 'pour-name', c.pourName));
+    return p;
   }
 
-  /* "Your rating for the first version: 😐 Partly successful." — with the
-     measurement this task recorded appended before the full stop, exactly as
-     the copy's template gives it. */
-  function reactionLine(t, slot) {
-    var span = el('span', 'xreact');
-    span.appendChild(document.createTextNode(
-      slot ? 'Your rating for the repaired version: ' : 'Your rating for the first version: '));
+  /* "😐 Your rating: Partly successful · 23 key presses · 41 seconds" — the
+     measurement this task recorded appended, exactly as change spec v19 §H
+     gives it.  "Not rated" stands in where there is no rating. */
+  function ratingLine(t, slot) {
+    var p = el('p', 'rating');
     var f = faceByValue(state.ratings[t.key][slot]);
     if (f) {
       var e = txt('span', 'emoji', f.emoji);
       e.setAttribute('aria-hidden', 'true');
-      span.appendChild(e);
-      span.appendChild(document.createTextNode(' ' + f.label));
-    } else {
-      span.appendChild(document.createTextNode('Not rated'));
+      p.appendChild(e);
+      p.appendChild(document.createTextNode(' '));
     }
+    p.appendChild(document.createTextNode('Your rating: ' + (f ? f.label : 'Not rated')));
     var tail = measureTail(t, slot);
-    if (tail) span.appendChild(document.createTextNode(tail));
-    span.appendChild(document.createTextNode('.'));
-    return span;
+    if (tail) p.appendChild(document.createTextNode(tail));
+    return p;
   }
   function measureTail(t, slot) {
     if (t.key === 't2') {
@@ -3770,33 +4298,45 @@ var CLOSING = {
   }
 
   /* ============================================ SCREEN: crosswalk 2 of 2 ==
-     "Your role": the principle as the heading, what the change enabled, what
-     the learner does, then where else this happens. */
+     Change spec v19 §I rebuilds this screen as one column: the "Everyday
+     accessibility" overline, the role heading, one lead paragraph, "Put it
+     into practice" with three marked items, then the Examples label and the
+     examples as quiet tags.  No boxes and no left borders anywhere. */
   RENDER.crossB = function (node, s) {
     var t = s.task, c = t.crosswalk;
-    eyebrow(node, 'Your role');
+    node.setAttribute('data-screen', 'crossb');
+    eyebrow(node, 'Everyday accessibility');
     heading(node, c.principle);
-    lede(node, [c.enabled, c.role], 'rolebody');
+    lede(node, [c.enabled], 'rolebody');
 
-    var w = el('div', 'wherelse');
-    w.appendChild(txt('h2', null, 'Where else this happens'));
-    var ul = document.createElement('ul');
+    node.appendChild(txt('h2', null, 'Put it into practice'));
+    var list = el('div', 'practice-list');
+    c.practice.forEach(function (item) {
+      var d = el('div', 'practice-item');
+      d.appendChild(txt('h3', null, item.h));
+      d.appendChild(txt('p', null, item.p));
+      list.appendChild(d);
+    });
+    node.appendChild(list);
+
+    node.appendChild(txt('h2', 'label', 'Examples'));
+    var ul = el('ul', 'tags');
     c.where.forEach(function (i) { ul.appendChild(txt('li', null, i)); });
-    w.appendChild(ul);
-    node.appendChild(w);
+    node.appendChild(ul);
 
     /* Change spec v18 §C: reached through a Review link, this screen's last
        button goes back where the learner came from instead of on.  Everything
-       above it renders exactly as it does in the ordinary flow. */
+       above it renders exactly as it does in the ordinary flow, and change
+       spec v19 §D's Back still steps back to the first crosswalk screen. */
     var back = state.returnTo && state.returnTo.screen;
     if (back) {
       primary(node, 'Return to ' + returnLabel(back), function () {
         state.returnTo = null;
         go(back);
-      });
+      }, s.id);
       return;
     }
-    primary(node, t.key === 't5' ? 'Finish' : 'Continue', function () { go(nextId(s.id)); });
+    primary(node, t.key === 't5' ? 'Finish' : 'Continue', function () { go(nextId(s.id)); }, s.id);
   };
 
   /* The pieces are laid out by flex gap, which leaves no whitespace in the
@@ -3903,11 +4443,10 @@ var CLOSING = {
     bq.appendChild(txt('p', null, CLOSING.pull));
     node.appendChild(bq);
 
-    var wrap = el('div', 'actions');
+    var wrap = actionsRow(node, 'closing');
     var b = txt('button', 'btn secondary', CLOSING.restart);
     b.type = 'button';
     wrap.appendChild(b);
-    node.appendChild(wrap);
 
     /* The confirmation lives on this screen, in place: there is no modal
        anywhere in the activity (change spec v10 §B.1). */
@@ -3937,8 +4476,11 @@ var CLOSING = {
     state.t3method = [null, null];
     state.t2 = [null, null];
     state.returnTo = null;
+    /* Change spec v19 §B / §J: Start over removes the saved key outright
+       and puts the learner back on the cover, not on orientation 1.  Since
+       v20 §A it is the closing's control alone; the menu has none. */
     clearStore();
-    go('s0a');
+    go('cover');
   }
 
   /* ======================================================= ARTIFACT: site ==
@@ -4006,10 +4548,14 @@ var CLOSING = {
       /* Change spec v16 §C: Task 2 has no question, so it closes with its own
          measurement, in the feedback pattern — the ✓ circle, then the line —
          followed by the Continue button that was already here.  The clock is
-         read at this moment, the moment Registration opens. */
+         read at this moment, the moment Registration opens.
+         Change spec v19 §F: that same reading is what `state.t2[slot].ms`
+         keeps, so the crosswalk's rating line and this completion line can
+         never disagree — finish() reads `lockMs` and never the clock again. */
+      if (e && e.t0 != null) e.lockMs = window.performance.now() - e.t0;
       var line = fillMeasures(TASKS[1].doneLine, {
         artKeys: e ? e.artKeys : 0,
-        lockMs: (e && e.t0 != null) ? (window.performance.now() - e.t0) : null,
+        lockMs: e ? e.lockMs : null,
         maxPage: 1
       });
       announce(line);
@@ -4024,13 +4570,12 @@ var CLOSING = {
         e.postWrap.appendChild(st);
         /* Change spec v13 §C: an ordinary Continue appears below the artifact,
            so the learner reads the page they just opened instead of being
-           jumped away from it.  Nothing is there before this. */
-        var acts = el('div', 'actions');
+           jumped away from it.  Change spec v19 §D: it joins the Back button
+           in the row that has been there since the screen rendered. */
         var b = txt('button', 'btn', 'Continue');
         b.type = 'button';
         b.addEventListener('click', function () { finish('answered'); });
-        acts.appendChild(b);
-        e.postWrap.appendChild(acts);
+        (e.actsRow || e.postWrap).appendChild(b);
         window.setTimeout(function () { b.focus(); }, 60);
       }
     }
@@ -4339,13 +4884,15 @@ var CLOSING = {
   }
 
   /* ======================================================= ARTIFACT: form ==
-     Change spec v10 §F.  The first version carries three things and nothing
-     else: placeholder text as the only label, required status in colour alone
-     (a coloured left border, no symbol and no word), and the two email fields
-     back to back with nothing between them.  No helper text at all, so there
-     is no low-contrast text in it.  The repaired version gives every field a
-     persistent visible label, says "(required)" in words, and keeps helper
-     text with the field it belongs to. */
+     Change spec v19 §G.  BOTH versions have real <label for> elements now.
+     The first version's barrier is a vague label, not a missing one: two
+     fields both say "Email", so nothing on the form tells you which address
+     the confirmation goes to once the values are filled in — and required
+     status is carried by the label's colour alone, with no asterisk and no
+     note.  Placeholders are neutral, and only the empty Session code field
+     shows one.  The repaired version gives every field a specific label, a
+     real asterisk (plus an sr-only "(required)") under a "* Required" line,
+     and each helper under its own field, tied to it by aria-describedby. */
   function buildForm(fixed, frozen) {
     var frame = el('div', 'mock-browser fit');
     frame.appendChild(el('div', 'bchrome',
@@ -4362,6 +4909,30 @@ var CLOSING = {
     form.appendChild(txt('h2', null, 'Register for Virtual Education Workshops'));
     form.appendChild(txt('p', 'f-intro', 'Step 2 of 2 · Review and submit'));
     var sfx = fixed ? '-r' : '-b';
+    /* The repaired form says what the asterisk means before the first field
+       that carries one (change spec v19 §G). */
+    if (fixed) form.appendChild(txt('p', 'f-required', FORM_REQUIRED_NOTE));
+
+    /* A repaired label: the text, a real asterisk where the field is
+       required, and the word behind that asterisk for anyone who cannot see
+       it.  A first-version label: the vague text, red where required. */
+    function fieldLabel(id, text, req) {
+      var lab = document.createElement('label');
+      lab.setAttribute('for', id);
+      if (fixed) {
+        lab.appendChild(document.createTextNode(req ? text + ' *' : text));
+        if (req) {
+          lab.appendChild(document.createTextNode(' '));
+          lab.appendChild(txt('span', 'sr-only', FORM_REQUIRED_SR));
+        }
+      } else {
+        lab.appendChild(document.createTextNode(text));
+        /* DELIBERATE BARRIER: colour is the only thing that marks this field
+           as required — no asterisk, no note, nothing in the words. */
+        if (req) lab.classList.add('f-req');
+      }
+      return lab;
+    }
 
     FORM_FIELDS.forEach(function (f) {
       var row = el('div', 'f-row');
@@ -4369,24 +4940,15 @@ var CLOSING = {
       input.type = f.type === 'email' ? 'email' : 'text';
       input.id = f.id + sfx;
       input.value = f.value;
-      if (fixed) {
-        var lab = txt('label', null, f.label);
-        lab.setAttribute('for', input.id);
-        row.appendChild(lab);
-        if (f.help) {
-          var h = txt('p', 'f-help above', f.help);
-          h.id = input.id + '-help';
-          row.appendChild(h);
-          input.setAttribute('aria-describedby', h.id);
-        }
-        row.appendChild(input);
-      } else {
-        /* DELIBERATE BARRIER: the placeholder is the only label, so a filled
-           field shows nothing about its purpose, and required status is a
-           colour and nothing else. */
-        input.placeholder = f.ph;
-        if (f.req) input.classList.add('is-reqcolor');
-        row.appendChild(input);
+      row.appendChild(fieldLabel(input.id, fixed ? f.label : f.labelBroken, f.req));
+      if (!fixed && f.ph) input.placeholder = f.ph;
+      row.appendChild(input);
+      if (fixed && f.help) {
+        /* Change spec v19 §G: the helper sits UNDER its field now. */
+        var h = txt('p', 'f-help', f.help);
+        h.id = input.id + '-help';
+        input.setAttribute('aria-describedby', h.id);
+        row.appendChild(h);
       }
       form.appendChild(row);
     });
@@ -4395,15 +4957,9 @@ var CLOSING = {
     var cb = document.createElement('input');
     cb.type = 'checkbox'; cb.id = 'f-agree' + sfx; cb.checked = true;
     check.appendChild(cb);
-    if (fixed) {
-      var cl = txt('label', 'f-agree', FORM_CONSENT);
-      cl.setAttribute('for', cb.id);
-      check.appendChild(cl);
-    } else {
-      /* DELIBERATE BARRIER: plain text, no label element, and the same
-         colour-only required treatment as the fields above. */
-      check.appendChild(txt('span', 'f-agree is-reqcolor', FORM_CONSENT_BROKEN));
-    }
+    var cl = fieldLabel(cb.id, fixed ? FORM_CONSENT : FORM_CONSENT_BROKEN, true);
+    cl.classList.add('f-agree');
+    check.appendChild(cl);
     form.appendChild(check);
 
     var sub = txt('button', 'f-submit', 'Submit registration');
@@ -4534,6 +5090,12 @@ var CLOSING = {
   });
 
   /* ================================================================= boot == */
+  /* Change spec v19 §E: the public version is data; the build number is not in
+     the footer at all.  The date beside it was stamped in by assemble.sh. */
+  (function () {
+    var v = document.querySelector('.app-foot [data-role="version"]');
+    if (v) v.textContent = VERSION_PUBLIC;
+  }());
   var saved = load();
   if (saved && byId[saved.screen]) {
     state.ratings = saved.ratings || state.ratings;
@@ -4546,6 +5108,9 @@ var CLOSING = {
        come back the way the learner left them. */
     state.returnTo = saved.returnTo || null;
     state.oskeys = (saved.oskeys === true || saved.oskeys === false) ? saved.oskeys : null;
+    /* Change spec v19 §A/§B: the listening speed comes back the way it was
+       left, in this tab or in a new one. */
+    state.fast = saved.fast === true;
     go(saved.screen);
   } else {
     go('cover');

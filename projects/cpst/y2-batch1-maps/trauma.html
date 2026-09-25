@@ -1,0 +1,68 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mapping Theory to Application: Trauma</title>
+<style>
+:root{--bg:#f6f5f1;--panel:#fff;--ink:#1c2328;--mute:#5d666d;--rule:#dcdad3;--job:#1d6b66;--jobbg:#e3f0ee;--rd:#a33a4a;--rdbg:#f8e4e7;--soft:#eceeef}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#131719;--panel:#1b2124;--ink:#e6ebed;--mute:#9aa5ab;--rule:#2f383c;--job:#6cc3bb;--jobbg:#17302e;--rd:#e8909c;--rdbg:#321b20;--soft:#22292c}}
+:root[data-theme="dark"]{--bg:#131719;--panel:#1b2124;--ink:#e6ebed;--mute:#9aa5ab;--rule:#2f383c;--job:#6cc3bb;--jobbg:#17302e;--rd:#e8909c;--rdbg:#321b20;--soft:#22292c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1240px;margin:0 auto;padding:32px 24px 64px}
+h1{font-size:2.2rem;margin:0 0 4px;line-height:1.15}.mod{color:var(--mute);font-size:1.1rem;margin:0 0 24px}.sub{color:var(--mute);font-size:1.05rem;margin:0 0 18px;max-width:78ch}
+.legend{display:flex;flex-wrap:wrap;gap:8px 22px;font-size:.9rem;margin-bottom:20px;align-items:center}
+.sw{display:inline-block;width:13px;height:13px;border-radius:3px;margin-right:7px;vertical-align:-1px}.sw.gap{border:1.5px dashed var(--rd);background:none}
+.legend .hint{color:var(--mute);font-size:.85rem}
+.board{position:relative;display:grid;grid-template-columns:minmax(0,36fr) minmax(0,64fr);gap:0 96px}
+svg#lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}
+#left,#right{position:relative;z-index:1}
+.colhead{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:700;margin:0 0 10px}
+.sec{margin:0 0 18px}.sec h3{font-size:.95rem;margin:0 0 6px}
+.chip{border-radius:6px;padding:6px 10px;margin:0 0 6px;font-size:.88rem;transition:opacity .15s,box-shadow .15s}
+.chip.job{background:var(--jobbg)}.chip.rd{background:var(--rdbg)}.chip.plain{background:var(--soft)}
+.from{display:none;font-size:.72rem;color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--job);border-radius:8px;padding:12px 14px;margin:0 0 12px}
+.card h4{margin:0 0 10px;font-size:1rem;line-height:1.4}.card>.lbl{margin:0 0 2px}.obj{color:var(--mute);font-size:.86rem;margin:0 0 10px}.obj b{color:var(--ink);font-weight:600}
+.lane{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lbl{font-size:.7rem;letter-spacing:.07em;text-transform:uppercase;color:var(--mute);font-weight:700;margin-bottom:4px}
+.gapbox{border:1.5px dashed var(--rd);color:var(--rd);border-radius:6px;padding:6px 10px;font-size:.86rem;margin:0 0 6px}
+.none{color:var(--mute);font-size:.86rem;font-style:italic;margin:0}
+.card.open{border-left-color:var(--mute)}.card.bin{border-left-color:var(--rd)}
+.note{color:var(--mute);font-size:.86rem;margin:6px 0 0}
+.board.hl .chip{opacity:.3}.board.hl .chip.on{opacity:1;box-shadow:0 0 0 2px var(--ink)}
+.board.hl path{opacity:.08}.board.hl path.on{opacity:1;stroke-width:2.6}
+.foot{color:var(--mute);font-size:.82rem;margin-top:28px;max-width:90ch}
+@media (max-width:900px){.board{grid-template-columns:1fr;gap:24px}svg#lines{display:none}.from{display:block}.lane{grid-template-columns:1fr}.wrap{padding:20px 16px 48px}h1{font-size:1.7rem}}
+</style></head><body><div class="wrap">
+<h1>Mapping Theory to Application</h1>
+<p class="mod">Psychoed for Trauma v3</p>
+<div class="board" id="board"><svg id="lines"></svg>
+<div id="left"><p class="colhead">Sections 1 and 3</p></div>
+<div id="right"><p class="colhead">Learning objectives and application (Section 4)</p></div>
+</div>
+<p class="foot">Objectives are quoted from the v3 outline. Groupings and connections are a CIEES model for discussion.</p>
+</div>
+<script>
+const L=[{"h": "1. What is Trauma?", "items": [["def", "Definition and non-example"], ["char", "Characterizing trauma: one-time or repeated, accidental or intentional"], ["dose", "Dose-response research"], ["who", "Who experiences trauma: individual, family, community, historical"], ["dx", "Common trauma diagnoses"], ["imm", "Immediate response: fight-flight-freeze-fawn"], ["sec", "Secondary processes: trauma cues"], ["long", "Longer-term responses: traumatic stress"], ["devcap", "Developmental considerations: age shapes how trauma shows up"], ["young", "Trauma in young children (includes storytelling)"], ["teen", "Trauma in adolescents"], ["ace", "ACEs and long-term effects (includes suicide-risk escalation)"], ["adult", "Trauma in adults: three pathways"], ["risk", "Risk factors before, during, and after trauma"], ["rec", "Recovery: what helps, what hinders, what to treat"]]}, {"h": "3. Theory or Evidence", "items": [["beh", "Behavioral learning theory: conditioning and avoidance"], ["cog", "Cognitive theory: maladaptive thoughts and emotional numbing"], ["nbdev", "Neurobiological: early brain development"], ["size", "Brain structure and function after early trauma"], ["hpa", "Stress response: HPA axis and autonomic nervous system"], ["att", "Attachment theory: secure attachment as a buffer"]]}];
+const NOJOB=[];
+const R=[["Demonstrate effective use of psychoeducation to normalize an individual's or family's experiences, increase understanding, and provide the rationale and expectations for treatment of trauma.", ["Find Out About Strengths and Concerns", "Build a Shared Vocabulary", "Assess Current Understanding: do not challenge beliefs yet; escalate risk or abuse", "Normalize Symptoms and Reactions: alarm metaphor, avoidance", "Introduce Treatment and Services: rationale and expectations", "When to pause, ground, and consult", "LMHP practice", "QMHP scope paragraph", "BHT practice: reinforce concepts"], ["imm", "sec", "long", "beh"]], ["Define psychological trauma and describe common responses to traumatic experiences.", ["Discuss Contributing Factors: prevalence, perpetrator myths, risk factors", "Normalize Symptoms and Reactions"], ["def", "char", "dose", "who", "dx", "imm", "sec", "long", "risk"]], ["Explain the impact of trauma on brain development, stress response systems, and functioning across the lifespan, including health behaviors.", ["Provide a Developmental Context", "Normalize: alarm metaphor for the body's stress response", "Explain Role of Health Behaviors: sleep, nutrition, activity, social engagement"], ["devcap", "young", "teen", "ace", "adult", "nbdev", "size", "hpa"]], ["Understand the common ways trauma is treated and be able to describe that to the individual or family.", ["Introduce Treatment and Services: rationale (for example, CBT), process, typical response, goals, monitoring"], ["cog", "beh", "rec"]], ["Identify protective factors and resilience-promoting strategies that support recovery from trauma.", ["Find Out About Strengths and Concerns", "Discuss Contributing Factors: resilience factors and support resources", "Explain Role of Health Behaviors: family involvement; caregivers respond to the child's needs"], ["rec", "risk", "adult", "att"]]];
+
+const byId={};L.forEach(s=>s.items.forEach(i=>byId[i[0]]={id:i[0],label:i[1],sec:s.h}));
+const left=document.getElementById('left'),right=document.getElementById('right');
+function chip(it,side){const d=document.createElement('div');d.className='chip '+(NOJOB.includes(it.id)?'rd':'job');d.dataset.ref=it.id;d.dataset.side=side;
+ d.innerHTML=it.label+(side==='R'?`<span class="from">from ${it.sec}</span>`:'');return d}
+function plain(t){const d=document.createElement('div');d.className='chip plain';d.textContent=t;return d}
+L.forEach(s=>{const sec=document.createElement('div');sec.className='sec';sec.innerHTML=`<h3>${s.h}</h3>`;s.items.forEach(i=>sec.appendChild(chip(byId[i[0]],'L')));left.appendChild(sec)});
+R.forEach((r,i)=>{const c=document.createElement('div');c.className='card';c.innerHTML=`<p class="lbl">Objective ${i+1}</p><h4>${r[0]}</h4><div class="lane"><div class="does"><div class="lbl">Application section</div></div><div class="bg"><div class="lbl">Background and theory</div></div></div>`;
+ const does=c.querySelector('.does'),bg=c.querySelector('.bg');
+ r[1].forEach(t=>{if(t.startsWith('GAP:')){const g=document.createElement('div');g.className='gapbox';g.textContent=t.slice(4);does.appendChild(g)}else does.appendChild(plain(t))});
+ r[2].forEach(id=>bg.appendChild(chip(byId[id],'R')));right.appendChild(c)});
+const board=document.getElementById('board'),svg=document.getElementById('lines');
+function draw(){svg.innerHTML='';if(getComputedStyle(svg).display==='none')return;const br=board.getBoundingClientRect(),cs=getComputedStyle(document.documentElement);
+ document.querySelectorAll('.chip[data-side="R"]').forEach(r=>{const l=document.querySelector(`.chip[data-side="L"][data-ref="${r.dataset.ref}"]`);if(!l)return;
+  const a=l.getBoundingClientRect(),b=r.getBoundingClientRect(),card=r.closest('.card').getBoundingClientRect();
+  const x1=a.right-br.left,y1=a.top+a.height/2-br.top,x2=card.left-br.left,y2=b.top+b.height/2-br.top,dx=Math.max(40,(x2-x1)*.5);
+  const p=document.createElementNS('http://www.w3.org/2000/svg','path');p.setAttribute('d',`M${x1},${y1} C${x1+dx},${y1} ${x2-dx},${y2} ${x2},${y2}`);
+  p.setAttribute('fill','none');p.setAttribute('stroke',cs.getPropertyValue(NOJOB.includes(r.dataset.ref)?'--rd':'--job').trim());p.setAttribute('stroke-width','1.5');p.setAttribute('opacity','.6');p.dataset.ref=r.dataset.ref;svg.appendChild(p)})}
+window.addEventListener('resize',draw);window.addEventListener('load',draw);draw();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+board.addEventListener('mouseover',e=>{const c=e.target.closest('.chip[data-ref]');if(!c)return;const ref=c.dataset.ref;board.classList.add('hl');
+ board.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.ref===ref));svg.querySelectorAll('path').forEach(p=>p.classList.toggle('on',p.dataset.ref===ref))});
+board.addEventListener('mouseout',e=>{if(!e.relatedTarget||!e.relatedTarget.closest('.chip[data-ref]'))board.classList.remove('hl')});
+</script></body></html>

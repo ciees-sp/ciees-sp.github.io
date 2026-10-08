@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="description" content="CPST Motivation L6 — OARS in Practice (Prototype)." />
+<title>OARS in Practice</title>
+
+<!--
+  CPST Motivation L6: OARS in Practice (Cliff or Ethan)
+  Version: 2026-09-04
+  Pattern: Hub-and-spoke exploration (two stacked audience accordions). See cpst-custom-code-style-guide.md → Block Templates.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --structure: #16193E;
+    --interactive: #0B6A8A;
+    --accent: #48AEE1;
+    --tint: #EDF4F7;
+    --canvas: #FFFFFF;
+    --text: #1B1B1F;
+    --muted: #4A4E63;
+    --hairline: #DCE0EA;
+    --best-ink: #15803D;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+  }
+  [tabindex="-1"]:focus,
+  [tabindex="-1"]:focus-visible { outline: none; }
+
+  .stage {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 24px;
+  }
+  .frame {
+    width: 100%;
+    max-width: 780px;
+    background: var(--canvas);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(22,25,62,.04), 0 12px 32px -16px rgba(22,25,62,.18);
+    border: 1.5px solid var(--hairline);
+    padding: 28px;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .accordion-heading {
+    margin: 0;
+    font: inherit;
+    font-weight: inherit;
+  }
+  .accordion-heading .accordion-head { width: 100%; }
+
+  /* ===== Audience accordions ================================ */
+  .accordions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .accordion {
+    border: 1.5px solid var(--hairline);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--canvas);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
+  }
+  .accordion.is-open {
+    border-color: var(--structure);
+    box-shadow: 0 4px 14px -8px rgba(22,25,62,0.2);
+  }
+
+  .accordion-head {
+    appearance: none;
+    background: var(--canvas);
+    color: var(--structure);
+    border: 0;
+    width: 100%;
+    text-align: left;
+    padding: 20px 22px;
+    cursor: pointer;
+    font-family: inherit;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 16px;
+    align-items: start;
+    transition: background 180ms ease;
+  }
+  .accordion-head:hover { background: var(--tint); }
+  .accordion-head:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: -3px;
+  }
+  .accordion-head[aria-expanded="true"] {
+    border-bottom: 1px solid var(--hairline);
+  }
+  .accordion-head[aria-expanded="true"]:hover { background: var(--canvas); }
+
+  .accordion-eyebrow {
+    grid-column: 1;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+  }
+  .accordion-name {
+    grid-column: 1;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--structure);
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+    margin-top: -2px;
+  }
+  .accordion-preview {
+    grid-column: 1;
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--text);
+    margin-top: 10px;
+    text-wrap: pretty;
+  }
+  .accordion-quote {
+    display: block;
+    font-style: italic;
+    color: var(--structure);
+    margin: 6px 0 0;
+  }
+  .accordion-chev {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: start;
+    margin-top: 4px;
+    width: 16px;
+    height: 16px;
+    color: var(--muted);
+    transition: transform 200ms ease, color 180ms ease;
+    flex-shrink: 0;
+  }
+  .accordion-head:hover .accordion-chev,
+  .accordion-head[aria-expanded="true"] .accordion-chev { color: var(--structure); }
+  .accordion-head[aria-expanded="true"] .accordion-chev { transform: rotate(180deg); }
+
+  .accordion-body {
+    padding: 24px 22px 22px;
+    animation: bodyIn 240ms cubic-bezier(.2,.7,.2,1);
+  }
+  .accordion-body[hidden] { display: none; }
+  @keyframes bodyIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== Context inside accordion body ====================== */
+  .context-body {
+    font-size: 16px;
+    line-height: 1.55;
+    color: var(--text);
+    margin: 0 0 14px;
+    text-wrap: pretty;
+  }
+  .context-prompt {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--structure);
+    line-height: 1.5;
+    margin: 0 0 22px;
+    text-wrap: pretty;
+  }
+
+  /* ===== Hub layout: tiles + content panel ================== */
+  .hub {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 18px;
+    align-items: start;
+  }
+  .tiles {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .tile {
+    appearance: none;
+    background: var(--canvas);
+    color: var(--structure);
+    border: 1.5px solid var(--structure);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: left;
+    cursor: pointer;
+    transition: background 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: relative;
+  }
+  .tile-letter {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: -0.02em;
+    line-height: 1;
+    flex-shrink: 0;
+    min-width: 22px;
+  }
+  .tile-name {
+    flex: 1;
+    font-size: 15px;
+  }
+  .tile[data-viewed="true"]:not(.is-active) { color: var(--muted); }
+  .tile[data-viewed="true"]:not(.is-active) .tile-letter { color: var(--muted); }
+  .tile[data-viewed="true"]:not(.is-active):hover,
+  .tile[data-viewed="true"]:not(.is-active):focus-visible { color: var(--structure); }
+  .tile[data-viewed="true"]:not(.is-active):hover .tile-letter { color: var(--interactive); }
+  .tile:hover:not(.is-active) {
+    border-color: var(--interactive);
+    box-shadow: 0 2px 8px rgba(22,25,62,0.06);
+  }
+  .tile.is-active {
+    background: var(--structure);
+    color: var(--canvas);
+    border-color: var(--structure);
+  }
+  .tile.is-active .tile-letter { color: var(--accent); }
+  .tile:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+
+  /* ===== Content panel ====================================== */
+  .panel {
+    background: var(--tint);
+    border-radius: 10px;
+    padding: 22px 24px;
+    min-height: 280px;
+    animation: panelIn 240ms cubic-bezier(.2,.7,.2,1);
+  }
+  .panel:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .panel[tabindex="0"]:focus { outline: none; }
+  .panel[tabindex="0"]:focus-visible {
+    outline: 3px solid var(--interactive);
+    outline-offset: 3px;
+  }
+  .panel.is-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .panel-empty {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    text-align: center;
+    margin: 0;
+  }
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .panel-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--structure);
+    margin: 0 0 18px;
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+  }
+  .panel-section + .panel-section {
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(22, 25, 62, 0.08);
+  }
+  .panel-section-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--interactive);
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .panel-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--text);
+    margin: 0;
+    text-wrap: pretty;
+  }
+  .panel-quote {
+    font-size: 17px;
+    line-height: 1.5;
+    color: var(--structure);
+    font-weight: 500;
+    margin: 0;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 620px) {
+    .frame { padding: 22px; border-radius: 10px; }
+    .hub { grid-template-columns: 1fr; gap: 14px; }
+    .tiles { flex-direction: row; flex-wrap: wrap; }
+    .tile { flex: 1 1 auto; min-width: 140px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+<main class="stage">
+  <section class="frame" aria-labelledby="activity-title">
+    <h3 id="activity-title" class="sr-only">OARS in Practice</h3>
+    <div class="accordions" id="accordions"></div>
+    <div class="sr-only" aria-live="polite" id="announce"></div>
+  </section>
+</main>
+
+<script>
+  // ===== CONTENT =================================================
+  // Verbatim from the SME source (Engagement/engagement-text.md). Each
+  // scenario is split into: preview (intro + lash-out quote, shown in
+  // the accordion header) and followup (rest of the scene, shown in
+  // the expanded body alongside the prompt).
+  const SCENARIOS = {
+    cliff: {
+      audience: "Adults",
+      name: "Cliff",
+      preview: `Cliff is usually upbeat and talkative during your sessions. Over the past two weeks, he has been quieter and has canceled plans he previously wanted to work on. When you ask how he is doing, he snaps:`,
+      quote: `"I'm fine! Stop asking me that!"`,
+      followup: `Earlier this week, Cliff ended a session when you brought up calling his sister and applying for jobs again. He used to talk about both with enthusiasm, but now says he does not care about them. When you meet again, he is quiet, looking down, and keeping to himself.`,
+      prompt: `How would you start a conversation with Cliff about what you have observed?`,
+      responses: {
+        O: {
+          name: "Open-Ended Question",
+          tag: "Invite him to share",
+          text: `"Hey Cliff, I've noticed you seem like you've got a lot on your mind lately. I'm not here to push — I just wanted to check in. What's been going on for you?"`,
+          why: `An open-ended question gives Cliff control over where the conversation goes. It does not presume to know what he is feeling and signals that the practitioner is there to listen, not to lecture. Acknowledging what has been observed without accusation keeps the door open for Cliff to share at his own pace.`
+        },
+        A: {
+          name: "Affirmation",
+          tag: "Name a real strength",
+          text: `"You've put a lot of effort into staying connected with your sister and looking for work. And even with something weighing on you, you still met with me today."`,
+          why: `This affirmation is grounded in what Cliff has actually done. It recognizes both the goals he has worked toward and the effort it took to meet today, without insisting that he feel hopeful or ready. A specific, earned affirmation can help him reconnect with strengths that are harder to see in this moment.`
+        },
+        R: {
+          name: "Reflective Listening",
+          tag: "Reflect what you see",
+          text: `"It seems like something shifted for you recently — like the things that used to feel good aren't feeling that way right now."`,
+          why: `This reflection goes beyond what Cliff has said to what it looks like beneath the surface. It names the shift without diagnosing it, giving Cliff the opportunity to confirm, correct, or expand. It communicates that the practitioner has been paying attention — not just to his words, but to him as a person.`
+        },
+        S: {
+          name: "Summarizing",
+          tag: "Tie it together",
+          text: `"So let me make sure I've got this right — you've been dealing with a lot, and when people ask how you're doing, it feels like too much to get into. And things you used to care about — like calling your sister or applying for jobs — feel different right now. Is that close?"`,
+          why: `A good summary reflects both content and feeling and ends with an invitation to add or correct. This tells Cliff that the practitioner has actually listened, and gives him agency over the accuracy of the reflection. Ending with "Is that close?" rather than "Is that right?" softens the check-in and signals that there is room to refine.`
+        }
+      }
+    },
+    ethan: {
+      audience: "Youth",
+      name: "Ethan",
+      preview: `Ethan is 15 and is usually upbeat and social. Over the past week, he has been more irritable and withdrawn. When you check in during a session, Ethan snaps back:`,
+      quote: `"I'm good; why do you keep asking?"`,
+      followup: `Earlier this week, you noticed Ethan leave the basketball court when friends began talking about an upcoming school event and weekend plans. He usually joins those conversations, so the reaction stood out. During your next session, a family member mentions that Ethan has been spending more time alone. Ethan sits with his hood up, looking tearful and disengaged.`,
+      prompt: `How would you start a conversation with Ethan about what you have observed?`,
+      responses: {
+        O: {
+          name: "Open-Ended Question",
+          tag: "Invite him to share",
+          text: `"Hey Ethan, mind if I sit with you for a minute? I'm not trying to make you talk — I just wanted you to know I'm here. What's on your mind?"`,
+          why: `With youth, asking permission to sit communicates respect for his space — something teens are often particularly sensitive to. The phrase "I'm not trying to make you talk" lowers defensiveness before the question is even asked. The question that follows is simple and open, leaving Ethan in full control of where the conversation goes.`
+        },
+        A: {
+          name: "Affirmation",
+          tag: "Name a real strength",
+          text: `"You still showed up to meet with me today, even though this week seems like it has taken a lot out of you. That's not nothing."`,
+          why: `This affirmation stays with something Ethan actually did: show up. It acknowledges his effort without praising him in a way that feels exaggerated or demanding an explanation. The message is simple: you noticed, and his effort matters.`
+        },
+        R: {
+          name: "Reflective Listening",
+          tag: "Reflect what you see",
+          text: `"It looks like something happened — or maybe a few things — and you're carrying it by yourself right now."`,
+          why: `This reflection names what is visible without demanding an explanation. "A few things" acknowledges that the cause may be complex or layered — common for teens navigating multiple stressors simultaneously. "By yourself" gently names the isolation without making Ethan feel judged for it. The goal is to make him feel seen, not cornered or diagnosed.`
+        },
+        S: {
+          name: "Summarizing",
+          tag: "Tie it together",
+          text: `"Okay, so if I'm following you — things have been a lot this week, and some of the things you usually enjoy, like basketball and making plans with friends, are bringing up something harder right now. And you've mostly been dealing with it alone. Did I get that right?"`,
+          why: `This summary stays close to what Ethan has shown and leaves room for him to correct it. Asking, "Did I get that right?" gives Ethan control over the meaning of his experience. That invitation helps build trust that you are listening to him, not to your assumptions.`
+        }
+      }
+    }
+  };
+
+  const OARS_ORDER = ["O", "A", "R", "S"];
+  const OARS_LABELS = {
+    O: "Open-Ended Question",
+    A: "Affirmation",
+    R: "Reflective Listening",
+    S: "Summarizing"
+  };
+
+  // ===== ENGINE ===================================================
+  const root = document.getElementById('accordions');
+  const announce = (msg) => {
+    const live = document.getElementById('announce');
+    live.textContent = '';
+    requestAnimationFrame(() => { live.textContent = msg; });
+  };
+  const escapeHtml = (s) => String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+
+  let state = {
+    openAud: null,                 // 'cliff' | 'ethan' | null
+    activeLetter: { cliff: null, ethan: null },
+    visited: { cliff: new Set(), ethan: new Set() },
+    completionFired: false
+  };
+
+  // ===== RENDERERS ================================================
+  function tilesHtml(aud) {
+    const activeLetter = state.activeLetter[aud];
+    // Roving tabindex: the active tile (or the first one if none active)
+    // takes tabindex 0; the rest take -1. Arrow keys + Home/End move
+    // between tiles. Enter/Space activate via native button behavior.
+    const rovingFallback = activeLetter || OARS_ORDER[0];
+    return OARS_ORDER.map(letter => {
+      const isActive = activeLetter === letter;
+      const tabIdx = (letter === rovingFallback) ? '0' : '-1';
+      const viewed = state.visited[aud].has(letter) ? 'true' : 'false';
+      return `
+        <button type="button" role="tab" id="tile-${aud}-${letter}" class="tile${isActive ? ' is-active' : ''}" data-aud="${aud}" data-letter="${letter}" data-viewed="${viewed}" aria-selected="${isActive}" aria-controls="panel-${aud}" tabindex="${tabIdx}">
+          <span class="tile-letter" aria-hidden="true">${letter}</span>
+          <span class="tile-name">${escapeHtml(OARS_LABELS[letter])}</span>
+        </button>
+      `;
+    }).join('');
+  }
+
+  function panelHtml(aud) {
+    const letter = state.activeLetter[aud];
+    if (!letter) {
+      return `
+        <div class="panel is-empty" id="panel-${aud}" role="tabpanel" aria-label="Skill detail">
+          <p class="panel-empty">Pick a skill to see how it could look in this moment.</p>
+        </div>
+      `;
+    }
+    const r = SCENARIOS[aud].responses[letter];
+    return `
+      <div class="panel" id="panel-${aud}" role="tabpanel" aria-labelledby="tile-${aud}-${letter}" tabindex="0">
+        <h5 class="panel-title">${escapeHtml(r.name)}: ${escapeHtml(r.tag)}</h5>
+        <div class="panel-section">
+          <span class="panel-section-label">Suggested response</span>
+          <p class="panel-quote">${escapeHtml(r.text)}</p>
+        </div>
+        <div class="panel-section">
+          <span class="panel-section-label">Why this works</span>
+          <p class="panel-text">${escapeHtml(r.why)}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  function bodyHtml(aud) {
+    const s = SCENARIOS[aud];
+    return `
+      <div class="accordion-body" id="body-${aud}" role="region" aria-labelledby="head-${aud}">
+        <p class="context-body">${escapeHtml(s.followup)}</p>
+        <p class="context-prompt">${escapeHtml(s.prompt)}</p>
+        <div class="hub">
+          <div class="tiles" role="tablist" aria-label="OARS skills for ${escapeHtml(s.name)}" aria-orientation="vertical">
+            ${tilesHtml(aud)}
+          </div>
+          ${panelHtml(aud)}
+        </div>
+      </div>
+    `;
+  }
+
+  function accordionHtml(aud) {
+    const s = SCENARIOS[aud];
+    const isOpen = state.openAud === aud;
+    return `
+      <div class="accordion${isOpen ? ' is-open' : ''}" data-aud="${aud}">
+        <h4 class="accordion-heading">
+          <button type="button" id="head-${aud}" class="accordion-head" data-aud="${aud}" aria-expanded="${isOpen}" aria-controls="body-${aud}">
+            <span class="accordion-eyebrow">${escapeHtml(s.audience)}</span>
+            <span class="accordion-name">${escapeHtml(s.name)}</span>
+            <span class="accordion-preview">${escapeHtml(s.preview)}<span class="accordion-quote">${escapeHtml(s.quote)}</span></span>
+            <svg class="accordion-chev" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="4 6 8 10 12 6"/>
+            </svg>
+          </button>
+        </h4>
+        ${isOpen ? bodyHtml(aud) : ''}
+      </div>
+    `;
+  }
+
+  function render() {
+    root.innerHTML = ['cliff', 'ethan'].map(accordionHtml).join('');
+
+    root.querySelectorAll('.accordion-head').forEach(h => {
+      h.addEventListener('click', () => onHeadClick(h.dataset.aud));
+    });
+    root.querySelectorAll('.tile').forEach(t => {
+      t.addEventListener('click', () => onTilePick(t.dataset.aud, t.dataset.letter));
+    });
+    // Tablist keyboard nav per audience
+    root.querySelectorAll('[role="tablist"]').forEach(tl => {
+      tl.addEventListener('keydown', (e) => onTilesKeydown(e, tl));
+    });
+  }
+
+  function onTilesKeydown(e, tablistEl) {
+    const keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Home', 'End'];
+    if (keys.indexOf(e.key) === -1) return;
+    e.preventDefault();
+    const aud = tablistEl.querySelector('.tile').dataset.aud;
+    const current = state.activeLetter[aud] || OARS_ORDER[0];
+    const idx = OARS_ORDER.indexOf(current);
+    let nextIdx = idx;
+    if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') nextIdx = (idx - 1 + OARS_ORDER.length) % OARS_ORDER.length;
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextIdx = (idx + 1) % OARS_ORDER.length;
+    if (e.key === 'Home') nextIdx = 0;
+    if (e.key === 'End') nextIdx = OARS_ORDER.length - 1;
+    const nextLetter = OARS_ORDER[nextIdx];
+    onTilePick(aud, nextLetter);
+    // After render, move focus to the newly active tile
+    requestAnimationFrame(() => {
+      const t = document.getElementById(`tile-${aud}-${nextLetter}`);
+      if (t) t.focus();
+    });
+  }
+
+  // ===== EVENTS ===================================================
+  function onHeadClick(aud) {
+    state.openAud = (state.openAud === aud) ? null : aud;
+    render();
+  }
+
+  function onTilePick(aud, letter) {
+    state.activeLetter[aud] = letter;
+    state.visited[aud].add(letter);
+    if (state.visited[aud].size === OARS_ORDER.length && !state.completionFired) {
+      fireCompletion();
+    }
+    render();
+    const r = SCENARIOS[aud].responses[letter];
+    announce(`${r.name}. ${r.tag}. ${r.why}`);
+  }
+
+  // ===== COMPLETION ===============================================
+  function fireCompletion() {
+    if (state.completionFired) return;
+    try {
+      window.parent.postMessage({ type: 'complete' }, '*');
+      state.completionFired = true;
+    } catch (e) {
+      console.warn('[OARS] completion postMessage failed:', e);
+    }
+  }
+
+  // ===== BOOT =====================================================
+  render();
+</script>
+
+</body>
+</html>

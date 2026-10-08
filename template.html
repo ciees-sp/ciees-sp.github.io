@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROJECT_TITLE | CIEES Special Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* CIEES Brand Guide — October 2020 */
+      --monarch-blue:    #003057;
+      --high-tide:       #164C6D;
+      --seafoam:         #20AEC5;
+      --evening-breeze:  #63B9D6;
+      --carrier-metal:   #404A5A;
+      --aluminum:        #E1EAF0;
+      --wisconsin-grey:  #D6D5DA;
+      --white:           #FFFFFF;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
+      color: var(--monarch-blue);
+      background: var(--aluminum);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Branded Header Bar ── */
+    .sp-header {
+      background: var(--monarch-blue);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sp-header img {
+      width: 200px;
+      height: auto;
+    }
+
+    .sp-header-nav a {
+      font-family: 'Open Sans', sans-serif;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.15s;
+    }
+
+    .sp-header-nav a:hover {
+      color: var(--white);
+    }
+
+    /* ── Content Area ── */
+    .sp-content {
+      flex: 1;
+      width: 100%;
+      /* Remove or adjust max-width if your prototype needs full width */
+      /* max-width: 1200px; */
+      margin: 0 auto;
+      padding: 0;
+    }
+
+    /* ── Footer ── */
+    .sp-footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--carrier-metal);
+      border-top: 1px solid var(--wisconsin-grey);
+    }
+
+    .sp-footer a {
+      color: var(--high-tide);
+      text-decoration: none;
+    }
+
+    .sp-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .sp-header { padding: 0.5rem 1rem; }
+      .sp-header img { width: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sp-header">
+    <img src="../../assets/logo-horizontal-white.png" alt="CIEES Special Projects">
+    <nav class="sp-header-nav">
+      <a href="../../index.html">&larr; All Deliverables</a>
+    </nav>
+  </div>
+
+  <div class="sp-content">
+    <!--
+    ════════════════════════════════════════════════════════
+    PASTE YOUR PROTOTYPE / PROPOSAL HTML BELOW THIS LINE
+
+    Options:
+    1. Paste the full <body> contents of your Cowork-built
+       HTML file directly here.
+
+    2. Or use an iframe to embed it:
+       <iframe src="your-file.html"
+               style="width:100%; height:calc(100vh - 80px); border:none;">
+       </iframe>
+
+    The header and footer will wrap around whatever you put here,
+    keeping the SP branding consistent.
+    ════════════════════════════════════════════════════════
+    -->
+
+
+
+  </div>
+
+  <div class="sp-footer">
+    Center for the Implementation and Evaluation of Education Systems &middot;
+    Old Dominion University
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CPST Learner Personas</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #ffffff;
+    color: #1a1a2e;
+  }
+
+  .page {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 44px;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: #003057;
+    margin-bottom: 6px;
+  }
+
+  .header p {
+    font-size: 15px;
+    color: #64748b;
+    font-style: italic;
+  }
+
+  .card {
+    display: flex;
+    gap: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f8f9fa;
+    margin-bottom: 24px;
+  }
+
+  .card-photo {
+    width: 320px;
+    min-height: 100%;
+    object-fit: cover;
+    object-position: center 20%;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .card-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-intro {
+    padding: 28px 28px 20px;
+    background: #003057;
+    color: #ffffff;
+  }
+
+  .card-name {
+    font-size: 24px;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 1px;
+  }
+
+  .card-edu {
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 8px;
+  }
+
+  .card-role {
+    font-size: 13px;
+    font-weight: 600;
+    color: #20AEC5;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+
+  .card-quote {
+    font-size: 14px;
+    font-style: italic;
+    color: #cbd5e1;
+    line-height: 1.6;
+    padding-left: 14px;
+    border-left: 3px solid #20AEC5;
+  }
+
+  .card-body {
+    padding: 22px 28px 28px;
+    flex: 1;
+  }
+
+  .card-about-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: #003057;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .card-detail {
+    font-size: 13px;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+
+  .card-columns {
+    display: flex;
+    gap: 24px;
+    margin-top: 18px;
+  }
+
+  .card-col {
+    flex: 1;
+  }
+
+  .card-section {
+    font-size: 12px;
+    font-weight: 700;
+    color: #003057;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
+  }
+
+  .card-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .card-list li {
+    font-size: 13px;
+    color: #334155;
+    line-height: 1.5;
+    padding: 3px 0 3px 16px;
+    position: relative;
+  }
+
+  .card-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #20AEC5;
+  }
+
+  .card-list.not-role li::before {
+    background: #cbd5e1;
+  }
+
+  .supervisor {
+    margin-top: 8px;
+    padding: 20px 28px;
+    background: #003057;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .supervisor-photo {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid #20AEC5;
+  }
+
+  .supervisor p {
+    font-size: 14px;
+    color: #ffffff;
+    line-height: 1.6;
+  }
+
+  .supervisor strong {
+    color: #20AEC5;
+  }
+
+  .decision-rule {
+    margin-top: 20px;
+    padding: 18px 28px;
+    background: #20AEC5;
+    border-radius: 12px;
+    text-align: center;
+  }
+
+  .decision-rule p {
+    font-size: 15px;
+    font-weight: 600;
+    color: #003057;
+    line-height: 1.6;
+  }
+
+  @media print {
+    body { background: #fff; }
+    .page { max-width: 100%; padding: 20px; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <h1>CPST Learner Personas</h1>
+  </div>
+
+  <!-- MARCUS -->
+  <div class="card">
+    <img class="card-photo" src="Design/Personas/marcus.png" alt="Marcus Rivera, a Latino man in his late 20s wearing a navy henley, sitting at a table in a community room break area with a travel mug, looking off to the side with a relaxed smile.">
+    <div class="card-right">
+      <div class="card-intro">
+        <div class="card-name">Marcus Rivera</div>
+        <div class="card-edu">Associate degree in human services</div>
+        <div class="card-role">Behavioral Health Technician (BHT)</div>
+        <div class="card-quote">"What do I do, and how do I know I'm doing it right?"</div>
+      </div>
+      <div class="card-body">
+        <div class="card-about-heading">About Marcus</div>
+        <div class="card-detail">Came to behavioral health after a family member's experience with mental health services. Engages quickly with new material when it's tied to a concrete situation. Learns best when clinical concepts are introduced in plain language before the formal terminology.</div>
+
+        <div class="card-columns">
+          <div class="card-col">
+            <div class="card-section">On the job, Marcus:</div>
+            <ul class="card-list">
+              <li>Reinforces skills between sessions using established scripts</li>
+              <li>Encourages clients to practice what the QMHP introduced</li>
+              <li>Documents observations and reports to the team</li>
+              <li>Screens, coordinates care, orients new clients</li>
+            </ul>
+          </div>
+          <div class="card-col">
+            <div class="card-section">Outside Marcus's scope:</div>
+            <ul class="card-list not-role">
+              <li>Clinical judgment or decision-making</li>
+              <li>Determining whether symptoms meet diagnostic criteria</li>
+              <li>Teaching new clinical content without an established script</li>
+              <li>Interpreting why a treatment plan includes what it includes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADRIENNE -->
+  <div class="card">
+    <img class="card-photo" src="Design/Personas/adrienne.png" alt="Adrienne Cole, a Black woman in her late 30s with shoulder-length locs and glasses on her head, wearing a burgundy cardigan over a white tee with a canvas tote, standing in a community services board lobby with a bulletin board behind her.">
+    <div class="card-right">
+      <div class="card-intro">
+        <div class="card-name">Adrienne Cole</div>
+        <div class="card-edu">Bachelor's degree in business administration</div>
+        <div class="card-role">Qualified Mental Health Professional (QMHP)</div>
+        <div class="card-quote">"What do I need to know to walk in prepared?"</div>
+      </div>
+      <div class="card-body">
+        <div class="card-about-heading">About Adrienne</div>
+        <div class="card-detail">Career-changed into behavioral health from retail management. Completed her QMHP coursework and supervision hours and has been registered for about two years. Comfortable with clients but still building confidence with clinical concepts. Learns well when content is grounded in what she'll actually do on the job.</div>
+
+        <div class="card-columns">
+          <div class="card-col">
+            <div class="card-section">On the job, Adrienne:</div>
+            <ul class="card-list">
+              <li>Teaches psychoeducation and coping skills directly to clients</li>
+              <li>Implements interventions assigned on the treatment plan</li>
+              <li>Introduces treatment rationale in plain language</li>
+              <li>Gathers histories, initiates crisis de-escalation</li>
+              <li>Covers BHT tasks (screening, care coordination, new client orientation) on teams without a BHT</li>
+              <li>Documents and coordinates with the team</li>
+            </ul>
+          </div>
+          <div class="card-col">
+            <div class="card-section">Outside Adrienne's scope:</div>
+            <ul class="card-list not-role">
+              <li>Diagnosis or differential diagnosis</li>
+              <li>Clinical assessment and formulation</li>
+              <li>Selecting which intervention to use</li>
+              <li>Modifying the treatment plan</li>
+              <li>Providing psychotherapy</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="supervisor">
+    <img class="supervisor-photo" src="Design/Personas/lydia.png" alt="Lydia Chen, a Vietnamese American woman in her mid-40s with a shoulder-length bob and wire-frame glasses, sitting at a desk in her office.">
+    <p><strong>Their supervisor: Lydia Chen, LPC, LMHP</strong> — assesses, writes the treatment plan, selects interventions, and supervises both Marcus and Adrienne weekly.</p>
+  </div>
+
+
+</div>
+</body>
+</html>

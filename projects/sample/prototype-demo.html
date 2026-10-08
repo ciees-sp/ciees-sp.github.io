@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sample Prototype | CIEES Special Projects</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --monarch-blue:    #003057;
+      --high-tide:       #164C6D;
+      --seafoam:         #20AEC5;
+      --evening-breeze:  #63B9D6;
+      --carrier-metal:   #404A5A;
+      --aluminum:        #E1EAF0;
+      --wisconsin-grey:  #D6D5DA;
+      --white:           #FFFFFF;
+    }
+
+    body {
+      font-family: 'Open Sans', 'Segoe UI', system-ui, sans-serif;
+      color: var(--monarch-blue);
+      background: var(--aluminum);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sp-header {
+      background: var(--monarch-blue);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sp-header img { width: 200px; height: auto; }
+    .sp-header-nav a {
+      font-family: 'Open Sans', sans-serif;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      font-size: 0.8rem;
+    }
+    .sp-header-nav a:hover { color: #fff; }
+
+    .demo-wrapper {
+      flex: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .demo-wrapper h1 {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .demo-wrapper .subtitle {
+      color: var(--carrier-metal);
+      margin-bottom: 2rem;
+    }
+
+    .demo-card {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-card h2 {
+      font-family: 'Lora', Georgia, serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: var(--monarch-blue);
+    }
+
+    .demo-card p {
+      color: var(--carrier-metal);
+      line-height: 1.7;
+      font-size: 0.95rem;
+    }
+
+    .demo-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      border-bottom: 2px solid var(--wisconsin-grey);
+    }
+
+    .demo-tab {
+      padding: 0.6rem 1.25rem;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--carrier-metal);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all 0.15s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    .demo-tab.active {
+      color: var(--seafoam);
+      border-bottom-color: var(--seafoam);
+    }
+
+    .demo-tab:hover:not(.active) {
+      color: var(--monarch-blue);
+    }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .demo-btn {
+      display: inline-block;
+      background: var(--seafoam);
+      color: var(--white);
+      padding: 0.6rem 1.5rem;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: 'Open Sans', sans-serif;
+    }
+    .demo-btn:hover { background: var(--evening-breeze); }
+
+    .demo-metric { display: flex; gap: 2rem; margin: 1rem 0; }
+    .metric-item { text-align: center; }
+    .metric-value { font-family: 'Lora', Georgia, serif; font-size: 2rem; font-weight: 700; color: var(--seafoam); }
+    .metric-label { font-size: 0.8rem; color: var(--carrier-metal); text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .sp-footer {
+      text-align: center;
+      padding: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--carrier-metal);
+      border-top: 1px solid var(--wisconsin-grey);
+    }
+
+    @media (max-width: 600px) {
+      .sp-header { padding: 0.5rem 1rem; }
+      .sp-header img { width: 160px; }
+      .demo-wrapper { padding: 2rem 1.25rem; }
+      .demo-metric { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="sp-header">
+    <img src="../../assets/logo-horizontal-white.png" alt="CIEES Special Projects">
+    <nav class="sp-header-nav"><a href="../../index.html">&larr; All Deliverables</a></nav>
+  </div>
+
+  <div class="demo-wrapper">
+    <h1>Sample Interactive Prototype</h1>
+    <p class="subtitle">This page demonstrates how a prototype looks when served through GitHub Pages with SP branding.</p>
+
+    <div class="demo-tabs">
+      <button class="demo-tab active" data-tab="overview">Overview</button>
+      <button class="demo-tab" data-tab="metrics">Metrics</button>
+      <button class="demo-tab" data-tab="next-steps">Next Steps</button>
+    </div>
+
+    <div id="overview" class="tab-content active">
+      <div class="demo-card">
+        <h2>Project Overview</h2>
+        <p>This is a placeholder showing how interactive elements work in a prototype delivered through GitHub Pages. Tabs, buttons, accordions, charts — everything functions as it would in the original HTML file you built in Cowork.</p>
+        <br>
+        <p>When you build a real prototype, you would either paste your HTML content directly into the template, or place your standalone HTML file in the project folder and link to it from the landing page.</p>
+      </div>
+    </div>
+
+    <div id="metrics" class="tab-content">
+      <div class="demo-card">
+        <h2>Sample Metrics</h2>
+        <div class="demo-metric">
+          <div class="metric-item"><div class="metric-value">12</div><div class="metric-label">Modules</div></div>
+          <div class="metric-item"><div class="metric-value">4.2k</div><div class="metric-label">Completions</div></div>
+          <div class="metric-item"><div class="metric-value">94%</div><div class="metric-label">Satisfaction</div></div>
+        </div>
+        <p style="color: var(--carrier-metal); font-size: 0.95rem; margin-top: 1rem;">Interactive data visualizations, charts, and dashboards all render natively in the browser — no conversion to PDF needed.</p>
+      </div>
+    </div>
+
+    <div id="next-steps" class="tab-content">
+      <div class="demo-card">
+        <h2>Next Steps</h2>
+        <p>Replace this sample with your first real deliverable. The landing page at the root URL will link here, and your client sees a polished, interactive experience.</p>
+        <br>
+        <button class="demo-btn" onclick="alert('Interactive elements work as expected.')">Try an Interaction</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sp-footer">
+    Center for the Implementation and Evaluation of Education Systems &middot; Old Dominion University
+  </div>
+
+  <script>
+    document.querySelectorAll('.demo-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.demo-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        tab.classList.add('active');
+        document.getElementById(tab.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
